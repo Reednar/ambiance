@@ -1,13 +1,18 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ApiService } from './service/api.service';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  template: `<h1>Data from API</h1> <pre>{{ data }}</pre>`
 })
-export class AppComponent {
-  title = 'ambiance-front';
+export class AppComponent implements OnInit {
+  data: any;
+
+  constructor(private apiService: ApiService) {}
+
+  ngOnInit() {
+    this.apiService.getData().subscribe(response => {
+      this.data = response;
+    });
+  }
 }
