@@ -1,17 +1,50 @@
-## Ambiance
-- Version de nodejs : v22.11.0
+# Ambiance
+## Prérequis
+- Version de node : v22.11.0
 - Version de npm : v10.8.3
-# ambiance-back
-Le backend utilise NestJS
-- Se déplacer dans le dossier `cd ambiance-back`
-- Installer les packages `npm install` ou `npm update`
-- Lancer le serveur `npm run start:dev`
-Pour créer des modules, des contrôleurs et des services
-- nest g module [nom du module]
-- nest g controller [nom du controller]
-- nest g service [nom du service]
-# ambiance-front
-Le frontend utilise le framework Angular
-- Se déplacer dans le dossier `cd ambiance-front`
-- Installer les packages `npm install` or `npm update`
-- Lancer le serveur `npm run start`
+## Installation de NestJS
+```bash
+npm i -g @nestjs/cli
+```
+[NestJS](https://docs.nestjs.com)
+
+## Installation de Angular
+```bash
+npm i -g @angular/cli
+```
+[Angular](https://angular.dev/)
+
+## Lancement du backend
+- Se déplacer dans le dossier ambiance-back
+```bash
+cd ambiance-back
+```
+- Installer les packages avec npm
+```bash
+npm install
+```
+ou
+```bash
+npm update
+```
+- Lancer le serveur back avec l'environnement de dev
+```bash
+npm run start:dev
+```
+## Lancement du frontend
+- Se déplacer dans le dossier ambiance-front
+```bash
+cd ../ambiance-front
+```
+- Installer les packages avec npm
+```bash
+npm install
+```
+ou
+```bash
+npm update
+```
+- Lancer le serveur front avec l'environnement de dev
+```bash
+npm run start
+```
