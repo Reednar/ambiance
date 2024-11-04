@@ -4,7 +4,7 @@
 # ambiance-back
 Le backend utilise NestJS
 - Se déplacer dans le dossier `cd ambiance-back`
-- Installer les packages `npm install` or `npm update`
+- Installer les packages `npm install` ou `npm update`
 - Lancer le serveur `npm run start:dev`
 Pour créer des modules, des contrôleurs et des services
 - nest g module [nom du module]
