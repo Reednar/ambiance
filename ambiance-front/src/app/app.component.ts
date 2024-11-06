@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TestService } from './service/test/test.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'] 
 })
-export class AppComponent {
+export class AppComponent implements OnInit { 
   title = 'ambiance-front';
   data = {};
   

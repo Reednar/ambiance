@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +9,7 @@ export class TestService {
 
   constructor(private http: HttpClient) {}
 
-  getData(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/endpoint`); // Remplace `/endpoint` par l'endpoint de ton API
+  getData() {
+    return this.http.get(`${this.apiUrl}/endpoint`);
   }
 }
