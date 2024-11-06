@@ -1,0 +1,55 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.11.0]
+
+    steps:
+    # Étape 1 : Vérifier le code source
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Étape 2 : Configurer Node.js
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    # Étape 3 : Installer les dépendances pour NestJS (ambiance-back)
+    - name: Install dependencies for ambiance-back
+      working-directory: ./ambiance-back
+      run: npm install
+
+    # Étape 4 : Vérifier le formatage et la qualité du code pour ambiance-back
+    - name: Lint code for ambiance-back
+      working-directory: ./ambiance-back
+      run: npm run lint
+
+    # Étape 5 : Lancer les tests pour ambiance-back
+    - name: Run tests for ambiance-back
+      working-directory: ./ambiance-back
+      run: npm run test -- --ci --passWithNoTests
+
+    # Étape 6 : Installer les dépendances pour Angular (ambiance-front)
+    - name: Install dependencies for ambiance-front
+      working-directory: ./ambiance-front
+      run: npm install
+
+    # Étape 7 : Vérifier le formatage et la qualité du code pour ambiance-front
+    - name: Lint code for ambiance-front
+      working-directory: ./ambiance-front
+      run: npm run lint
+
+    # Étape 8 : Lancer les tests pour ambiance-front
+    - name: Run tests for ambiance-front
+      working-directory: ./ambiance-front
+      run: npm run test -- --watch=false --no-progress --browsers=ChromeHeadless
