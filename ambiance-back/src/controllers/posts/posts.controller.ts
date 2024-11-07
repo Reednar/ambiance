@@ -1,6 +1,6 @@
 import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { PostsService } from './posts.service';
+import { PostsService } from '../../services/posts/posts.service';
 
 @ApiTags('posts')
 @Controller('posts')
