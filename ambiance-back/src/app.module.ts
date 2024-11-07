@@ -8,8 +8,10 @@ import { PostsController } from './controllers/posts/posts.controller';
 import { PostsModule } from './modules/posts/posts.module';
 import { Post } from './entities/posts.entity';
 import { User } from './entities/users.entity';
+import{ UsersController } from './controllers/users/users.controller';
+import { UsersModule } from './modules/users/users.module';
 @Module({
-  controllers: [AppController, PostsController],
+  controllers: [AppController, PostsController,UsersController],
   imports: [
     ConfigModule.forRoot({
       load: [configuration],
@@ -25,7 +27,7 @@ import { User } from './entities/users.entity';
       entities: [Post, User], // Ajouter les entités ici
       synchronize: false, // Permet de manipuler les entités de la base de données avec les fichiers entity.ts en temps réel
     }),
-    PostsModule,
+    PostsModule,UsersModule
     // Mettre les autres modules ici
   ],
   providers: [AppService],
