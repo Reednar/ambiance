@@ -10,8 +10,12 @@ import { Post } from './entities/posts.entity';
 import { User } from './entities/users.entity';
 import{ UsersController } from './controllers/users/users.controller';
 import { UsersModule } from './modules/users/users.module';
+import { GroupsController } from './controllers/groups/groups.controller';
+import { GroupsModule } from './modules/groups/groups.module';
+import { Groupe } from './entities/groups.entity';
+
 @Module({
-  controllers: [AppController, PostsController,UsersController],
+  controllers: [AppController, PostsController,UsersController,GroupsController],
   imports: [
     ConfigModule.forRoot({
       load: [configuration],
@@ -24,10 +28,10 @@ import { UsersModule } from './modules/users/users.module';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [Post, User], // Ajouter les entités ici
+      entities: [Post, User,Groupe], // Ajouter les entités ici
       synchronize: false, // Permet de manipuler les entités de la base de données avec les fichiers entity.ts en temps réel
     }),
-    PostsModule,UsersModule
+    PostsModule,UsersModule,GroupsModule
     // Mettre les autres modules ici
   ],
   providers: [AppService],
