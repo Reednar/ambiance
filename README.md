@@ -54,11 +54,11 @@ npm update
 ```bash
 npm run start
 ```
-## Installation de Grafana
+## Téléchargement de Grafana (exécuter)
 [Téléchargement](https://dl.grafana.com/enterprise/release/grafana-enterprise-11.3.0.windows-amd64.msi)
-## Installation de Loki
+## Téléchargement de Loki (ne pas exécuter)
 [Téléchargement](https://github.com/grafana/loki/releases/download/v3.2.1/loki-windows-amd64.exe.zip)
-## Installation de Promtail
+## Téléchargement de Promtail (ne pas exécuter)
 [Téléchargement](https://github.com/grafana/loki/releases/download/v3.2.1/promtail-windows-amd64.exe.zip)
 
 ## Paramétrage de Grafana
@@ -66,7 +66,7 @@ npm run start
 - Faire une copie du fichier "sample.ini" et appeler le fichier "custom.ini" (les semilicons ";" permettent de commenter une ligne)
 - Modifier le fichier "custom.ini", trouver le port par défault et mettre la valeur "5000" (retirer le ";")
 - Se déplacer dans le dossier : C:\Program Files\GrafanaLabs\grafana\bin
-- Exécuter le fichier "grafana-server"
+- Exécuter le fichier "grafana-server" en tant qu'administrateur
 - Accéder à l'url suivante : http://localhost:5000
 - Les identifiants par défault sont les suivants : 
 ```bash
@@ -90,5 +90,5 @@ admin (le mot de passe devra être modifié par la suite)
 - Ouvrir une invite de commande et se placer dans le dossier "Promtail"
 - Exécuter la commande suivante :
 ```bash
-.\promtail-windows-amd64.exe --config.file=loki-config.yaml
+.\promtail-windows-amd64.exe --config.file=promtail-config.yaml
 ```
