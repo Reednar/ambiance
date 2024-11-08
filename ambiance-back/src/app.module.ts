@@ -6,6 +6,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostsController } from './posts/posts.controller';
 import { PostsModule } from './posts/posts.module';
+import { AppLoggerService } from './services/app-logger/app-logger.service';
+import { AppLoggerModule } from './modules/app-logger/app-logger.module';
 
 @Module({
   controllers: [AppController, PostsController],
@@ -25,8 +27,9 @@ import { PostsModule } from './posts/posts.module';
       synchronize: false, // Permet de manipuler les entités de la base de données avec les fichiers entity.ts en temps réel
     }),
     PostsModule,
+    AppLoggerModule,
     // Mettre les autres modules ici
   ],
-  providers: [AppService],
+  providers: [AppService, AppLoggerService],
 })
 export class AppModule {}
