@@ -19,6 +19,8 @@ import { Acces } from './entities/acces.entity';
 import { AccesModule } from './modules/acces/acces.module';
 import { Image } from './entities/images.entity';
 import { ImagesModule } from './modules/images/images.module';
+import { Avis } from './entities/avis.entity';
+import { AvisModule } from './modules/avis/avis.module';
 
 
 @Module({
@@ -35,10 +37,10 @@ import { ImagesModule } from './modules/images/images.module';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [Post, User,Groupe,Document,Acces,Image], // Ajouter les entités ici
+      entities: [Post, User,Groupe,Document,Acces,Image,Avis], // Ajouter les entités ici
       synchronize: false, // Permet de manipuler les entités de la base de données avec les fichiers entity.ts en temps réel
     }),
-    PostsModule,UsersModule,GroupsModule,DocumentsModule,AccesModule,ImagesModule
+    PostsModule,UsersModule,GroupsModule,DocumentsModule,AccesModule,ImagesModule,AvisModule
     // Mettre les autres modules ici
   ],
   providers: [AppService],
