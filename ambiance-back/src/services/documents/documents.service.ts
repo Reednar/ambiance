@@ -7,28 +7,28 @@ import { Document } from '../../entities/documents.entity';
 export class DocumentsService {
   constructor(
     @InjectRepository(Document)
-    private readonly postRepository: Repository<Document>,
+    private readonly documentRepository: Repository<Document>,
   ) {}
 
   async findAll(): Promise<Document[]> {
-    return await this.postRepository.find();
+    return await this.documentRepository.find();
   }
 
   async findOne(id: number): Promise<Document> {
-    return await this.postRepository.findOneBy({ idDocument: id });
+    return await this.documentRepository.findOneBy({ idDocument: id });
   }
 
   async create(post: Partial<Document>): Promise<Document> {
-    const newDocument = this.postRepository.create(post);
-    return await this.postRepository.save(newDocument);
+    const newDocument = this.documentRepository.create(post);
+    return await this.documentRepository.save(newDocument);
   }
 
   async update(id: number, updateData: Partial<Document>): Promise<Document> {
-    await this.postRepository.update(id, updateData);
+    await this.documentRepository.update(id, updateData);
     return this.findOne(id);
   }
 
   async remove(id: number): Promise<void> {
-    await this.postRepository.delete(id);
+    await this.documentRepository.delete(id);
   }
 }
