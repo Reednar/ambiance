@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PostsService } from './posts.service';
-import { Post } from './posts.entity';
+import { AccessService } from './acces.service';
+import { Post } from '../../entities/posts.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-describe('PostsService', () => {
-  let service: PostsService;
+describe('AccesService', () => {
+  let service: AccessService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        PostsService,
+        AccessService,
         {
           provide: getRepositoryToken(Post),
           useValue: {
@@ -20,7 +20,7 @@ describe('PostsService', () => {
       ],
     }).compile();
 
-    service = module.get<PostsService>(PostsService);
+    service = module.get<AccessService>(AccessService);
   });
 
   it('should be defined', () => {
