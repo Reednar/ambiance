@@ -1,5 +1,5 @@
-import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GroupsService } from '../../services/groups/groups.service';
 @ApiTags('groups')
 @Controller('groups')
