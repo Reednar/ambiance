@@ -4,12 +4,12 @@ import { ParticipationService } from '../../services/participation/participation
 
 @ApiTags('participation')
 @Controller('participation')
-export class participationController {
-    constructor(private ParticipationService: ParticipationService) {}
+export class ParticipationController {
+  constructor(private ParticipationService: ParticipationService) {}
 
-    @Get()
-    @ApiOperation({ summary: 'Return all participation' })
-    async getPosts() {
-      return await this.ParticipationService.findAll();
-    }
+  @Get()
+  @ApiOperation({ summary: 'Return all participation' })
+  async getPosts() {
+    return await this.ParticipationService.findAll();
+  }
 }

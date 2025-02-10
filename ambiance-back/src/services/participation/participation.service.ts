@@ -15,7 +15,9 @@ export class ParticipationService {
   }
 
   async findOne(id: number): Promise<Participation> {
-    return await this.ParticipationRepository.findOneBy({ idParticipation: id });
+    return await this.ParticipationRepository.findOneBy({
+      idParticipation: id,
+    });
   }
 
   async create(post: Partial<Participation>): Promise<Participation> {
@@ -23,7 +25,10 @@ export class ParticipationService {
     return await this.ParticipationRepository.save(newInteragis);
   }
 
-  async update(id: number, updateData: Partial<Participation>): Promise<Participation> {
+  async update(
+    id: number,
+    updateData: Partial<Participation>,
+  ): Promise<Participation> {
     await this.ParticipationRepository.update(id, updateData);
     return this.findOne(id);
   }

@@ -27,7 +27,7 @@ export class UsersController {
             mail: 'test@test.com',
             motDePasse: 'azerty',
             role: 'Utilisateur',
-            telephone: "0123456789",
+            telephone: '0123456789',
             rib: 'fr7612345678901234567890123',
           },
         ],
@@ -37,5 +37,4 @@ export class UsersController {
   async getPosts() {
     return await this.UsersService.findAll();
   }
-
 }

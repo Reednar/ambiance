@@ -5,11 +5,11 @@ import { InteragisService } from '../../services/interagis/interagis.service';
 @ApiTags('interagis')
 @Controller('interagis')
 export class interagisController {
-    constructor(private InteragisService: InteragisService) {}
+  constructor(private InteragisService: InteragisService) {}
 
-    @Get()
-    @ApiOperation({ summary: 'Return all interagis' })
-    async getPosts() {
-      return await this.InteragisService.findAll();
-    }
+  @Get()
+  @ApiOperation({ summary: 'Return all interagis' })
+  async getPosts() {
+    return await this.InteragisService.findAll();
+  }
 }
