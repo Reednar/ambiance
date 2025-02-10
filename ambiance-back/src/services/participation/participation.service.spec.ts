@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ParticipationService } from './participation.service';
-import { Participation } from '../../entities/Participation.entity';
+import { Participation } from '../../entities/participation.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('ParticipationService', () => {
