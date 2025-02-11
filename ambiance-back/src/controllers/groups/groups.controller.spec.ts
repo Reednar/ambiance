@@ -18,7 +18,10 @@ describe('GroupsController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [GroupsController],
       providers: [
-        { provide: GroupsService, useValue: mockGroupsService },
+        {
+          provide: GroupsService,
+          useValue: mockGroupsService,
+        },
       ],
     }).compile();
 

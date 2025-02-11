@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from '../../services/users/users.service';
 import { User } from '../../entities/users.entity';
@@ -50,7 +58,10 @@ export class UsersController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() updateUserDto: Partial<User>): Promise<User> {
+  update(
+    @Param('id') id: number,
+    @Body() updateUserDto: Partial<User>,
+  ): Promise<User> {
     return this.usersService.update(id, updateUserDto);
   }
 

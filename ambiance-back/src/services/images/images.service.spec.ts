@@ -50,7 +50,7 @@ describe('ImagesService', () => {
   it('should create a new image', async () => {
     const newImage = { lienImage: Buffer.from('new image') };
     const result = { idImage: 1, ...newImage };
-    mockImageRepository.create.mockReturnValue(newImage); 
+    mockImageRepository.create.mockReturnValue(newImage);
     mockImageRepository.save.mockResolvedValue(result);
 
     expect(await service.create(newImage)).toEqual(result);

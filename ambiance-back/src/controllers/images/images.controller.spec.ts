@@ -18,7 +18,10 @@ describe('ImagesController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [imagesController],
       providers: [
-        { provide: ImagesService, useValue: mockImagesService },
+        {
+          provide: ImagesService,
+          useValue: mockImagesService,
+        },
       ],
     }).compile();
 
