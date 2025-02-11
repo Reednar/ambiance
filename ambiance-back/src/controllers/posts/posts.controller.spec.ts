@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostsController } from './posts.controller';
-import { PostsService } from './posts.service';
+import { PostsService } from '../../services/posts/posts.service';
 import { NotFoundException } from '@nestjs/common';
 
 describe('PostsController', () => {

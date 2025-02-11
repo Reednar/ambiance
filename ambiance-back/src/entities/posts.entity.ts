@@ -5,7 +5,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { User } from '../users/users.entity';
+import { User } from './users.entity';
 
 @Entity('Publications')
 export class Post {
@@ -62,6 +62,15 @@ export class Post {
     nullable: false,
   })
   typePost: 'Evenement' | 'activité';
+
+  @Column({ name: 'PlaceHandicape', type: 'boolean', nullable: true })
+  placeHandicape: boolean;
+
+  @Column({ name: 'Rampe', type: 'boolean', nullable: true })
+  rampe: boolean;
+
+  @Column({ name: 'Ascenseur', type: 'boolean', nullable: true })
+  ascenseur: boolean;
 
   @ManyToOne(() => User, (utilisateur) => utilisateur.posts, {
     onDelete: 'CASCADE',
