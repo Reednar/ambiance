@@ -1,11 +1,12 @@
-import { Controller, Get } from '@nestjs/common'; //Param, NotFoundException
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from '../../services/users/users.service';
+import { User } from '../../entities/users.entity';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private UsersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Get()
   @ApiOperation({ summary: 'Return all Users' })
@@ -34,7 +35,27 @@ export class UsersController {
       },
     },
   })
-  async getPosts() {
-    return await this.UsersService.findAll();
+  findAll(): Promise<User[]> {
+    return this.usersService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: number): Promise<User> {
+    return this.usersService.findOne(id);
+  }
+
+  @Post()
+  create(@Body() createUserDto: Partial<User>): Promise<User> {
+    return this.usersService.create(createUserDto);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: number, @Body() updateUserDto: Partial<User>): Promise<User> {
+    return this.usersService.update(id, updateUserDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: number): Promise<void> {
+    return this.usersService.remove(id);
   }
 }

@@ -1,21 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DocumentsService } from './documents.service';
-import { Post } from '../../entities/posts.entity';
+import { Document } from '../../entities/documents.entity'; // Assuming you have a Document entity
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('DocumentsService', () => {
   let service: DocumentsService;
+
+  const mockDocumentRepository = {
+    findOne: jest.fn(),
+    // Add other methods as needed
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         DocumentsService,
         {
-          provide: getRepositoryToken(Post),
-          useValue: {
-            // Ajouter ici les méthodes du service
-            findOne: jest.fn(),
-          },
+          provide: getRepositoryToken(Document),
+          useValue: mockDocumentRepository,
         },
       ],
     }).compile();
