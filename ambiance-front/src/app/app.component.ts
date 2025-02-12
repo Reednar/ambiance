@@ -1,26 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { TestService } from './service/test/test.service';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+
+interface Claim {
+  claim: string;
+  value: unknown;
+}
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'] 
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit { 
-  title = 'ambiance-front';
-  data = {};
-  
-  constructor (private testService: TestService) {}
-
-  ngOnInit(): void {
-    this.testService.getData().subscribe(
-      (response) => {
-        this.data = response;
-        console.log('Data received: ', this.data);
-      },
-      (error) => {
-        console.error('Error fetching data: ', error);
-      }
-    )
+export class AppComponent implements OnInit {
+  title = 'app';
+  claims: Claim[] = [];
+  username: string | undefined;
+  role: string | undefined;
+  roles: any;
+  perimeter : any;
+  constructor() {
   }
+
+  async ngOnInit() {
+  }
+
 }
