@@ -1,12 +1,14 @@
-import { Controller, Get, Param, NotFoundException, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Param, NotFoundException, UseGuards, Body } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PostsService } from '../../services/posts/posts.service';
 import { AuthGuard } from '@nestjs/passport';
+import { UsersService } from '../../services/users/users.service';
+
 
 @ApiTags('posts')
 @Controller('posts')
 export class PostsController {
-  constructor(private postsService: PostsService) {}
+  constructor(private postsService: PostsService,  private readonly usersService: UsersService) { }
 
 
   @Get('test')//endpoint (endpoit ALWAYS before controller endpoint)
@@ -93,5 +95,58 @@ export class PostsController {
       throw new NotFoundException('Post not found');
     }
     return post;
+  }
+
+  @Post()
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Create a post' })
+  @ApiResponse({
+    status: 201,
+    description: 'Post created',
+    examples: {
+      example1: {
+        summary: 'Post created example',
+        value: {
+          idPublication: 1,
+          codePostal: '78000',
+          rue: '2',
+          ville: 'Montigny',
+          titre: 'Cinéma',
+          dateEvenement: '2024-11-06T10:36:19.000Z',
+          description: 'Scary movie',
+          prix: '12.00',
+          lien: 'cineugc.com',
+          dateCreation: '2024-11-06T10:36:58.000Z',
+          participantMax: 10,
+          participantMin: 2,
+          typePost: 'activité',
+        },
+      },
+    },
+  })
+  async createPost(@Body() Body:
+    {
+      codePostal: string;
+      rue: string;
+      ville: string;
+      titre: string;
+      dateEvenement: Date;
+      description: string;
+      prix: number;
+      lien: string;
+      participantMax: number;
+      participantMin: number;
+      typePost: 'Evenement' | 'activité';
+      placeHandicape: boolean;
+      rampe: boolean,
+      ascenseur: boolean,
+      utilisateurId: number;
+    }) {
+    const utilisateur = await this.usersService.findOne(Body.utilisateurId);
+    if (!utilisateur) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+    const post = {...Body, utilisateur};
+    return await this.postsService.create(post);
   }
 }
