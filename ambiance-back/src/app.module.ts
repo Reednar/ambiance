@@ -23,7 +23,7 @@ import { Interagis } from './entities/interagis.entity';
 import { InteragisModule } from './modules/interagis/interagis.module';
 import { Participation } from './entities/participation.entity';
 import { ParticipationModule } from './modules/participation/participation.module';
-
+import { AuthModule } from './modules/auth/auth.module'; 
 @Module({
   controllers: [
     AppController,
@@ -63,6 +63,7 @@ import { ParticipationModule } from './modules/participation/participation.modul
     AvisModule,
     InteragisModule,
     ParticipationModule,
+    AuthModule,
     // Mettre les autres modules ici
   ],
   providers: [AppService],

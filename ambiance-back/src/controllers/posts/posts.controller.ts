@@ -1,11 +1,19 @@
-import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Param, NotFoundException, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PostsService } from '../../services/posts/posts.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('posts')
 @Controller('posts')
 export class PostsController {
   constructor(private postsService: PostsService) {}
+
+
+  @Get('test')//endpoint (endpoit ALWAYS before controller endpoint)
+  @UseGuards(AuthGuard('jwt')) //protected request
+  getProtectedData() {
+    return { message: 'Accès autorisé à la route protégée.' };
+  }
 
   @Get()
   @ApiOperation({ summary: 'Return all posts' })
