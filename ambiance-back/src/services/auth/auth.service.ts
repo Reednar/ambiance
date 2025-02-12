@@ -2,6 +2,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
+import bcrypt from 'bcrypt';
+const bcrypt = require('bcrypt');
 
 @Injectable()
 export class AuthService {
@@ -12,16 +14,19 @@ export class AuthService {
    * retourne un token JWT signé.
    */
   async login(user: any) {
-    // Dans un cas réel, tu vérifierais ici les identifiants via un UsersService
+    // Vérifiez les identifiants via UsersService
     const Visitor = await this.UsersService.findOneByMail(user.mail);
-    Visitor.motDePasse == user.password;
-    if( Visitor == null || Visitor == undefined|| Visitor.motDePasse != user.password){
-      throw new UnauthorizedException('Identifiants invalides');
+    if (!Visitor) {
+      throw new UnauthorizedException('mail invalides');
     }
-    if (!user || !user.mail) {
-      throw new UnauthorizedException('Identifiants invalides');
+
+    // Comparez le mot de passe fourni avec le mot de passe chiffré stocké
+    const isPasswordValid = await bcrypt.compare(user.password, Visitor.motDePasse);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('mot de passe invalides');
     }
-    // Crée le payload du token
+
+    // Créez le payload du token
     const payload = { mail: user.mail, sub: Visitor.idUtilisateur };
     return {
       access_token: this.jwtService.sign(payload),
