@@ -43,10 +43,10 @@ export class User {
   })
   role: 'Utilisateur' | 'Administrateur';
 
-  @Column({ name: 'Telephone', type: 'varchar', length: 50, nullable: false })
+  @Column({ name: 'Telephone', type: 'varchar', length: 50, nullable: true })
   telephone: string;
 
-  @Column({ name: 'Rib', type: 'varchar', length: 34, nullable: false })
+  @Column({ name: 'Rib', type: 'varchar', length: 34, nullable: true })
   rib: string;
 
   // Relation avec les publications

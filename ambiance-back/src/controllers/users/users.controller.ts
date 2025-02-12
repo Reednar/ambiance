@@ -6,10 +6,14 @@ import {
   Param,
   Delete,
   Put,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from '../../services/users/users.service';
 import { User } from '../../entities/users.entity';
+import bcrypt from 'bcrypt';
+const bcrypt = require('bcrypt');
 
 @ApiTags('users')
 @Controller('users')
@@ -53,8 +57,29 @@ export class UsersController {
   }
 
   @Post()
-  create(@Body() createUserDto: Partial<User>): Promise<User> {
-    return this.usersService.create(createUserDto);
+  create(@Body() body: { 
+    prenom: string,
+    nom: string,
+    dateDeNaissance: Date,
+    genre: 'Homme'| 'Femme'|'Autre',
+    mail: string;
+    motDePasse: string,
+    telephone: string,
+    pays: string,
+   }) {
+    var futureUser ={ ...body, role: 'Utilisateur' } as User;
+
+    //hashage du mot de passe
+    var password = futureUser.motDePasse;
+    bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS), (err, salt) => {
+      if (err) throw new HttpException('Error generating salt', HttpStatus.INTERNAL_SERVER_ERROR);
+      bcrypt.hash(password, salt, async (err, hash) => {
+        if (err) throw new HttpException('Error hashing password', HttpStatus.INTERNAL_SERVER_ERROR);
+        futureUser.motDePasse = hash;
+        const createdUser = await this.usersService.create(futureUser);
+        return createdUser;
+      });
+    });
   }
 
   @Put(':id')
