@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuItem, MessageService, ConfirmationService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-publicationsCreate',
-  templateUrl: './publicationsCreate.component.html',
-  styleUrls: ['./publicationsCreate.component.scss']
+  selector: 'app-publications-create',
+  templateUrl: './publications-create.component.html',
+  styleUrls: ['./publications-create.component.scss']
 })
-export class PublicationsCreateComponent {
+export class PublicationsCreateComponent implements OnInit {
  
   items: MenuItem[] = [];
   activeIndex: number = 0;

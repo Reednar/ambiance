@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 
@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   templateUrl: './handicap-informations.component.html',
   styleUrls: ['./handicap-informations.component.scss']
 })
-export class HandicapInformationsComponent implements OnInit, OnDestroy {
+export class HandicapInformationsComponent implements OnInit {
 
   constructor(private router: Router) { }
   ascenseur: boolean = false;
@@ -26,9 +26,6 @@ export class HandicapInformationsComponent implements OnInit, OnDestroy {
       this.pays = navigation.extras.state['pays'] || '';
     }
     console.log("Ville reçue:", this.ville);
-  }
-
-  ngOnDestroy(): void {
   }
 
   prevPage() {

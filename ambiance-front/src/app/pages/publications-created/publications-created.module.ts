@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PublicationsCreatedComponent } from '../publications-created/publicationsCreated.component';
+import { PublicationsCreatedComponent } from './publications-created.component';
 import { RouterModule } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';

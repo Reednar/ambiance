@@ -10,9 +10,9 @@ const routes: Routes = [
       { path: 'publications', loadChildren: () => import('../app/pages/publications/publications.module').then(m => m.PublicationsModule) },
       { 
         path: 'publicationsCreate', 
-        loadChildren: () => import('../app/pages/publications-create/publicationsCreate.module').then(m => m.PublicationsCreateModule) 
+        loadChildren: () => import('./pages/publications-create/publications-create.module').then(m => m.PublicationsCreateModule) 
       },
-      { path: 'publicationsCreated', loadChildren: () => import('../app/pages/publications-created/publicationsCreated.module').then(m => m.PublicationsCreatedModule) },
+      { path: 'publicationsCreated', loadChildren: () => import('./pages/publications-created/publications-created.module').then(m => m.PublicationsCreatedModule) },
     ]
   },
 ];

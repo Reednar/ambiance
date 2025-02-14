@@ -9,7 +9,7 @@ import { MessageService } from 'primeng/api';
   styleUrls: ['./app.config.component.scss'],
   providers: [MessageService]
 })
-export class AppConfigComponent implements OnInit, OnDestroy {
+export class AppConfigComponent implements OnDestroy, OnInit {
 
   @Input() minimal: boolean = false;
 
@@ -92,6 +92,7 @@ export class AppConfigComponent implements OnInit, OnDestroy {
     });
   }
 
+// eslint-disable-next-line @typescript-eslint/ban-types
   replaceThemeLink(href: string, onComplete: Function) {
     const id = 'theme-css';
     const themeLink = <HTMLLinkElement>document.getElementById('theme-css');
@@ -171,12 +172,6 @@ export class AppConfigComponent implements OnInit, OnDestroy {
       this.setConnected(true);
       // console.log(this.connected)
     }
-  }
-
-  onGlobalButtonClick() {
-    // Logique lorsque le bouton global est cliqué
-    // console.log('Bouton global cliqué');
-    // Vous pouvez ouvrir un sidebar, modal ou toute autre action
   }
 
   toggleIframe(): void {

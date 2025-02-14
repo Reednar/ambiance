@@ -7,11 +7,10 @@ import { ButtonModule } from 'primeng/button';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AppConfigComponent } from './app.config.component';
 import { TableModule } from 'primeng/table';
-import { DataViewModule, DataViewLayoutOptions } from 'primeng/dataview';
+import { DataViewModule } from 'primeng/dataview';
 import { DialogModule } from 'primeng/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 import { BrowserModule } from '@angular/platform-browser';
 
 @NgModule({

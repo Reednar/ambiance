@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Message, MessageService } from 'primeng/api';
-import { FormsModule } from '@angular/forms'; // Ajout du FormsModule
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-location-informations',
@@ -9,26 +8,16 @@ import { FormsModule } from '@angular/forms'; // Ajout du FormsModule
   styleUrls: ['./location-informations.component.scss'],
   providers: [MessageService]
 })
-export class LocationInformationsComponent implements OnInit, OnDestroy {
+export class LocationInformationsComponent {
 
   ville: string = "";
   codePostal: number = 0;
   pays: string = "France";
   submitted: boolean = false;
-
-
   constructor(private router: Router, public messageService: MessageService) { }
-
-  ngOnInit(): void {
-  }
-
-  ngOnDestroy(): void {
-
-  }
 
   prevPage() {
     this.router.navigate(['publicationsCreate/basicInformations']);
-
   }
 
   nextPage() {
@@ -40,5 +29,4 @@ export class LocationInformationsComponent implements OnInit, OnDestroy {
       });
     }
   }
-
 }

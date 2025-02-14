@@ -1,4 +1,4 @@
-  import { Component, OnDestroy, OnInit } from '@angular/core';
+  import { Component, OnInit } from '@angular/core';
   import { Router } from '@angular/router';
 
   @Component({
@@ -6,7 +6,8 @@
     templateUrl: './basic-informations.component.html',
     styleUrls: ['./basic-informations.component.scss']
   })
-  export class BasicInformationsComponent implements OnInit, OnDestroy {
+
+  export class BasicInformationsComponent implements OnInit {
     categoriesOptions = [
       { label: 'Sport', value: 'Sport' },
       { label: 'Musique', value: 'Musique' },
@@ -25,9 +26,7 @@
     constructor(private router: Router) {}
 
     ngOnInit(): void {
-    }
-
-    ngOnDestroy(): void {
+      this.router.navigate(['publicationsCreate/basicInformations']);
     }
 
     nextPage() {
@@ -38,9 +37,4 @@
       }
       this.submitted = true;
     }
-
-    // prevPage() {
-    //   this.router.navigate(['create/selectStation']);
-    // }
-
   }

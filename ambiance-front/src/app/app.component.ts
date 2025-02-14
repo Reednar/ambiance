@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 interface Claim {
   claim: string;
@@ -10,7 +10,7 @@ interface Claim {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'Ambiance';
   claims: Claim[] = [];
   username: string | undefined;
@@ -19,8 +19,4 @@ export class AppComponent implements OnInit {
   perimeter : any;
   constructor() {
   }
-
-  async ngOnInit() {
-  }
-
 }

@@ -11,8 +11,8 @@ import { DropdownModule } from 'primeng/dropdown'; // Pour p-dropdown
 import { MultiSelectModule } from 'primeng/multiselect'; // Pour p-multiSelect
 import { CheckboxModule } from 'primeng/checkbox'; // Pour p-checkbox
 import { ReactiveFormsModule } from '@angular/forms';
-import { PublicationsCreateComponent } from './publicationsCreate.component'; // Importe ton composant ici
-import { PublicationsCreateRoutingModule } from './publicationsCreate-routing.module';
+import { PublicationsCreateComponent } from './publications-create.component'; // Importe ton composant ici
+import { PublicationsCreateRoutingModule } from './publications-create-routing.module';
 import { LocationInformationsComponent } from './location-informations/location-informations.component';
 import { CalendarModule } from 'primeng/calendar';
 import { BasicInformationsComponent } from './basic-informations/basic-informations.component';
