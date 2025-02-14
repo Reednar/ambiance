@@ -6,8 +6,13 @@ const routes: Routes = [
   {
     path: '', component: AppLayoutComponent ,
     children: [
-      { path: 'dashboard-irve', loadChildren: () => import('../app/pages/home/home.module').then(m => m.HomeModule) },
       { path: '', loadChildren: () => import('../app/pages/home/home.module').then(m => m.HomeModule)},
+      { path: 'publications', loadChildren: () => import('../app/pages/publications/publications.module').then(m => m.PublicationsModule) },
+      { 
+        path: 'publicationsCreate', 
+        loadChildren: () => import('../app/pages/publications-create/publicationsCreate.module').then(m => m.PublicationsCreateModule) 
+      },
+      { path: 'publicationsCreated', loadChildren: () => import('../app/pages/publications-created/publicationsCreated.module').then(m => m.PublicationsCreatedModule) },
     ]
   },
 ];

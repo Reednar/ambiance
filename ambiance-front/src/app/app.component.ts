@@ -11,7 +11,7 @@ interface Claim {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'app';
+  title = 'Ambiance';
   claims: Claim[] = [];
   username: string | undefined;
   role: string | undefined;

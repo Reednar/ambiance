@@ -31,32 +31,32 @@ export class AppMenuComponent implements OnInit {
                             {
                                 label: 'Voir les publications',
                                 icon: 'pi pi-fw pi-list',
-                                routerLink: ['/curatives'],
+                                routerLink: ['/publications'],
                             },
                             {
                               label: 'Vos publications',
                               icon: 'pi pi-fw pi-check-circle',
-                              routerLink: ['/curatives-cloturees'],
+                              routerLink: ['/publicationsCreated'],
                             },
                             
                             {
                               label: 'Créer une publication',
                               icon: 'pi pi-fw pi-plus',
-                              routerLink: ['/create'],
+                              routerLink: ['/publicationsCreate'],
                             }
                         ]
                     },
 
                     // { label: 'Utilisateur', icon: 'pi pi-fw pi-users', routerLink: ['/user'], isAccessible: await this.isUserAccessible(splittedRoles) },
-                    { label: 'Historique des participations', icon: 'pi pi-history', routerLink: ['/stationHistory'], isAccessible: true },
-                    { label: 'Messagerie', icon: 'pi pi-fw pi-money-bill', routerLink: ['/refund'], isAccessible: true },
-                    { label: 'Calendrier', icon: 'pi pi-fw pi-briefcase', routerLink: ['/organisation'], isAccessible: true },
+                    { label: 'Historique des participations', icon: 'pi pi-history', routerLink: ['/event-history'], isAccessible: true },
+                    { label: 'Messagerie', icon: 'pi pi-fw pi-money-bill', routerLink: ['/message'], isAccessible: true },
+                    { label: 'Calendrier', icon: 'pi pi-fw pi-briefcase', routerLink: ['/calendar'], isAccessible: true },
                     {
                       label: 'Administration',
                       icon: 'pi pi-fw pi-list',
                       items: [
-                        { label: 'Dashboards', icon: 'pi pi-fw pi-cog', routerLink: ['/cpo-settings'], isAccessible: true },
-                        { label: 'Modération', icon: 'pi pi-fw pi-cog', routerLink: ['/errors-code-incomplete'], isAccessible: true },
+                        { label: 'Dashboards', icon: 'pi pi-fw pi-cog', routerLink: ['/dashboards'], isAccessible: true },
+                        { label: 'Modération', icon: 'pi pi-fw pi-cog', routerLink: ['/moderation'], isAccessible: true },
                       ],
                     },
 
