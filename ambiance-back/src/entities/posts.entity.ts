@@ -77,4 +77,7 @@ export class Post {
   })
   @JoinColumn({ name: 'IdUtilisateur' }) // Mettre la colonne de la clé étrangère
   utilisateur: User;
+
+  @Column({ name: 'IdUtilisateur', type: 'int', nullable: false })
+  utilisateurId: number; // Explicitly define utilisateurId as a column
 }

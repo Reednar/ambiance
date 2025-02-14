@@ -3,6 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PostsService } from '../../services/posts/posts.service';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from '../../services/users/users.service';
+import { Console } from 'console';
 
 
 @ApiTags('posts')
@@ -15,6 +16,23 @@ export class PostsController {
   @UseGuards(AuthGuard('jwt')) //protected request
   getProtectedData() {
     return { message: 'Accès autorisé à la route protégée.' };
+  }
+
+  @Post("delete")
+  @UseGuards(AuthGuard('jwt'))
+  async deletePost(@Body() Body: {idPublication: number, utilisateurId: number}) {
+    const utilisateur = await this.usersService.findOne(Body.utilisateurId);
+    if (!utilisateur) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+    const post = await this.postsService.findOne(Body.idPublication);
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+    if (post.utilisateurId !== utilisateur.idUtilisateur) {
+      throw new NotFoundException('Utilisateur non autorisé à supprimer ce post');
+    }
+    return await this.postsService.remove(post.idPublication);
   }
 
   @Get()
