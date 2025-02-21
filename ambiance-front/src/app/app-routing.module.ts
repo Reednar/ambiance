@@ -13,6 +13,7 @@ const routes: Routes = [
         loadChildren: () => import('./pages/publications-create/publications-create.module').then(m => m.PublicationsCreateModule) 
       },
       { path: 'publicationsCreated', loadChildren: () => import('./pages/publications-created/publications-created.module').then(m => m.PublicationsCreatedModule) },
+      { path: 'calendar', loadChildren: () => import('./pages/calendar/calendar.module').then(m => m.CalendarPageModule) },
     ]
   },
 ];
