@@ -11,7 +11,7 @@ interface Claim {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Ambiance';
+  title = 'ambiance-front';
   claims: Claim[] = [];
   username: string | undefined;
   role: string | undefined;
