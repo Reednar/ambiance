@@ -1,0 +1,44 @@
+<h1>Liste des publications</h1>
+
+<!-- Barre de recherche et filtres -->
+<div>
+    <!-- Champ de recherche -->
+    <span class="p-input-icon-left mb-2">
+        <i class="pi pi-search"></i>
+        <input pInputText type="text" [(ngModel)]="searchQuery" (ngModelChange)="filterPublications()"
+            placeholder="Mot-clé de recherche" class="w-full" />
+    </span>
+
+    <!-- Filtre par catégorie
+    <p-dropdown [options]="categories" [(ngModel)]="selectedCategory" placeholder="Filtrer par catégorie" class="w-60"
+        (onChange)="filterPublications()">
+    </p-dropdown> -->
+
+    <!-- Filtre par catégories multiples -->
+    <p-multiSelect [options]="categories" [(ngModel)]="selectedCategories" defaultLabel="Sélectionner des catégories"
+        class="w-80" (onChange)="filterPublications()">
+    </p-multiSelect>
+</div>
+
+<!-- Affichage des publications -->
+<div class="articles-container">
+    <div class="article-card" *ngFor="let publication of filteredPublications">
+        <div class="image-wrapper">
+            <img [src]="publication.image" alt="Article image">
+            <span class="read-time">{{ publication.codePostal }} €</span>
+        </div>
+        <div class="article-content">
+            <div class="author-info">
+                <img [src]="publication.autheurAvatar" alt="Author">
+                <div class="categories">
+                    <span class="category" *ngFor="let cat of publication.categories">{{ cat }}</span>
+                </div>
+            </div>
+            <h3 class="title">{{ publication.titre }}</h3>
+            <div class="article-meta">
+                <span class="views">{{ publication.vus | number }}</span>
+                <span class="date">{{ publication.date | date: 'EEE, MMM yyyy' }}</span>
+            </div>
+        </div>
+    </div>
+</div>
