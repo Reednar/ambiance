@@ -22,10 +22,12 @@
     "@fullcalendar/angular": "^6.1.16",
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
+    "@tailwindcss/cli": "^4.0.12",
     "primeflex": "^3.3.1",
     "primeicons": "^7.0.0",
     "primeng": "^17.18.15",
     "rxjs": "~7.8.0",
+    "tailwindcss-primeui": "^0.5.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
   },
@@ -41,6 +43,7 @@
     "@types/jasmine": "~5.1.0",
     "@typescript-eslint/eslint-plugin": "7.11.0",
     "@typescript-eslint/parser": "7.11.0",
+    "autoprefixer": "^10.4.21",
     "eslint": "^8.57.1",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
@@ -48,6 +51,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.1",
     "typescript": "~5.3.2"
   }
 }
