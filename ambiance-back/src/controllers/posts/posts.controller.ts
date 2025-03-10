@@ -35,6 +35,69 @@ export class PostsController {
     return await this.postsService.remove(post.idPublication);
   }
 
+  @Post("update")
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Update a post' })
+  @ApiResponse({
+    status: 200,
+    description: 'Post updated',
+    examples: {
+      example1: {
+        summary: 'Post updated example',
+        value: {
+          idPublication: 1,
+          codePostal: '78000',
+          rue: '2',
+          ville: 'Montigny',
+          titre: 'Cinéma',
+          dateEvenement: '2024-11-06T10:36:19.000Z',
+          description: 'Scary movie',
+          prix: '12.00',
+          lien: 'cineugc.com',
+          dateCreation: '2024-11-06T10:36:58.000Z',
+          participantMax: 10,
+          participantMin: 2,
+          typePost: 'activité',
+        },
+      },
+    },
+  })
+  async updatePost(@Body() Body: {
+    idPublication: number,
+    utilisateurId: number,
+    codePostal: string,
+    rue: string,
+    ville: string,
+    titre: string,
+    dateEvenement: Date,
+    description: string,
+    prix: number,
+    lien: string,
+    participantMax: number,
+    participantMin: number,
+    typePost: 'Evenement' | 'activité',
+    placeHandicape: boolean,
+    rampe: boolean,
+    ascenseur: boolean,
+  }) {
+    const utilisateur = await this.usersService.findOne(Body.utilisateurId);
+    if (!utilisateur) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+    const post = await this.postsService.findOne(Body.idPublication);
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+    if (post.utilisateurId !== utilisateur.idUtilisateur) {
+      throw new NotFoundException('Utilisateur non autorisé à mettre à jour ce post');
+    }
+    const updatedPost = {
+      ...post,
+      ...Body,
+    };
+    return await this.postsService.update(post.idPublication, updatedPost);
+  }
+
   @Get()
   @ApiOperation({ summary: 'Return all posts' })
   @ApiResponse({
