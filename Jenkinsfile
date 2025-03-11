@@ -11,22 +11,15 @@ pipeline {
       steps {
         script {
           sh '''
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
 echo "Utilisateur actuel : $(whoami)"
 echo "Environnement PATH : $PATH"
 
-if ! which node > /dev/null; then
-echo "Node.js non installé !" && exit 1
-fi
-
-if ! which npm > /dev/null; then
-echo "npm non installé !" && exit 1
-fi
-
+# Vérifier la version actuelle de Node.js
 echo "Node.js version : $(node -v)"
 echo "npm version : $(npm -v)"
-
-# Ajouter Node.js et npm au PATH si nécessaire
-export PATH=$PATH:/usr/bin
 '''
         }
 
