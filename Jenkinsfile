@@ -18,9 +18,15 @@ pipeline {
         stage('Setup Environment') {
             steps {
                 script {
-                    sh 'nvm install $NODE_VERSION && nvm use $NODE_VERSION'
-                    sh 'if ! command -v nest &> /dev/null; then npm install -g @nestjs/cli; fi'
-                    sh 'if ! command -v ng &> /dev/null; then npm install -g @angular/cli; fi'
+                    // Vérifier si Node.js est installé
+                    sh 'if ! command -v node &> /dev/null; then echo "Node.js non installé !" && exit 1; fi'
+                    // Vérifier si npm est installé
+                    sh 'if ! command -v npm &> /dev/null; then echo "npm non installé !" && exit 1; fi'
+                    
+                    // Vérifier et installer @nestjs/cli si non présent
+                    sh 'if ! command -v nest &> /dev/null; then sudo npm install -g @nestjs/cli; fi'
+                    // Vérifier et installer @angular/cli si non présent
+                    sh 'if ! command -v ng &> /dev/null; then sudo npm install -g @angular/cli; fi'
                 }
             }
         }
