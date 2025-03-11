@@ -127,8 +127,8 @@ pipeline {
                     sh '''
                         set -e
                         echo "🔄 Redémarrage des services..."
-                        sudo systemctl restart nestjs
-                        sudo systemctl restart nginx
+                        echo "jenkins" | sudo -S systemctl restart nestjs
+                        echo "jenkins" | sudo -S systemctl restart nginx
                     '''
                 }
             }
