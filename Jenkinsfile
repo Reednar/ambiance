@@ -10,14 +10,24 @@ pipeline {
     stage('Setup Environment') {
       steps {
         script {
-          sh 'if ! command -v node &> /dev/null; then echo "Node.js non installé !" && exit 1; fi'
-          // Vérifier si npm est installé
-          sh 'if ! command -v npm &> /dev/null; then echo "npm non installé !" && exit 1; fi'
+          sh '''
+echo "Utilisateur actuel : $(whoami)"
+echo "Environnement PATH : $PATH"
 
-          // Vérifier et installer @nestjs/cli si non présent
-          sh 'if ! command -v nest &> /dev/null; then sudo npm install -g @nestjs/cli; fi'
-          // Vérifier et installer @angular/cli si non présent
-          sh 'if ! command -v ng &> /dev/null; then sudo npm install -g @angular/cli; fi'
+if ! which node > /dev/null; then
+echo "Node.js non install� !" && exit 1
+fi
+
+if ! which npm > /dev/null; then
+echo "npm non install� !" && exit 1
+fi
+
+echo "Node.js version : $(node -v)"
+echo "npm version : $(npm -v)"
+
+# Ajouter Node.js et npm au PATH si n�cessaire
+export PATH=$PATH:/usr/bin
+'''
         }
 
       }
