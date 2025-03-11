@@ -19,7 +19,7 @@ export class Participation {
   @Column({ name: 'PaiementEffectue', type: 'boolean', default: false })
   paiementEffectue: boolean;
 
-  @ManyToOne(() => Paiement, { nullable: false })
+  @ManyToOne(() => Paiement, { nullable: true })
   @JoinColumn({ name: 'IdPaiement' })
   idPaiement: Paiement;
 

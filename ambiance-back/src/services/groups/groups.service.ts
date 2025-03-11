@@ -2,12 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Groupe } from '../../entities/groups.entity';
+import { User } from '../../entities/users.entity';
+import { Participation } from '../../entities/participation.entity';
 
 @Injectable()
 export class GroupsService {
   constructor(
     @InjectRepository(Groupe)
     private readonly groupeRepository: Repository<Groupe>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Participation)
+    private readonly participationRepository: Repository<Participation>,
   ) {}
 
   async findAll(): Promise<Groupe[]> {
@@ -30,5 +36,21 @@ export class GroupsService {
 
   async remove(id: number): Promise<void> {
     await this.groupeRepository.delete(id);
+  }
+
+  async addUserToGroup(idGroupe: number, idUtilisateur: number): Promise<Participation> {
+    const groupe = await this.groupeRepository.findOneBy({ idGroupe });
+    const utilisateur = await this.userRepository.findOneBy({ idUtilisateur });
+
+    if (!groupe || !utilisateur) {
+      throw new Error('Groupe or Utilisateur not found');
+    }
+
+    const participation = new Participation();
+    participation.idGroupe = groupe;
+    participation.idUtilisateur = utilisateur;
+    participation.organisateur = true;
+    participation.idPaiement = null; // Set IdPaiement to null if not applicable
+    return await this.participationRepository.save(participation);
   }
 }
