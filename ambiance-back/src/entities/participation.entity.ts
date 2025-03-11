@@ -1,30 +1,27 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from './users.entity';
+import { Groupe } from './groups.entity';
+import { Paiement } from './paiements.entity';
 
 @Entity('Participation') // Correspond au nom de la table
 export class Participation {
   @PrimaryGeneratedColumn({ name: 'idParticipation' })
   idParticipation: number;
 
-  @Column({ name: 'IdUtilisateur', type: 'int', nullable: false })
-  idUtilisateur: number;
+  @ManyToOne(() => User, { nullable: false })
+  @JoinColumn({ name: 'IdUtilisateur' })
+  idUtilisateur: User;
 
-  @Column({ name: 'IdGroupe', type: 'int', nullable: false })
-  idGroupe: number;
+  @ManyToOne(() => Groupe, { nullable: false })
+  @JoinColumn({ name: 'IdGroupe' })
+  idGroupe: Groupe;
 
   @Column({ name: 'PaiementEffectue', type: 'boolean', default: false })
   paiementEffectue: boolean;
 
-  @Column({ name: 'Facture', type: 'blob', nullable: true })
-  facture: Buffer;
-
-  @Column({
-    name: 'Montant',
-    type: 'decimal',
-    precision: 15,
-    scale: 2,
-    nullable: false,
-  })
-  montant: number;
+  @ManyToOne(() => Paiement, { nullable: false })
+  @JoinColumn({ name: 'IdPaiement' })
+  idPaiement: Paiement;
 
   @Column({ name: 'Organisateur', type: 'boolean', default: false })
   organisateur: boolean;

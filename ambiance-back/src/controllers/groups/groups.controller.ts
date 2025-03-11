@@ -11,4 +11,5 @@ export class GroupsController {
   async getPosts() {
     return await this.GroupsService.findAll();
   }
+
 }

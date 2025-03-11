@@ -46,8 +46,6 @@ export class User {
   @Column({ name: 'Telephone', type: 'varchar', length: 50, nullable: true })
   telephone: string;
 
-  @Column({ name: 'Rib', type: 'varchar', length: 34, nullable: true })
-  rib: string;
 
   // Relation avec les publications
   @OneToMany(() => Post, (publication) => publication.utilisateur)

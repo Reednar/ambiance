@@ -41,7 +41,6 @@ export class UsersController {
             motDePasse: 'azerty',
             role: 'Utilisateur',
             telephone: '0123456789',
-            rib: 'fr7612345678901234567890123',
           },
         ],
       },
