@@ -11,17 +11,18 @@ pipeline {
       steps {
         script {
           sh '''
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-            
-            echo "Utilisateur actuel : $(whoami)"
-            echo "Environnement PATH : $PATH"
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
-            # V�rifier la version actuelle de Node.js
-            echo "Node.js version : $(node -v)"
-            echo "npm version : $(npm -v)"
-          '''
+echo "Utilisateur actuel : $(whoami)"
+echo "Environnement PATH : $PATH"
+
+# V�rifier la version actuelle de Node.js
+echo "Node.js version : $(node -v)"
+echo "npm version : $(npm -v)"
+'''
         }
+
       }
     }
 
@@ -31,6 +32,7 @@ pipeline {
           sh 'cd ambiance-front && npm install'
           sh 'cd ambiance-back && npm install'
         }
+
       }
     }
 
@@ -61,10 +63,12 @@ pipeline {
     stage('Restart NestJS') {
       steps {
         script {
-          sh 'pm2 restart nestjs || pm2 start dist/main.js --name nestjs'  // Redémarre ou démarre l'application avec pm2
+          sh 'pm2 restart nestjs || pm2 start main.js --name nestjs'  // Redémarre ou démarre l'application avec pm2
         }
+
       }
     }
+
   }
   environment {
     NODE_VERSION = '22.11.0'
