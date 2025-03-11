@@ -63,7 +63,15 @@ echo "npm version : $(npm -v)"
     stage('Restart NestJS') {
       steps {
         script {
-          sh 'pm2 restart nestjs || pm2 start main.js --name nestjs'  // Redémarre ou démarre l'application avec pm2
+          sh '''
+cd $BACK_DIR
+if pm2 describe nestjs > /dev/null; then
+pm2 restart nestjs
+else
+pm2 start main.js --name nestjs
+fi
+pm2 save
+'''
         }
 
       }
