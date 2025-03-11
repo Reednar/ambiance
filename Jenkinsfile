@@ -5,6 +5,13 @@ pipeline {
         NPM_VERSION = '10.8.3'
         FRONT_DIR = '/var/www/AM-FRONT'
         BACK_DIR = '/var/www/AM-BACK'
+        
+        // Injecter les credentials
+        DATABASE_HOST = credentials('DATABASE_HOST')
+        DATABASE_PORT = credentials('DATABASE_PORT')
+        DATABASE_USER = credentials('DATABASE_USER')
+        DATABASE_PASSWORD = credentials('DATABASE_PASSWORD')
+        DATABASE_NAME = credentials('DATABASE_NAME')
     }
     stages {
         stage('Checkout') {
@@ -76,14 +83,16 @@ npm install --omit=dev
             }
         }
 
-        stage('Debug BACK_DIR') {
+        stage('Inject .env') {
             steps {
                 script {
                     sh '''
-echo "Contenu de $BACK_DIR :"
-ls -lah $BACK_DIR
-echo "Vérification de node_modules :"
-ls -lah $BACK_DIR/node_modules/@nestjs/core || echo "node_modules manquant!"
+echo "PORT=$PORT" >> $BACK_DIR/.env
+echo "DATABASE_HOST=$DATABASE_HOST" >> $BACK_DIR/.env
+echo "DATABASE_PORT=$DATABASE_PORT" >> $BACK_DIR/.env
+echo "DATABASE_USER=$DATABASE_USER" >> $BACK_DIR/.env
+echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> $BACK_DIR/.env
+echo "DATABASE_NAME=$DATABASE_NAME" >> $BACK_DIR/.env
 '''
                 }
             }
