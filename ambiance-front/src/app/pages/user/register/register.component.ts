@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-authent',
-  templateUrl: './authent.component.html',
-  styleUrls: ['./authent.component.scss']
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss']
 })
-export class AuthentComponent implements OnInit { 
+export class RegisterComponent implements OnInit { 
   registerForm!: FormGroup;
   reglement: boolean = false;
 

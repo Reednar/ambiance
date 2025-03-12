@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthentComponent } from './authent.component';
+import { RegisterComponent } from './register.component';
 import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';  // Ajouté ici
 
 
 @NgModule({
-  declarations: [AuthentComponent],
+  declarations: [RegisterComponent],
   imports: [
     CommonModule,
     ButtonModule,
@@ -19,8 +19,8 @@ import { FormsModule } from '@angular/forms';  // Ajouté ici
     CheckboxModule,
     ReactiveFormsModule,
     RouterModule.forChild([
-      { path: '', component: AuthentComponent }
+      { path: '', component: RegisterComponent }
     ])
   ]
 })
-export class AuthentModule { }  
+export class RegisterModule { }  

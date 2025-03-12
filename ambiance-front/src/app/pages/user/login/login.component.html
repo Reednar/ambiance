@@ -1,0 +1,54 @@
+<!-- <div class="login-container flex  justify-center  items-start bg-gradient-to-br from-gray-100 to-gray-300 px-0 sm:px-4">
+  <p-card class="login-card w-full sm:max-w-lg lg:max-w-4xl xl:max-w-6xl bg-white border border-gray-200 shadow-lg overflow-hidden p-4 sm:p-8 rounded-none sm:rounded-xl mt-4 sm:mt-16"> -->
+    <div class="login-container flex justify-center items-center bg-gradient-to-br from-gray-200 to-gray-300 px-4 sm:px-6">
+      <p-card class="login-card w-full sm:max-w-lg lg:max-w-4xl xl:max-w-6xl bg-white border border-gray-200 shadow-lg overflow-hidden p-4 sm:p-6 rounded-lg sm:rounded-xl mt-4 sm:mt-8">
+      
+        <ng-template pTemplate="title">
+          <h2 class="text-2xl font-extrabold text-center text-gray-800 mb-4">Connexion</h2>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
+            <div class="p-fluid space-y-6">
+              <!-- Email Field -->
+              <div class="p-field">
+                <label for="email" class="block text-sm font-semibold text-gray-700">Email</label>
+                <input id="email" type="email" pInputText formControlName="email"
+                  class="mt-2 p-3 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm hover:shadow-md" />
+              </div>
+    
+              <!-- Password Field -->
+              <div class="p-field">
+                <label for="password" class="block text-sm font-semibold text-gray-700">Mot de passe</label>
+                <input id="password" type="password" pInputText formControlName="password"
+                  class="mt-2 p-3 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm hover:shadow-md" />
+              </div>
+    
+              <!-- Submit Button -->
+              <p-button label="Se connecter" type="submit" icon="pi pi-sign-in"
+                class="w-full p-button-primary text-lg font-semibold rounded-lg hover:bg-indigo-600 hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105"></p-button>
+    
+              <!-- Separator -->
+              <div class="or-separator my-2 text-center text-gray-600 flex justify-center items-center">
+                <span class="text-sm bg-white px-3">OU</span>
+              </div>
+    
+              <!-- Google Button -->
+              <p-button label="Se connecter avec Google" icon="pi pi-google"
+                class="w-full p-button-secondary text-lg font-semibold rounded-lg hover:bg-gray-100 hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105"></p-button>
+    
+              <!-- Forgot Password Link -->
+              <div class="forgot-password-link text-center mt-5 text-sm text-gray-600">
+                <a routerLink="/forgot-password" class="hover:text-indigo-500">Mot de passe oublié ?</a>
+              </div>
+    
+              <!-- Register Link -->
+              <div class="register-link text-center mt-4 text-sm text-gray-600">
+                <span>Pas encore inscrit ? </span>
+                <a routerLink="/register" class="hover:text-indigo-500">Créez un compte ici</a>
+              </div>
+            </div>
+          </form>
+        </ng-template>
+      </p-card>
+    </div>
+    
