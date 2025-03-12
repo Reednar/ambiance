@@ -1,61 +1,60 @@
-<div class="register-container min-h-screen flex justify-center items-center bg-gradient-to-r from-indigo-500 to-blue-500">
-    <p-card class="register-card w-full sm:w-96 bg-white rounded-3xl shadow-2xl overflow-hidden p-8">
-      <ng-template pTemplate="title">
-        <h2 class="text-3xl font-extrabold text-center text-gray-800 mb-6">Inscription</h2>
-      </ng-template>
-      <ng-template pTemplate="content">
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-          <div class="p-fluid space-y-6">
-            <!-- Username Field -->
-            <div class="p-field">
-              <label for="username" class="block text-sm font-semibold text-gray-700">Nom d'utilisateur</label>
-              <input id="username" type="text" pInputText formControlName="username" class="mt-2 p-4 w-full border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow duration-300 shadow-sm hover:shadow-lg" />
-            </div>
-  
-            <!-- Email Field -->
-            <div class="p-field">
-              <label for="email" class="block text-sm font-semibold text-gray-700">Email</label>
-              <input id="email" type="email" pInputText formControlName="email" class="mt-2 p-4 w-full border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow duration-300 shadow-sm hover:shadow-lg" />
-            </div>
-  
-            <!-- Password Field -->
-            <div class="p-field">
-              <label for="password" class="block text-sm font-semibold text-gray-700">Mot de passe</label>
-              <input id="password" type="password" pInputText formControlName="password" class="mt-2 p-4 w-full border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow duration-300 shadow-sm hover:shadow-lg" />
-            </div>
-  
-            <!-- Confirm Password Field -->
-            <div class="p-field">
-              <label for="confirmPassword" class="block text-sm font-semibold text-gray-700">Confirmer le mot de passe</label>
-              <input id="confirmPassword" type="password" pInputText formControlName="confirmPassword" class="mt-2 p-4 w-full border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow duration-300 shadow-sm hover:shadow-lg" />
-            </div>
-  
-            <!-- Terms Checkbox -->
-            <div class="p-field-checkbox flex items-center">
-              <p-checkbox id="reglement" [(ngModel)]="reglement" name="reglement" binary="true"></p-checkbox>
-              <label for="terms" class="ml-2 text-sm font-medium text-gray-700">J'accepte le règlement</label>
-            </div>
-  
-            <!-- Submit Button -->
-            <p-button label="S'inscrire" type="submit" icon="pi pi-check" class="w-full p-button-primary text-lg font-semibold py-3 rounded-lg mt-4 hover:bg-indigo-600 hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105" ></p-button>
-  
-            <!-- Separator -->
-            <div class="or-separator my-6 text-center text-gray-600">
-              <span class="text-sm">OU</span>
-            </div>
-  
-            <!-- Google Button -->
-            <p-button label="Se connecter avec Google" icon="pi pi-google" class="w-full p-button-secondary text-lg font-semibold py-3 rounded-lg hover:bg-gray-100 hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105"></p-button>
-  
-            <!-- Login Links -->
-            <div class="login-links text-center mt-4 text-sm text-gray-600">
-              <a routerLink="/forgot-password" class="hover:text-indigo-500">Mot de passe oublié ?</a>
-              <br>
-              <a routerLink="/login" class="hover:text-indigo-500">Déjà un compte ? Connectez-vous ici</a>
-            </div>
+<div class="register-container min-h-screen flex justify-center items-center bg-gradient-to-br from-gray-100 to-gray-300 px-0 sm:px-4">
+  <p-card class="register-card w-full sm:max-w-lg lg:max-w-4xl xl:max-w-6xl bg-white border border-gray-200 shadow-lg overflow-hidden p-4 sm:p-8 rounded-none sm:rounded-xl">
+    <ng-template pTemplate="title">
+      <h2 class="text-3xl font-extrabold text-center text-gray-800 mb-3">Inscription</h2>
+    </ng-template>
+    <ng-template pTemplate="content">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="p-fluid space-y-6">
+          <!-- Username Field -->
+          <div class="p-field">
+            <label for="username" class="block text-sm font-semibold text-gray-700">Nom d'utilisateur</label>
+            <input id="username" type="text" pInputText formControlName="username" class="mt-2 p-4 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow duration-300 shadow-sm hover:shadow-md" />
           </div>
-        </form>
-      </ng-template>
-    </p-card>
-  </div>
-  
+
+          <!-- Email Field -->
+          <div class="p-field">
+            <label for="email" class="block text-sm font-semibold text-gray-700">Email</label>
+            <input id="email" type="email" pInputText formControlName="email" class="mt-2 p-4 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow duration-300 shadow-sm hover:shadow-md" />
+          </div>
+
+          <!-- Password Field -->
+          <div class="p-field">
+            <label for="password" class="block text-sm font-semibold text-gray-700">Mot de passe</label>
+            <input id="password" type="password" pInputText formControlName="password" class="mt-2 p-4 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow duration-300 shadow-sm hover:shadow-md" />
+          </div>
+
+          <!-- Confirm Password Field -->
+          <div class="p-field">
+            <label for="confirmPassword" class="block text-sm font-semibold text-gray-700">Confirmer le mot de passe</label>
+            <input id="confirmPassword" type="password" pInputText formControlName="confirmPassword" class="mt-2 p-4 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow duration-300 shadow-sm hover:shadow-md" />
+          </div>
+
+          <!-- Terms Checkbox -->
+          <div class="p-field-checkbox flex items-center">
+            <p-checkbox id="reglement" [(ngModel)]="reglement" name="reglement" binary="true"></p-checkbox>
+            <label for="terms" class="ml-2 text-sm font-medium text-gray-700">J'accepte le règlement</label>
+          </div>
+
+          <!-- Submit Button -->
+          <p-button label="S'inscrire" type="submit" icon="pi pi-check" class="w-full p-button-primary text-lg font-semibold rounded-lg hover:bg-indigo-600 hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105"></p-button>
+
+          <!-- Separator -->
+          <div class="or-separator my-2 text-center text-gray-600 flex justify-center items-center">
+            <span class="text-sm bg-white px-3">OU</span>
+          </div>
+
+          <!-- Google Button -->
+          <p-button label="Se connecter avec Google" icon="pi pi-google" class="w-full p-button-secondary text-lg font-semibold rounded-lg hover:bg-gray-100 hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105"></p-button>
+
+          <!-- Login Links -->
+          <div class="login-links text-center mt-4 text-sm text-gray-600">
+            <a routerLink="/forgot-password" class="hover:text-indigo-500">Mot de passe oublié ?</a>
+            <br>
+            <a routerLink="/login" class="hover:text-indigo-500">Déjà un compte ? Connectez-vous ici</a>
+          </div>
+        </div>
+      </form>
+    </ng-template>
+  </p-card>
+</div>
