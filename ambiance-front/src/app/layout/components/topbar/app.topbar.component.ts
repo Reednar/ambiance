@@ -31,6 +31,10 @@ export class AppTopBarComponent {
         else {
             this.textUrl = "Prod";
         }
-
     }
+
+    menuItems = [
+        { label: 'Connexion', icon: 'pi pi-sign-in', routerLink: '/login' },
+        { label: 'Inscription', icon: 'pi pi-user-plus', routerLink: '/register' }
+      ];
 }

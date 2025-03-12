@@ -17,7 +17,7 @@ import { LocationInformationsComponent } from './location-informations/location-
 import { CalendarModule } from 'primeng/calendar';
 import { BasicInformationsComponent } from './basic-informations/basic-informations.component';
 import { HandicapInformationsComponent } from './handicap-informations/handicap-informations.component';
-import { MessageService } from 'primeng/api';  // 🔹 Importation du MessageService
+import { MessageService } from 'primeng/api'; 
 
 @NgModule({
   declarations: [

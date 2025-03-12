@@ -1,0 +1,145 @@
+.p-button {
+    @apply bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg;
+  }
+  
+  .p-button:hover {
+    @apply bg-indigo-700 shadow-lg transform scale-105 transition duration-300 ease-in-out;
+  }
+  
+
+    /* Pour PC uniquement */
+@media (min-width: 1024px) {
+  .register-container {
+    min-height: 80vh;
+  }
+}
+
+
+/* Pour PC uniquement */
+@media (min-width: 1024px) {
+  .register-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to bottom right, #f7fafc, #e2e8f0);
+    padding-top: 0px !important;
+  }
+
+  .register-card {
+    width: 100%;
+    max-width: 1000px;
+    padding: 20px;
+    padding-top: 30px !important;
+    margin-top: 0px !important;
+
+  }
+
+  .register-card h2 {
+    margin-bottom: 10px;
+  }
+
+  /* Pour ajuster les champs du formulaire */
+  .register-card .p-field {
+    margin-bottom: 15px;
+  }
+}
+
+/* Pour téléphone uniquement */
+@media (max-width: 640px) {
+  .register-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-top: 10px !important;
+    margin-top: 10px !important;
+  }
+
+  .register-card {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .register-card h2 {
+    margin-bottom: 15px;
+  }
+
+  .register-card .p-field {
+    margin-bottom: 12px;
+  }
+}
+
+
+/* Pour PC uniquement */
+@media (min-width: 1024px) {
+  .register-container {
+    min-height: 85vh;
+    margin-top: 0px !important;
+
+  }
+}
+
+
+/* Pour téléphone uniquement */
+@media (max-width: 800px) {
+  .register-container {
+    min-height: 65vh;
+    min-width: 350px !important;
+    min-height: 780px !important;
+  }
+  .register-card {
+  margin-top: 0 !important;
+  }
+}
+
+/* Container pour les boutons, les forçant à avoir la même largeur */
+.button-custom {
+  display: block;
+  width: 100% !important;
+  padding: 0px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+/* Style du bouton au survol */
+.button-custom:hover {
+  background-color: #f3f4f6;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+}
+
+/* Assurer que les icônes et le texte sont bien centrés à l'intérieur des boutons */
+.button-custom .p-button-label {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+
+/* Cibler uniquement sur les écrans mobiles */
+@media (max-width: 640px) {
+  .layout-main-container, 
+  .layout-main {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    min-width: 400px !important;
+    min-height: 1400px !important;
+  }
+
+  /* Forcer la hauteur minimale à 100vh pour occuper tout l'espace */
+  .layout-main-container {
+    height: 100vh !important;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  /* Assurez-vous que l'élément p-card a également un alignement correct */
+  .register-card {
+    margin-top: 0 !important;
+  }
+}

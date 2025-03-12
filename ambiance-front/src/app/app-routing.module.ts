@@ -14,6 +14,8 @@ const routes: Routes = [
       },
       { path: 'publicationsCreated', loadChildren: () => import('./pages/publications-created/publications-created.module').then(m => m.PublicationsCreatedModule) },
       { path: 'calendar', loadChildren: () => import('./pages/calendar/calendar.module').then(m => m.CalendarPageModule) },
+      { path: 'register', loadChildren: () => import('./pages/user/register/register.module').then(m => m.RegisterModule) },
+      { path: 'login', loadChildren: () => import('./pages/user/login/login.module').then(m => m.LoginModule) },
     ]
   },
 ];

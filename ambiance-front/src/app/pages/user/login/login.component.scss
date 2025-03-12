@@ -1,0 +1,27 @@
+.p-button {
+    @apply bg-indigo-600 text-white font-semibold py-3 px-4 rounded-lg;
+  }
+  
+  .p-button:hover {
+    @apply bg-indigo-700 shadow-lg transform scale-105 transition duration-300 ease-in-out;
+  }
+  
+  /* Pour PC uniquement */
+@media (min-width: 1024px) {
+  .login-container {
+    min-height: 80vh; /* Ajuste la hauteur minimale selon ce que tu souhaites */
+  }
+  .login-card {
+    padding-top: 40px !important; /* Ajuste la hauteur minimale selon ce que tu souhaites */
+    margin-top: 0px !important; /* Ajuste la hauteur minimale selon ce que tu souhaites */
+
+  }
+}
+
+
+/* Pour téléphone uniquement */
+@media (max-width: 800px) {
+  .login-container {
+    min-height: 780px !important;
+  }
+}

@@ -47,7 +47,7 @@ export class AppMenuComponent implements OnInit {
                         ]
                     },
 
-                    // { label: 'Utilisateur', icon: 'pi pi-fw pi-users', routerLink: ['/user'], isAccessible: await this.isUserAccessible(splittedRoles) },
+                    //{ label: 'Utilisateur', icon: 'pi pi-fw pi-users', routerLink: ['/user'], isAccessible: true },
                     { label: 'Historique des participations', icon: 'pi pi-history', routerLink: ['/event-history'], isAccessible: true },
                     { label: 'Messagerie', icon: 'pi pi-fw pi-money-bill', routerLink: ['/message'], isAccessible: true },
                     { label: 'Calendrier', icon: 'pi pi-fw pi-briefcase', routerLink: ['/calendar'], isAccessible: true },
