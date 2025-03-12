@@ -44,7 +44,7 @@ echo "npm version : $(npm -v)"
 
         stage('Build Angular') {
             steps {
-                sh 'cd ambiance-front && npm run build --prod'
+                sh 'cd ambiance-front && npm run build --omit=dev'
             }
         }
 
