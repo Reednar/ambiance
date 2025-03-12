@@ -104,9 +104,9 @@ echo "DATABASE_NAME=$DATABASE_NAME" >> $BACK_DIR/.env
                     sh '''
 cd $BACK_DIR
 if pm2 describe nestjs > /dev/null; then
-    pm2 restart nestjs
+    pm2 restart nestjs --update-env --cwd $BACK_DIR
 else
-    pm2 start dist/main.js --name nestjs --interpreter $(which node)
+    pm2 start main.js --name nestjs --cwd $BACK_DIR --interpreter $(which node)
 fi
 pm2 save
 '''
