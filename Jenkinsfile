@@ -16,7 +16,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git(branch: 'build/jenkins', url: 'git@github.com:Reednar/ambiance.git')
+                git(branch: 'develop', url: 'git@github.com:Reednar/ambiance.git')
             }
         }
 
