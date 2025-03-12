@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
     this.testService.getData().subscribe(
       (response) => {
         this.data = response;
-        console.log('Data received: ', this.data); // Test build jenkins webhook
+        console.log('Data received: ', this.data);
       },
       (error) => {
         console.error('Error fetching data: ', error);
