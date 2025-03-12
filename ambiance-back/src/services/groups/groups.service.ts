@@ -53,4 +53,20 @@ export class GroupsService {
     participation.idPaiement = null; // Set IdPaiement to null if not applicable
     return await this.participationRepository.save(participation);
   }
+
+  async addParticipation(participation: Partial<Participation>): Promise<Participation> {
+    const groupe = await this.groupeRepository.findOneBy({ idGroupe: participation.idGroupe.idGroupe });
+    const utilisateur = await this.userRepository.findOneBy({ idUtilisateur: participation.idUtilisateur.idUtilisateur });
+
+    if (!groupe || !utilisateur) {
+      throw new Error('Groupe or Utilisateur not found');
+    }
+
+    const newParticipation = new Participation();
+    newParticipation.idGroupe = groupe;
+    newParticipation.idUtilisateur = utilisateur;
+    newParticipation.organisateur = participation.organisateur;
+    newParticipation.idPaiement = participation.idPaiement;
+    return await this.participationRepository.save(newParticipation);
+  }
 }
