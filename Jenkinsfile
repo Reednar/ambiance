@@ -87,7 +87,7 @@ npm install --omit=dev
             steps {
                 script {
                     sh '''
-echo "PORT=$PORT" >> $BACK_DIR/.env
+echo -e "PORT=$PORT" >> $BACK_DIR/.env
 echo "DATABASE_HOST=$DATABASE_HOST" >> $BACK_DIR/.env
 echo "DATABASE_PORT=$DATABASE_PORT" >> $BACK_DIR/.env
 echo "DATABASE_USER=$DATABASE_USER" >> $BACK_DIR/.env
