@@ -5,7 +5,7 @@ import { ParticipationController } from '../../controllers/participation/partici
 import { Participation } from '../../entities/participation.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Participation])], // Définir l'entité Post ici
+  imports: [TypeOrmModule.forFeature([Participation])], // Définir l'entité publication ici
   providers: [ParticipationService],
   controllers: [ParticipationController],
   exports: [ParticipationService], // Mettre ça car si un module a besoin de ce service il pourra l'utiliser

@@ -1,16 +1,13 @@
 import { Controller, Get, Post, Param, NotFoundException, UseGuards, Body } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { PostsService } from '../../services/posts/posts.service';
+import { PublicationsService } from '../../services/publications/publications.service';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from '../../services/users/users.service';
-import { Console } from 'console';
 
-
-@ApiTags('posts')
-@Controller('posts')
-export class PostsController {
-  constructor(private postsService: PostsService,  private readonly usersService: UsersService) { }
-
+@ApiTags('publications')
+@Controller('publications')
+export class PublicationsController {
+  constructor(private publicationsService: PublicationsService, private readonly usersService: UsersService) { }
 
   @Get('test')//endpoint (endpoit ALWAYS before controller endpoint)
   @UseGuards(AuthGuard('jwt')) //protected request
@@ -20,30 +17,30 @@ export class PostsController {
 
   @Post("delete")
   @UseGuards(AuthGuard('jwt'))
-  async deletePost(@Body() Body: {idPublication: number, utilisateurId: number}) {
+  async deletePublication(@Body() Body: { idPublication: number, utilisateurId: number }) {
     const utilisateur = await this.usersService.findOne(Body.utilisateurId);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
-    const post = await this.postsService.findOne(Body.idPublication);
-    if (!post) {
-      throw new NotFoundException('Post not found');
+    const publication = await this.publicationsService.findOne(Body.idPublication);
+    if (!publication) {
+      throw new NotFoundException('publication not found');
     }
-    if (post.utilisateurId !== utilisateur.idUtilisateur) {
-      throw new NotFoundException('Utilisateur non autorisé à supprimer ce post');
+    if (publication.utilisateurId !== utilisateur.idUtilisateur) {
+      throw new NotFoundException('Utilisateur non autorisé à supprimer ce publication');
     }
-    return await this.postsService.remove(post.idPublication);
+    return await this.publicationsService.remove(publication.idPublication);
   }
 
   @Post("update")
   @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({ summary: 'Update a post' })
+  @ApiOperation({ summary: 'Update a publication' })
   @ApiResponse({
     status: 200,
-    description: 'Post updated',
+    description: 'publication updated',
     examples: {
       example1: {
-        summary: 'Post updated example',
+        summary: 'publication updated example',
         value: {
           idPublication: 1,
           codePostal: '78000',
@@ -62,7 +59,7 @@ export class PostsController {
       },
     },
   })
-  async updatePost(@Body() Body: {
+  async updatePublication(@Body() Body: {
     idPublication: number,
     utilisateurId: number,
     codePostal: string,
@@ -84,22 +81,22 @@ export class PostsController {
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
-    const post = await this.postsService.findOne(Body.idPublication);
-    if (!post) {
-      throw new NotFoundException('Post not found');
+    const publication = await this.publicationsService.findOne(Body.idPublication);
+    if (!publication) {
+      throw new NotFoundException('publication not found');
     }
-    if (post.utilisateurId !== utilisateur.idUtilisateur) {
-      throw new NotFoundException('Utilisateur non autorisé à mettre à jour ce post');
+    if (publication.utilisateurId !== utilisateur.idUtilisateur) {
+      throw new NotFoundException('Utilisateur non autorisé à mettre à jour ce publication');
     }
-    const updatedPost = {
-      ...post,
+    const updatedPublication = {
+      ...publication,
       ...Body,
     };
-    return await this.postsService.update(post.idPublication, updatedPost);
+    return await this.publicationsService.update(publication.idPublication, updatedPublication);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Return all posts' })
+  @ApiOperation({ summary: 'Return all publications' })
   @ApiResponse({
     status: 200,
     description: 'Successful response',
@@ -126,12 +123,12 @@ export class PostsController {
       },
     },
   })
-  async getPosts() {
-    return await this.postsService.findAll();
+  async getPublications() {
+    return await this.publicationsService.findAll();
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Return one post by id' })
+  @ApiOperation({ summary: 'Return one publication by id' })
   @ApiResponse({
     status: 200,
     description: 'Successful response',
@@ -158,35 +155,35 @@ export class PostsController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Post not found',
+    description: 'publication not found',
     examples: {
       example1: {
         summary: 'Not found response example',
         value: {
           statusCode: 404,
-          message: 'Post not found',
+          message: 'publication not found',
           error: 'Not Found',
         },
       },
     },
   })
-  async getPostById(@Param('id') id: number) {
-    const post = await this.postsService.findOne(id);
-    if (!post) {
-      throw new NotFoundException('Post not found');
+  async getPublicationById(@Param('id') id: number) {
+    const publication = await this.publicationsService.findOne(id);
+    if (!publication) {
+      throw new NotFoundException('publication not found');
     }
-    return post;
+    return publication;
   }
 
-  @Post()
+  @Post("create")
   @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({ summary: 'Create a post' })
+  @ApiOperation({ summary: 'Create a publication' })
   @ApiResponse({
     status: 201,
-    description: 'Post created',
+    description: 'publication created',
     examples: {
       example1: {
-        summary: 'Post created example',
+        summary: 'publication created example',
         value: {
           idPublication: 1,
           codePostal: '78000',
@@ -205,7 +202,7 @@ export class PostsController {
       },
     },
   })
-  async createPost(@Body() Body:
+  async createPublication(@Body() Body:
     {
       codePostal: string;
       rue: string;
@@ -227,7 +224,7 @@ export class PostsController {
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
-    const post = {...Body, utilisateur};
-    return await this.postsService.create(post);
+    const publication = { ...Body, utilisateur };
+    return await this.publicationsService.create(publication);
   }
 }

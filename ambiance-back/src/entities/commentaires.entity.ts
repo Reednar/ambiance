@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './users.entity';
-import { Post } from './posts.entity';
+import { Publication } from './publications.entity';
 
 @Entity('Commentaire') // Correspond au nom de la table
 export class Commentaire {
@@ -17,7 +17,7 @@ export class Commentaire {
   @JoinColumn({ name: 'idUtilisateur' })
   idUtilisateur: User;
 
-  @ManyToOne(() => Post, { nullable: false })
+  @ManyToOne(() => Publication, { nullable: false })
   @JoinColumn({ name: 'idPublication' })
-  idPublication: Post;
+  idPublication: Publication;
 }

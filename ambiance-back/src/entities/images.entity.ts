@@ -5,7 +5,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Post } from './posts.entity'; // Chemin à ajuster selon votre projet
+import { Publication } from './publications.entity'; // Chemin à ajuster selon votre projet
 
 @Entity('Images') // Correspond au nom de la table
 export class Image {
@@ -15,7 +15,7 @@ export class Image {
   @Column({ name: 'LienImage', type: 'blob', nullable: false })
   lienImage: Buffer;
 
-  @ManyToOne(() => Post, { onDelete: 'CASCADE', nullable: false })
+  @ManyToOne(() => Publication, { onDelete: 'CASCADE', nullable: false })
   @JoinColumn({ name: 'IdPublication' })
-  publication: Post;
+  publication: Publication;
 }

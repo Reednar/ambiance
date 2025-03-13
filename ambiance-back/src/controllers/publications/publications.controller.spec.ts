@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PostsController } from './posts.controller';
-import { PostsService } from '../../services/posts/posts.service';
+import { PublicationsController } from './publications.controller';
+import { PublicationsService } from '../../services/publications/publications.service';
 import { NotFoundException } from '@nestjs/common';
 
-describe('PostsController', () => {
-  let controller: PostsController;
+describe('PublicationsController', () => {
+  let controller: PublicationsController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [PostsController],
+      controllers: [PublicationsController],
       providers: [
         {
-          provide: PostsService,
+          provide: PublicationsService,
           useValue: {
             findOne: jest.fn((id) => {
               if (id === 1) {
@@ -38,25 +38,25 @@ describe('PostsController', () => {
       ],
     }).compile();
 
-    controller = module.get<PostsController>(PostsController);
+    controller = module.get<PublicationsController>(PublicationsController);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should return a post if it exists', async () => {
-    const post = await controller.getPostById(1);
-    expect(post).toBeDefined();
-    expect(post.idPublication).toBe(1);
+  it('should return a publication if it exists', async () => {
+    const publication = await controller.getPublicationById(1);
+    expect(publication).toBeDefined();
+    expect(publication.idPublication).toBe(1);
   });
 
-  it('should throw NotFoundException if post does not exist', async () => {
+  it('should throw NotFoundException if publication does not exist', async () => {
     try {
-      await controller.getPostById(2);
+      await controller.getPublicationById(2);
     } catch (e) {
       expect(e).toBeInstanceOf(NotFoundException);
-      expect(e.message).toBe('Post not found');
+      expect(e.message).toBe('publication not found');
     }
   });
 });

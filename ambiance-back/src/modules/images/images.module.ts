@@ -5,7 +5,7 @@ import { imagesController } from '../../controllers/images/images.controller';
 import { Image } from '../../entities/images.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Image])], // Définir l'entité Post ici
+  imports: [TypeOrmModule.forFeature([Image])], // Définir l'entité publication ici
   providers: [ImagesService],
   controllers: [imagesController],
   exports: [ImagesService], // Mettre ça car si un module a besoin de ce service il pourra l'utiliser

@@ -19,4 +19,13 @@ export class AuthController {
     }
     throw new UnauthorizedException('Identifiants invalides');
   }
+
+  @Post('refresh')
+  async refreshToken(@Body('refreshToken') token: string) {
+    try {
+      return await this.authService.refreshToken(token);
+    } catch (error) {
+      throw new UnauthorizedException('Refresh token invalide');
+    }
+  }
 }

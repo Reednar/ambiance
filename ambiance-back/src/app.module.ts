@@ -4,9 +4,9 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PostsController } from './controllers/posts/posts.controller';
-import { PostsModule } from './modules/posts/posts.module';
-import { Post } from './entities/posts.entity';
+import { PublicationsController } from './controllers/publications/publications.controller';
+import { PublicationsModule } from './modules/publications/publications.module';
+import { Publication } from './entities/publications.entity';
 import { User } from './entities/users.entity';
 import { UsersController } from './controllers/users/users.controller';
 import { UsersModule } from './modules/users/users.module';
@@ -25,7 +25,7 @@ import { Paiement } from './entities/paiements.entity'; // Import Paiement entit
 @Module({
   controllers: [
     AppController,
-    PostsController,
+    PublicationsController,
     UsersController,
     GroupsController,
   ],
@@ -42,7 +42,7 @@ import { Paiement } from './entities/paiements.entity'; // Import Paiement entit
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       entities: [
-        Post,
+        Publication,
         User,
         Groupe,
         Image,
@@ -52,7 +52,7 @@ import { Paiement } from './entities/paiements.entity'; // Import Paiement entit
       ], // Ajouter les entités ici
       synchronize: false, // Permet de manipuler les entités de la base de données avec les fichiers entity.ts en temps réel
     }),
-    PostsModule,
+    PublicationsModule,
     UsersModule,
     GroupsModule,
     ImagesModule,

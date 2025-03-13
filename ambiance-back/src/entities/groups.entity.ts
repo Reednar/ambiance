@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Post } from './posts.entity';
+import { Publication } from './publications.entity';
 
-@Entity('Groupes') // Correspond au nom de la table
+@Entity('Groupes') 
 export class Groupe {
   @PrimaryGeneratedColumn({ name: 'IdGroupe' })
   idGroupe: number;
@@ -12,9 +12,9 @@ export class Groupe {
   @Column({ name: 'NombrePersonne', type: 'smallint', nullable: true })
   nombrePersonne: number;
 
-  @ManyToOne(() => Post, (post) => post, {
+  @ManyToOne(() => Publication, (publication) => publication, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'IdPublication' })
-  publication: Post;
+  publication: Publication;
 }

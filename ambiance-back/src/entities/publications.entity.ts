@@ -8,7 +8,7 @@ import {
 import { User } from './users.entity';
 
 @Entity('Publications')
-export class Post {
+export class Publication {
   @PrimaryGeneratedColumn({ name: 'IdPublication' })
   idPublication: number;
 
@@ -72,7 +72,7 @@ export class Post {
   @Column({ name: 'Ascenseur', type: 'boolean', nullable: true })
   ascenseur: boolean;
 
-  @ManyToOne(() => User, (utilisateur) => utilisateur.posts, {
+  @ManyToOne(() => User, (utilisateur) => utilisateur.publications, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'IdUtilisateur' }) // Mettre la colonne de la clé étrangère

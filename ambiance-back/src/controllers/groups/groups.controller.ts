@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, UseGuards, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, UseGuards, NotFoundException } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GroupsService } from '../../services/groups/groups.service';
 import { UsersService } from '../../services/users/users.service';
 import { AuthGuard } from '@nestjs/passport';
-import { PostsService } from '../../services/posts/posts.service';
+import { PublicationsService } from '../../services/publications/publications.service';
 
 @ApiTags('groups')
 @Controller('groups')
@@ -11,7 +11,7 @@ export class GroupsController {
   constructor(
     private GroupsService: GroupsService,
     private UsersService: UsersService,
-    private PostsService: PostsService,
+    private PublicationsService: PublicationsService,
   ) {}
 
   @Get()
@@ -29,7 +29,7 @@ export class GroupsController {
       throw new NotFoundException('Utilisateur non trouvé');
     }
 
-    const publication = await this.PostsService.findOne(body.idPublication);
+    const publication = await this.PublicationsService.findOne(body.idPublication);
     if (!publication) {
       throw new NotFoundException('Publication non trouvée');
     }
@@ -63,4 +63,44 @@ export class GroupsController {
 
     return { message: 'Participation added' };
   }
+
+  /*@Post("removeUser")
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Remove a user from a group' })
+  async removeUserFromGroup(@Body() body: { IdGroupe: number; IdUtilisateur: number }) {
+    const groupe = await this.GroupsService.findOne(body.IdGroupe);
+    if (!groupe) {
+      throw new NotFoundException('Groupe non trouvé');
+    }
+
+    const utilisateur = await this.UsersService.findOne(body.IdUtilisateur);
+    if (!utilisateur) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+
+    await this.GroupsService.removeUserFromGroup(body.IdGroupe, body.IdUtilisateur);
+
+    return { message: 'User removed from group' };
+  }
+
+  @Post("changeOrganisateur")
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Change the organisateur of a group' })
+  async changeOrganisateur(@Body() body: { IdGroupe: number; IdUtilisateur: number }) {
+    const groupe = await this.GroupsService.findOne(body.IdGroupe);
+    if (!groupe) {
+      throw new NotFoundException('Groupe non trouvé');
+    }
+
+    const utilisateur = await this.UsersService.findOne(body.IdUtilisateur);
+    if (!utilisateur) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+
+    await this.GroupsService.changeOrganisateur(body.IdGroupe, body.IdUtilisateur);
+
+    return { message: 'Organisateur changed' };
+  }*/
 }
+
+

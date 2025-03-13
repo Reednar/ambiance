@@ -69,4 +69,33 @@ export class GroupsService {
     newParticipation.idPaiement = participation.idPaiement;
     return await this.participationRepository.save(newParticipation);
   }
+
+  /*async removeUserFromGroup(idGroupe: number, idUtilisateur: number): Promise<void> {
+    const participation = await this.participationRepository.findOne({
+      where: { idGroupe: { idGroupe }, idUtilisateur: { idUtilisateur } },
+    });
+
+    if (!participation) {
+      throw new Error('Participation not found');
+    }
+
+    await this.participationRepository.remove(participation);
+  }
+
+  async changeOrganisateur(idGroupe: number, idUtilisateur: number): Promise<void> {
+    const participation = await this.participationRepository.findOne({
+      where: { idGroupe: idGroupe, idUtilisateur: idUtilisateur },
+    });
+
+    if (!participation) {
+      throw new Error('Participation not found');
+    }
+
+    // Reset the organisateur flag for all users in the group
+    await this.participationRepository.update({ idGroupe: idGroupe }, { organisateur: false });
+
+    // Set the organisateur flag for the specified user
+    participation.organisateur = true;
+    await this.participationRepository.save(participation);
+  }*/
 }

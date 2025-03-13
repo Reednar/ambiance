@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PostsService } from './posts.service';
-import { Post } from '../../entities/posts.entity';
+import { PublicationsService } from './publications.service';
+import { Publication } from '../../entities/publications.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-describe('PostsService', () => {
-  let service: PostsService;
+describe('PublicationsService', () => {
+  let service: PublicationsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        PostsService,
+        PublicationsService,
         {
-          provide: getRepositoryToken(Post),
+          provide: getRepositoryToken(Publication),
           useValue: {
             // Ajouter ici les méthodes du service
             findOne: jest.fn(),
@@ -20,7 +20,7 @@ describe('PostsService', () => {
       ],
     }).compile();
 
-    service = module.get<PostsService>(PostsService);
+    service = module.get<PublicationsService>(PublicationsService);
   });
 
   it('should be defined', () => {

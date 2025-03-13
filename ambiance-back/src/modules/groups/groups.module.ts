@@ -6,13 +6,13 @@ import { Groupe } from '../../entities/groups.entity';
 import { Participation } from '../../entities/participation.entity';
 import { User } from '../../entities/users.entity';
 import { UsersModule } from '../users/users.module';
-import { PostsModule } from '../posts/posts.module';
+import { PublicationsModule } from '../publications/publications.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Groupe, Participation, User]),
     UsersModule,
-    PostsModule,
+    PublicationsModule,
   ],
   providers: [GroupsService],
   controllers: [GroupsController],

@@ -30,6 +30,17 @@ export class AuthService {
     const payload = { mail: user.mail, sub: Visitor.idUtilisateur };
     return {
       access_token: this.jwtService.sign(payload),
+      refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
     };
+  }
+
+  async refreshToken(token: string) {
+    try {
+      const payload = this.jwtService.verify(token);
+      const newAccessToken = this.jwtService.sign({ userId: payload.sub }, { expiresIn: '15m' });
+      return { accessToken: newAccessToken };
+    } catch (error) {
+      throw new UnauthorizedException('Refresh token invalide');
+    }
   }
 }
