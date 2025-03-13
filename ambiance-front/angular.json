@@ -35,7 +35,10 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss",
+              "node_modules/primeng/resources/themes/saga-blue/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css"
             ],
             "scripts": []
           },
@@ -44,13 +47,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "2.5mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
                 }
               ],
               "outputHashing": "all"
@@ -94,7 +97,10 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss",
+              "node_modules/primeng/resources/themes/saga-blue/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css"
             ],
             "scripts": []
           }

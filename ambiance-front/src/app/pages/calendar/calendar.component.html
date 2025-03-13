@@ -1,0 +1,15 @@
+<h1>Voici votre calendrier</h1>
+<p>Vous pouvez y voir vos futurs événements ou sorties prévues !</p>
+
+<full-calendar [options]="calendarOptions"></full-calendar>
+
+<div class="articles-container">
+  <h2>Les prochaines sorties/événements</h2>
+  <ul>
+    <li *ngFor="let event of events">
+      <strong>{{ event.title }}</strong> - {{ event.date | date:'fullDate' }}
+    </li>
+  </ul>
+</div>
+
+
