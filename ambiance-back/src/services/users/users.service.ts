@@ -17,6 +17,9 @@ export class UsersService {
   async findOne(id: number): Promise<User> {
     return await this.userRepository.findOneBy({ idUtilisateur: id });
   }
+  async findOneByMail(mail: string): Promise<User> {
+    return await this.userRepository.findOneBy({ mail: mail });
+  }
 
   async create(User: Partial<User>): Promise<User> {
     const newUser = this.userRepository.create(User);

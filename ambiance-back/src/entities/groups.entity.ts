@@ -1,13 +1,7 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
-import { Post } from './posts.entity'; // Assurez-vous que le chemin est correct
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Publication } from './publications.entity';
 
-@Entity('Groupes') // Correspond au nom de la table
+@Entity('Groupes') 
 export class Groupe {
   @PrimaryGeneratedColumn({ name: 'IdGroupe' })
   idGroupe: number;
@@ -18,10 +12,9 @@ export class Groupe {
   @Column({ name: 'NombrePersonne', type: 'smallint', nullable: true })
   nombrePersonne: number;
 
-  // Relation Many-to-One avec la table Publications (Post en TypeORM)
-  @ManyToOne(() => Post, (post) => post, {
-    onDelete: 'CASCADE', // Optionnel : supprime les groupes si le post est supprimé
+  @ManyToOne(() => Publication, (publication) => publication, {
+    onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'IdPublication' }) // Clé étrangère dans cette table
-  publication: Post;
+  @JoinColumn({ name: 'IdPublication' })
+  publication: Publication;
 }

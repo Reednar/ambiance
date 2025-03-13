@@ -4,30 +4,28 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PostsController } from './controllers/posts/posts.controller';
-import { PostsModule } from './modules/posts/posts.module';
-import { Post } from './entities/posts.entity';
+import { PublicationsController } from './controllers/publications/publications.controller';
+import { PublicationsModule } from './modules/publications/publications.module';
+import { Publication } from './entities/publications.entity';
 import { User } from './entities/users.entity';
 import { UsersController } from './controllers/users/users.controller';
 import { UsersModule } from './modules/users/users.module';
 import { GroupsController } from './controllers/groups/groups.controller';
 import { GroupsModule } from './modules/groups/groups.module';
 import { Groupe } from './entities/groups.entity';
-import { Document } from './entities/documents.entity';
-import { DocumentsModule } from './modules/documents/documents.module';
 import { Image } from './entities/images.entity';
 import { ImagesModule } from './modules/images/images.module';
-import { Avis } from './entities/avis.entity';
-import { AvisModule } from './modules/avis/avis.module';
-import { Interagis } from './entities/interagis.entity';
-import { InteragisModule } from './modules/interagis/interagis.module';
+import { Commentaire } from './entities/commentaires.entity';
+import { CommentairesModule } from './modules/commentaires/commentaires.module';
 import { Participation } from './entities/participation.entity';
 import { ParticipationModule } from './modules/participation/participation.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { Paiement } from './entities/paiements.entity'; // Import Paiement entity
 
 @Module({
   controllers: [
     AppController,
-    PostsController,
+    PublicationsController,
     UsersController,
     GroupsController,
   ],
@@ -44,25 +42,23 @@ import { ParticipationModule } from './modules/participation/participation.modul
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       entities: [
-        Post,
+        Publication,
         User,
         Groupe,
-        Document,
         Image,
-        Avis,
-        Interagis,
+        Commentaire,
         Participation,
+        Paiement, // Add Paiement entity here
       ], // Ajouter les entités ici
       synchronize: false, // Permet de manipuler les entités de la base de données avec les fichiers entity.ts en temps réel
     }),
-    PostsModule,
+    PublicationsModule,
     UsersModule,
     GroupsModule,
-    DocumentsModule,
     ImagesModule,
-    AvisModule,
-    InteragisModule,
+    CommentairesModule,
     ParticipationModule,
+    AuthModule,
     // Mettre les autres modules ici
   ],
   providers: [AppService],

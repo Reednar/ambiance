@@ -2,12 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Groupe } from '../../entities/groups.entity';
+import { User } from '../../entities/users.entity';
+import { Participation } from '../../entities/participation.entity';
 
 @Injectable()
 export class GroupsService {
   constructor(
     @InjectRepository(Groupe)
     private readonly groupeRepository: Repository<Groupe>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Participation)
+    private readonly participationRepository: Repository<Participation>,
   ) {}
 
   async findAll(): Promise<Groupe[]> {
@@ -31,4 +37,65 @@ export class GroupsService {
   async remove(id: number): Promise<void> {
     await this.groupeRepository.delete(id);
   }
+
+  async addUserToGroup(idGroupe: number, idUtilisateur: number): Promise<Participation> {
+    const groupe = await this.groupeRepository.findOneBy({ idGroupe });
+    const utilisateur = await this.userRepository.findOneBy({ idUtilisateur });
+
+    if (!groupe || !utilisateur) {
+      throw new Error('Groupe or Utilisateur not found');
+    }
+
+    const participation = new Participation();
+    participation.idGroupe = groupe;
+    participation.idUtilisateur = utilisateur;
+    participation.organisateur = true;
+    participation.idPaiement = null; // Set IdPaiement to null if not applicable
+    return await this.participationRepository.save(participation);
+  }
+
+  async addParticipation(participation: Partial<Participation>): Promise<Participation> {
+    const groupe = await this.groupeRepository.findOneBy({ idGroupe: participation.idGroupe.idGroupe });
+    const utilisateur = await this.userRepository.findOneBy({ idUtilisateur: participation.idUtilisateur.idUtilisateur });
+
+    if (!groupe || !utilisateur) {
+      throw new Error('Groupe or Utilisateur not found');
+    }
+
+    const newParticipation = new Participation();
+    newParticipation.idGroupe = groupe;
+    newParticipation.idUtilisateur = utilisateur;
+    newParticipation.organisateur = participation.organisateur;
+    newParticipation.idPaiement = participation.idPaiement;
+    return await this.participationRepository.save(newParticipation);
+  }
+
+  /*async removeUserFromGroup(idGroupe: number, idUtilisateur: number): Promise<void> {
+    const participation = await this.participationRepository.findOne({
+      where: { idGroupe: { idGroupe }, idUtilisateur: { idUtilisateur } },
+    });
+
+    if (!participation) {
+      throw new Error('Participation not found');
+    }
+
+    await this.participationRepository.remove(participation);
+  }
+
+  async changeOrganisateur(idGroupe: number, idUtilisateur: number): Promise<void> {
+    const participation = await this.participationRepository.findOne({
+      where: { idGroupe: idGroupe, idUtilisateur: idUtilisateur },
+    });
+
+    if (!participation) {
+      throw new Error('Participation not found');
+    }
+
+    // Reset the organisateur flag for all users in the group
+    await this.participationRepository.update({ idGroupe: idGroupe }, { organisateur: false });
+
+    // Set the organisateur flag for the specified user
+    participation.organisateur = true;
+    await this.participationRepository.save(participation);
+  }*/
 }
