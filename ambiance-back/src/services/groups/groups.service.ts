@@ -70,32 +70,50 @@ export class GroupsService {
     return await this.participationRepository.save(newParticipation);
   }
 
-  /*async removeUserFromGroup(idGroupe: number, idUtilisateur: number): Promise<void> {
-    const participation = await this.participationRepository.findOne({
-      where: { idGroupe: { idGroupe }, idUtilisateur: { idUtilisateur } },
-    });
-
+  async removeUserFromGroup(idGroupe: number, idUtilisateur: number): Promise<void> {
+    const participation = await this.participationRepository
+      .createQueryBuilder('participation')
+      .where('participation.idGroupe = :idGroupe', { idGroupe })
+      .andWhere('participation.idUtilisateur = :idUtilisateur', { idUtilisateur })
+      .getOne();
     if (!participation) {
       throw new Error('Participation not found');
     }
 
-    await this.participationRepository.remove(participation);
+    await this.participationRepository.delete({ idParticipation: participation.idParticipation });
   }
 
   async changeOrganisateur(idGroupe: number, idUtilisateur: number): Promise<void> {
-    const participation = await this.participationRepository.findOne({
-      where: { idGroupe: idGroupe, idUtilisateur: idUtilisateur },
-    });
+    const groupe = await this.groupeRepository.findOneBy({ idGroupe });
+    const utilisateur = await this.userRepository.findOneBy({ idUtilisateur });
 
-    if (!participation) {
-      throw new Error('Participation not found');
+    if (!groupe || !utilisateur) {
+      throw new Error('Groupe or Utilisateur not found');
     }
 
-    // Reset the organisateur flag for all users in the group
-    await this.participationRepository.update({ idGroupe: idGroupe }, { organisateur: false });
+    const currentOrganisateur = await this.participationRepository
+      .createQueryBuilder('participation')
+      .where('participation.idGroupe = :idGroupe', { idGroupe })
+      .andWhere('participation.organisateur = :organisateur', { organisateur: true })
+      .getOne();
 
-    // Set the organisateur flag for the specified user
-    participation.organisateur = true;
-    await this.participationRepository.save(participation);
-  }*/
+    if (currentOrganisateur) {
+      currentOrganisateur.organisateur = false;
+      await this.participationRepository.save(currentOrganisateur);
+    }
+
+    const newOrganisateur = await this.participationRepository
+      .createQueryBuilder('participation')
+      .where('participation.idGroupe = :idGroupe', { idGroupe })
+      .andWhere('participation.idUtilisateur = :idUtilisateur', { idUtilisateur })
+      .getOne();
+
+    if (newOrganisateur) {
+      newOrganisateur.organisateur = true;
+      await this.participationRepository.save(newOrganisateur);
+    } else {
+      throw new Error('New organisateur not found');
+    }
+  }
+
 }

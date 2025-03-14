@@ -64,7 +64,7 @@ export class GroupsController {
     return { message: 'Participation added' };
   }
 
-  /*@Post("removeUser")
+  @Post("removeUser")
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Remove a user from a group' })
   async removeUserFromGroup(@Body() body: { IdGroupe: number; IdUtilisateur: number }) {
@@ -100,7 +100,7 @@ export class GroupsController {
     await this.GroupsService.changeOrganisateur(body.IdGroupe, body.IdUtilisateur);
 
     return { message: 'Organisateur changed' };
-  }*/
+  }
 }
 
 
