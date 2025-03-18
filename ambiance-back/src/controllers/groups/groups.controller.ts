@@ -101,6 +101,18 @@ export class GroupsController {
 
     return { message: 'Organisateur changed' };
   }
+  
+  @Post("userGroups")
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get groups where the user participates' })
+  async getUserGroups(@Body() body: { IdUtilisateur: number }) {
+    const utilisateur = await this.UsersService.findOne(body.IdUtilisateur);
+    if (!utilisateur) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+
+    return await this.GroupsService.findGroupsByUser(body.IdUtilisateur);
+  }
 }
 
 

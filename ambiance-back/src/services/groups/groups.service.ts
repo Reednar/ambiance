@@ -116,4 +116,12 @@ export class GroupsService {
     }
   }
 
+  async findGroupsByUser(IdUtilisateur: number): Promise<Groupe[]> {
+    return await this.groupeRepository
+      .createQueryBuilder('groupe')
+      .innerJoin('Participation', 'participation', 'participation.idGroupe = groupe.idGroupe')
+      .where('participation.idUtilisateur = :IdUtilisateur', { IdUtilisateur })
+      .getMany();
+  }
+
 }
