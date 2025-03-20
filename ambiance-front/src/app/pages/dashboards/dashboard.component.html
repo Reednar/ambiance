@@ -1,0 +1,16 @@
+<p-card>
+    <ng-template pTemplate="title"> Statistiques des Publications </ng-template>
+    <ng-template pTemplate="content">
+      <p-chart type="bar" [data]="{
+        labels: countDates,
+        datasets: [
+          {
+            label: 'Nombre de publications',
+            data: countValues,
+            backgroundColor: '#42A5F5'
+          }
+        ]
+      }"></p-chart>
+    </ng-template>
+  </p-card>
+  <p-button label="Log Token" icon="pi pi-key" (click)="logToken()"></p-button>

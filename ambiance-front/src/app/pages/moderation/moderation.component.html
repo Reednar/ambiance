@@ -1,0 +1,29 @@
+<p-table [value]="users" [paginator]="true" [rows]="10" responsiveLayout="scroll" showGridlines="true" styleClass="p-datatable-gridlines"
+  class="p-datatable-custom border rounded-lg shadow-md">
+
+  <ng-template pTemplate="header">
+    <tr class="bg-gray-100 text-sm text-gray-600 border-b">
+      <th class="px-4 py-3 text-left">Prénom</th>
+      <th class="px-4 py-3 text-left">Nom</th>
+      <th class="px-4 py-3 text-left">Pseudo</th>
+      <th class="px-4 py-3 text-left">Email</th>
+      <th class="px-4 py-3 text-left">Rôle</th>
+      <th class="px-4 py-3 text-left">Actions</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-user>
+    <tr class="text-sm text-gray-700 hover:bg-gray-50 border-b">
+      <td class="px-4 py-3">{{ user.prenom }}</td>
+      <td class="px-4 py-3">{{ user.nom }}</td>
+      <td class="px-4 py-3">{{ user.pseudo }}</td>
+      <td class="px-4 py-3">{{ user.mail }}</td>
+      <td class="px-4 py-3">{{ user.role }}</td>
+      <td class="px-4 py-3 flex gap-2">
+        <button class="bg-blue-500 text-white text-xs px-3 py-1 rounded-md hover:bg-blue-600 transition">Modifier</button>
+        <button class="bg-red-500 text-white text-xs px-3 py-1 rounded-md hover:bg-red-600 transition">Supprimer</button>
+      </td>
+    </tr>
+  </ng-template>
+
+</p-table>

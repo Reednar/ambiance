@@ -14,12 +14,13 @@
 
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
         <p-overlayPanel #menu>
-            <p-menu [model]="menuItems"></p-menu>
-          </p-overlayPanel>
-          
-          <button class="p-link layout-topbar-button" (click)="menu.toggle($event)">
-            <i class="pi pi-user"></i>
-            <span>Profile</span>
-          </button>
-    </div> 
+          <p-menu [model]="isConnected ? loggedInMenuItems : loggedOutMenuItems"></p-menu>
+        </p-overlayPanel>
+      
+        <button class="p-link layout-topbar-button" (click)="menu.toggle($event)">
+          <i class="pi pi-user"></i>
+          <span>Profile</span>
+        </button>
+      </div>
+      
 </div>
