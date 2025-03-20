@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { AuthService } from '../service/authent.service';
-import { catchError, Observable, of, switchMap } from 'rxjs';
+import { catchError, Observable, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
 import { throwError } from 'rxjs';
 
@@ -37,6 +37,7 @@ export class AuthInterceptor implements HttpInterceptor {
           alert('Votre session a expiré, veuillez vous reconnecter.');
           this.authService.removeToken();
           this.router.navigate(['/login']);
+          console.log(error);
           return throwError(() => new Error('Token expired or invalid'));
         })
       );

@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/co
 import { MenuItem } from 'primeng/api';
 import { LayoutService } from "../../service/app.layout.service";
 import { AuthService } from '../../../service/authent.service'; // Assure-toi que AuthService est bien importé
-import { Router, RouterLink } from '@angular/router'; // Assure-toi que Router est bien importé
+import { Router } from '@angular/router'; // Assure-toi que Router est bien importé
 import { OnInit, OnChanges } from '@angular/core';
 
 @Component({
