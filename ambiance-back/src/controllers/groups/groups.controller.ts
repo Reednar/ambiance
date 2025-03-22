@@ -113,6 +113,18 @@ export class GroupsController {
 
     return await this.GroupsService.findGroupsByUser(body.IdUtilisateur);
   }
+
+  @Post("groupUsers")
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get users in a specific group' })
+  async getUsersInGroup(@Body() body: { IdGroupe: number }) {
+    const groupe = await this.GroupsService.findOne(body.IdGroupe);
+    if (!groupe) {
+      throw new NotFoundException('Groupe non trouvé');
+    }
+
+    return await this.GroupsService.findUsersByGroup(body.IdGroupe);
+  }
 }
 
 

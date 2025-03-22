@@ -7,6 +7,8 @@ const bcrypt = require('bcrypt');
 
 @Injectable()
 export class AuthService {
+  private readonly refreshTokens = new Set<string>(); // Stockage en mémoire pour les tokens
+
   constructor(private readonly jwtService: JwtService, private readonly UsersService: UsersService) {}
 
   /**
@@ -14,23 +16,27 @@ export class AuthService {
    * retourne un token JWT signé.
    */
   async login(user: any) {
-    // Vérifiez les identifiants via UsersService
     const Visitor = await this.UsersService.findOneByMail(user.mail);
     if (!Visitor) {
-      throw new UnauthorizedException('mail invalides');
+      throw new UnauthorizedException('Mail invalide');
     }
 
-    // Comparez le mot de passe fourni avec le mot de passe chiffré stocké
     const isPasswordValid = await bcrypt.compare(user.password, Visitor.motDePasse);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('mot de passe invalides');
+      throw new UnauthorizedException('Mot de passe invalide');
     }
 
-    // Créez le payload du token
     const payload = { mail: user.mail, sub: Visitor.idUtilisateur };
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+
+    // Stocker le refresh token
+    this.refreshTokens.add(refreshToken);
+
     return {
-      access_token: this.jwtService.sign(payload, { expiresIn: '15m' }),
-      refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
+      access_token: accessToken,
+      refresh_token: refreshToken,
+      idUtilisateur: Visitor.idUtilisateur,
     };
   }
 
@@ -42,5 +48,21 @@ export class AuthService {
     } catch (error) {
       throw new UnauthorizedException('Refresh token invalide');
     }
+  }
+
+  async logout(refreshToken: string): Promise<void> {
+    // Invalider le refresh token
+    const isTokenRemoved = this.invalidateRefreshToken(refreshToken);
+    if (!isTokenRemoved) {
+      throw new UnauthorizedException('Refresh token invalide');
+    }
+  }
+
+  private invalidateRefreshToken(token: string): boolean {
+    if (this.refreshTokens.has(token)) {
+      this.refreshTokens.delete(token);
+      return true;
+    }
+    return false;
   }
 }

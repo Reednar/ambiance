@@ -124,4 +124,13 @@ export class GroupsService {
       .getMany();
   }
 
+  async findUsersByGroup(IdGroupe: number): Promise<{ nom: string; prenom: string; pseudo: string }[]> {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .select(['user.nom', 'user.prenom', 'user.pseudo'])
+      .innerJoin('Participation', 'participation', 'participation.idUtilisateur = user.idUtilisateur')
+      .where('participation.idGroupe = :IdGroupe', { IdGroupe })
+      .getRawMany();
+  }
+
 }
