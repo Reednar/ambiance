@@ -107,6 +107,26 @@ export class HomeComponent {
         views: 9125,
         comments: 12,
         date: new Date('2025-12-03')
+      },
+      {
+        image: '/assets/images/products/s7.jpg',
+        readTime: 2,
+        authorAvatar: '/assets/images/products/s7.jpg',
+        category: ['Health', 'World', 'World', 'World', 'World'],
+        title: 'COVID outbreak deepens as more lockdowns loom in China',
+        views: 9125,
+        comments: 12,
+        date: new Date('2025-12-03')
+      },
+      {
+        image: '/assets/images/products/s7.jpg',
+        readTime: 2,
+        authorAvatar: '/assets/images/products/s7.jpg',
+        category: ['Health', 'World', 'World', 'World', 'World'],
+        title: 'COVID outbreak deepens as more lockdowns loom in China',
+        views: 9125,
+        comments: 12,
+        date: new Date('2025-12-03')
       }
     ];
 

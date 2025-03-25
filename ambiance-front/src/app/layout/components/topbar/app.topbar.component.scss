@@ -1,0 +1,39 @@
+
+
+.layout-topbar-logo {
+    position: absolute;  // Positionne le logo au centre
+    left: 50%;           // Centre horizontalement
+    transform: translateX(-50%);  // Ajuste le positionnement pour centrer parfaitement
+    font-size: 24px;     // Ajuste la taille du texte si nécessaire
+    font-weight: bold;
+    text-align: center;
+}
+
+.layout-menu-button,
+.layout-topbar-menu-button {
+    margin-left: 10px;  // Ajuste l'espace entre les éléments si nécessaire
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.layout-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; // Assure-toi que la topbar est au-dessus des autres éléments
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 10px 20px;
+}
+
+.layout-main-container {
+    padding-top: 70px !important; // Forcer l'espace sous la topbar
+}

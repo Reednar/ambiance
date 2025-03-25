@@ -75,6 +75,28 @@ export class PublicationsComponent implements OnInit {
       ville: 3,
       codePostal: 78990,
       date: new Date('2025-12-01')
+    },
+    {
+      image: '/assets/images/products/s5.jpg',
+      prix: 2,
+      autheurAvatar: 'assets/avatar1.png',
+      categories: ['Social'],
+      titre: 'ntel loses bid to revive antitrust case against patent foe Fortress',
+      vus: 9125,
+      ville: 3,
+      codePostal: 78990,
+      date: new Date('2025-12-01')
+    },
+    {
+      image: '/assets/images/products/s7.jpg',
+      prix: 2,
+      autheurAvatar: 'assets/avatar1.png',
+      categories: ['Social', 'Technology'],
+      titre: 'COVID outbreak deepens as more lockdowns loom in China',
+      vus: 9125,
+      ville: 3,
+      codePostal: 78990,
+      date: new Date('2025-12-01')
     }
   ];
 
