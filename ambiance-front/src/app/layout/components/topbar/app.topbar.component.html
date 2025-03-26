@@ -1,6 +1,5 @@
 <div class="layout-topbar">
     <a class="layout-topbar-logo" routerLink="">
-         <!-- <img src="assets/layout/images/{{layoutService.config.colorScheme === 'light' ? 'logo_noir' : 'logo_blanc'}}.png" alt="logo"> -->
         <span>Ambiance</span>
     </a>
 
@@ -14,12 +13,59 @@
 
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
         <p-overlayPanel #menu>
-            <p-menu [model]="menuItems"></p-menu>
-          </p-overlayPanel>
-          
-          <button class="p-link layout-topbar-button" (click)="menu.toggle($event)">
-            <i class="pi pi-user"></i>
-            <span>Profile</span>
-          </button>
-    </div> 
+          <p-menu [model]="isConnected ? loggedInMenuItems : loggedOutMenuItems"></p-menu>
+        </p-overlayPanel>
+      
+        <button class="p-link layout-topbar-button" (click)="menu.toggle($event)">
+          <i class="pi pi-user"></i>
+          <span>Profile</span>
+        </button>
+      </div>
+      
 </div>
+
+<style>
+
+.layout-topbar-logo {
+    width: auto;
+    display: inline-block;
+    padding: 0;
+}
+
+.layout-wrapper {
+    padding-top: 0 !important;  /* Supprime tout padding en haut */
+}
+
+.layout-topbar {
+    margin-top: 0;  /* Évite tout espace en haut de la barre de navigation */
+    padding-left: 0; 
+  }
+
+  .layout-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 20px; 
+}
+
+.layout-topbar-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1; 
+    text-align: center;
+}
+
+.layout-topbar-logo span {
+    font-size: 24px; 
+    font-weight: bold;
+}
+
+.layout-menu-button,
+.layout-topbar-menu-button {
+    margin-left: 10px; 
+}
+
+
+</style>

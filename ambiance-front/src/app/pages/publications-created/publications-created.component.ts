@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import { Table } from 'primeng/table';
 @Component({
   selector: 'app-publications-created',
   templateUrl: './publications-created.component.html',
@@ -76,4 +76,31 @@ export class PublicationsCreatedComponent {
     }
   ];
 
+    searchQuery: string = '';
+    selectedCategory: string | null = null;
+    selectedCategories: string[] = [];
+    filteredPublications = [...this.publications];
+  
+    categories = [
+      { label: 'Social', value: 'Social' },
+      { label: 'Technology', value: 'Technology' }
+    ];
+  
+    ngOnInit() {
+      this.filteredPublications = [...this.publications];
+    }
+  
+    filterPublications() {
+      this.filteredPublications = this.publications.filter(pub => {
+        const matchesSearch = pub.titre.toLowerCase().includes(this.searchQuery.toLowerCase());
+        const matchesCategory = !this.selectedCategory || pub.categories.includes(this.selectedCategory);
+        const matchesMultiSelect = !this.selectedCategories.length || this.selectedCategories.some(cat => pub.categories.includes(cat));
+        
+        return matchesSearch && matchesCategory && matchesMultiSelect;
+      });
+    }
+  
+    onGlobalFilter(table: Table, event: Event){
+      table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+    }
 }

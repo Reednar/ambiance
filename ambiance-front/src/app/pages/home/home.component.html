@@ -1,24 +1,46 @@
-<h1>Bienvenue sur la page d'accueil</h1>
-<p>Contenu de la page d'accueil</p>
-
-<div class="articles-container">
-    <div class="article-card" *ngFor="let article of articles">
-        <div class="image-wrapper">
-            <img [src]="article.image" alt="Article image">
-            <span class="read-time">{{ article.readTime }} €</span>
+<div class="home-container">
+    <!-- Bannière -->
+    <div class="banner">
+        <img src="../../../assets/images/backgrounds/bde.png"  alt="Bannière Ambiance" class="banner-img">
+        <div class="overlay">
+            <h1 class="title">Bienvenue sur Ambiance</h1>
         </div>
-        <div class="article-content">
-            <div class="author-info">
-                <img [src]="article.authorAvatar" alt="Author">
-                <div class="categories">
-                    <span class="category" *ngFor="let cat of article.category">{{ cat }}</span>
-                </div>
+    </div>
+
+    <div class="articles-container">
+        <div class="article-card" *ngFor="let article of articles">
+            <div class="image-wrapper">
+                <img [src]="article.image" alt="Article image">
+                <span class="read-time">{{ article.readTime }} €</span>
             </div>
-            <h3 class="title">{{ article.title }}</h3>
-            <div class="article-meta">
-                <span class="views">{{ article.views | number }}</span>
-                <span class="date">{{ article.date | date: 'EEE, MMM yyyy' }}</span>
+            <div class="article-content">
+                <div class="author-info">
+                    <img [src]="article.authorAvatar" alt="Author">
+                    <div class="categories">
+                        <span class="category" *ngFor="let cat of article.category">{{ cat }}</span>
+                    </div>
+                </div>
+                <h3 class="title">{{ article.title }}</h3>
+                <div class="article-meta">
+                    <span class="views">{{ article.views | number }}</span>
+                    <span class="date">{{ article.date | date: 'EEE, MMM yyyy' }}</span>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    
+
+<style>
+    .layout-wrapper {
+    padding-top: 0 !important;  /* Supprime tout padding en haut */
+}
+
+.layout-topbar {
+    margin-top: 0;  /* Évite tout espace en haut de la barre de navigation */
+}
+
+.layout-main-container {
+    padding-top: 0 !important;
+}
+
+</style>

@@ -1,0 +1,69 @@
+// :host ::ng-deep {
+//   /* Style global de la table */
+//   .p-datatable-custom {
+//     background-color: #f7f9fc;
+//     border-radius: 12px;
+//     overflow: hidden;
+//     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+//   }
+
+//   /* En-tête */
+//   .p-datatable-gridlines th {
+//     background-color: #e3e7ed;
+//     font-size: 14px;
+//     color: #333;
+//     padding: 8px 12px;
+//     text-align: left;
+//   }
+
+//   /* Corps */
+//   .p-datatable-gridlines td {
+//     padding: 6px 10px;
+//     font-size: 13px;
+//     color: #555;
+//   }
+
+//   /* Effet au survol */
+//   tr:hover {
+//     background-color: #eef3f8;
+//   }
+
+//   /* Style pour les boutons */
+//   .button-group {
+//     display: flex;
+//     gap: 8px;
+//     align-items: center;
+//   }
+
+//   p-button {
+//     font-size: 12px;
+//     padding: 4px 10px;
+//     border-radius: 6px;
+//     transition: all 0.2s ease-in-out;
+//   }
+
+//   .p-button-info {
+//     background-color: #007bff;
+//     color: white;
+//     border: none;
+//   }
+
+//   .p-button-info:hover {
+//     background-color: #0056b3;
+//   }
+
+//   .p-button-danger {
+//     background-color: #dc3545;
+//     color: white;
+//     border: none;
+//   }
+
+//   .p-button-danger:hover {
+//     background-color: #b52b37;
+//   }
+
+//   /* Réduction de la hauteur des lignes */
+//   .p-datatable .p-datatable-tbody > tr {
+//     height: 36px;
+//   }
+// }
