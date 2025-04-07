@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = `${environment.baseUrl} /auth`; // URL de ton backend
+  private apiUrl = `${environment.baseUrl}/auth`; // URL de ton backend
   private isConnected = new BehaviorSubject<boolean>(this.isLoggedIn());
   isConnected$ = this.isConnected.asObservable();
   constructor(private http: HttpClient, private router: Router) 
@@ -78,7 +78,7 @@ export class AuthService {
     const refreshToken = this.getRefreshToken();
   
     return this.http.post<{ access_token: string }>(
-      `${environment.baseUrl} /auth/refresh`,
+      `${environment.baseUrl}/auth/refresh`,
       { refreshToken }
     ).pipe(
       tap(response => {
