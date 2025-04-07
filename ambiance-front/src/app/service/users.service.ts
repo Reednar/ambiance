@@ -2,14 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../entity/users';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 
 export class UsersService {
-    private url = 'http://localhost:3008/api/users';
-  
+    private url = `${environment.baseUrl}/users`;
+
     constructor(private http: HttpClient) {}
   
     // Récupérer tous les utilisateurs
