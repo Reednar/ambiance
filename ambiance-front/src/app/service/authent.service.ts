@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3008/api/auth'; // URL de ton backend
+  private apiUrl = `${environment.baseUrl} /auth`; // URL de ton backend
   private isConnected = new BehaviorSubject<boolean>(this.isLoggedIn());
   isConnected$ = this.isConnected.asObservable();
   constructor(private http: HttpClient, private router: Router) 
@@ -17,12 +18,9 @@ export class AuthService {
   isLoggedIn(): boolean {
     // const token = localStorage.getItem('access_token');
     const token = sessionStorage.getItem('access_token');
-    console.log('Token:', token);
-  
     if (token) {
       const parts = token.split('.'); // Diviser le token par des points
       if (parts.length !== 3) {
-        console.error('Token malformé');
         return false; // Si le token n'a pas 3 parties, il est invalide
       }
   
@@ -31,7 +29,6 @@ export class AuthService {
         const expirationDate = decodedToken.exp * 1000; // Convertir en millisecondes
         return expirationDate > Date.now();
       } catch (error) {
-        console.error('Erreur de décodage du token', error);
         return false; // Si le décodage échoue, le token est invalide
       }
     }
@@ -46,9 +43,6 @@ export class AuthService {
 
     return this.http.post<{ access_token: string; refresh_token: string }>(`${this.apiUrl}/login`, user).pipe(
       tap(response => {
-        console.log('Réponse du serveur', response);
-        console.log('access token lors du login : ', response.access_token);
-
         this.saveToken(response.access_token, response.refresh_token);
         this.isConnected.next(true);
       })
@@ -56,7 +50,6 @@ export class AuthService {
   }
 
   saveToken(accessToken: string, refreshToken: string): void {
-    console.log('Enregistrement du token dans localStorage', accessToken);
     // localStorage.setItem('access_token', accessToken);
     // localStorage.setItem('refresh_token', refreshToken);
     sessionStorage.setItem('access_token', accessToken);
@@ -67,15 +60,13 @@ export class AuthService {
   getToken(): string | null {
     const token = sessionStorage.getItem('access_token');
     // const token = localStorage.getItem('access_token');
-    console.log('Récupération du token depuis localStorage', token);
     return token;
   }
 
   logout(): void {
     this.removeToken();
     this.isConnected.next(false);
-    console.log("isconnected value : " + this.isConnected);
-    this.router.navigate(['//login']);
+    this.router.navigate(['/login']);
   }
   
   getRefreshToken(): string | null {
@@ -87,7 +78,7 @@ export class AuthService {
     const refreshToken = this.getRefreshToken();
   
     return this.http.post<{ access_token: string }>(
-      'http://localhost:3000/auth/refresh',
+      `${environment.baseUrl} /auth/refresh`,
       { refreshToken }
     ).pipe(
       tap(response => {

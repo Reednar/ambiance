@@ -130,14 +130,6 @@ export class AppConfigComponent implements OnDestroy, OnInit {
 
     if (data.event === 'inboundCall') {
       this.iframeVisible = true;
-      console.log('hello');
-      console.log('Inbound Call Details:', {
-        value: JSON.stringify(data.data.variables),
-        output1: data.data.contactNumber,
-        output2: data.data.serviceName,
-        output3: data.data.variables.contact,
-        output4: data.data.variables.idticket
-      });
     } else if (data.event === 'agentStatusChanged') {
       if ((data.data.currentStatus === 'Disponible' && data.data.previousStatus === 'En traitement') || (data.data.currentStatus === 'Available' && data.data.previousStatus === 'Working')) {
         if(this.connected == true){

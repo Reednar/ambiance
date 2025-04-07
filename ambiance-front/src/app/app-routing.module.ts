@@ -29,7 +29,6 @@ const routes: Routes = [
 })
 export class AppRoutingModule { 
   constructor(private router: Router) {
-    // Écoute les événements de navigation
     this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
         console.log('Navigation started');
