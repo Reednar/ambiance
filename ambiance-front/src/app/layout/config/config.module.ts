@@ -27,12 +27,6 @@ import { BrowserModule } from '@angular/platform-browser';
         BrowserModule,
         BrowserAnimationsModule,
         ToastModule
-    ],
-    declarations: [
-        AppConfigComponent
-    ],
-    exports: [
-        AppConfigComponent
     ]
 })
 export class AppConfigModule { }
