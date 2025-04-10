@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    environment {
+        SONARQUBE_SERVER = 'https://sonarqube.ambiance-ensitech.me'   // L'URL de ton serveur SonarQube
+        SONAR_TOKEN = credentials('sonar-token')   // Nom du secret Jenkins pour le token SonarQube
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout du code depuis GitHub
+                git 'https://github.com/Reednar/ambiance.git'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    // Exécution de l'analyse SonarQube
+                    withSonarQubeEnv('SonarQubeServer') {  // Utilise ton 'SonarQube' configuré dans Jenkins
+                        sh '''
+                        sonar-scanner \
+                          -Dsonar.projectKey=Ambiance \
+                          -Dsonar.projectName=Ambiance \
+                          -Dsonar.host.url=${SONARQUBE_SERVER} \
+                          -Dsonar.login=${SONAR_TOKEN} \
+                          -Dsonar.branch.name=${env.BRANCH_NAME}  // Utilise la branche git en cours
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                script {
+                    // Attend que l'analyse soit finie et récupère le résultat du Quality Gate
+                    timeout(time: 1, unit: 'HOURS') {
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()  // Nettoyage de l'espace de travail après le build
+        }
+    }
+}
