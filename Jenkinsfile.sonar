@@ -3,6 +3,9 @@ node {
     def SONARQUBE_SERVER = 'https://sonarqube.ambiance-ensitech.me'
     def SONAR_TOKEN = credentials('sonar-token')
 
+    // Récupération du secret pour le webhook
+    def secretWebhook = credentials('secret-webhook-sonarqube')
+
     stage('Checkout') {
         git 'https://github.com/Reednar/ambiance.git'
     }
@@ -15,6 +18,20 @@ node {
                 -Dsonar.projectName=Ambiance \\
                 -Dsonar.host.url=${SONARQUBE_SERVER}
             """
+        }
+    }
+
+    stage('Webhook Validation') {
+        // Vérification du secret reçu dans le webhook
+        script {
+            // Suppose que le secret envoyé par SonarQube est dans l'en-tête "X-Sonar-Webhook-Secret"
+            def receivedSecret = request.getHeader('X-Sonar-Webhook-Secret')
+
+            if (receivedSecret != secretWebhook) {
+                error("Invalid webhook secret")
+            } else {
+                echo "Webhook secret valid"
+            }
         }
     }
 
