@@ -9,17 +9,12 @@ node {
 
     stage('SonarQube Analysis') {
         withSonarQubeEnv('SonarQubeServer') {
-            sh """#!/bin/bash
-                export SONARQUBE_SERVER="${SONARQUBE_SERVER}"
-                export SONAR_TOKEN="${SONAR_TOKEN}"
-                export CHANGE_BRANCH="${env.CHANGE_BRANCH}"
-
+            sh """
                 sonar-scanner \\
-                  -Dsonar.projectKey=Ambiance \\
-                  -Dsonar.projectName=Ambiance \\
-                  -Dsonar.host.url="\$SONARQUBE_SERVER" \\
-                  -Dsonar.login="\$SONAR_TOKEN" \\
-                  -Dsonar.branch.name="\$CHANGE_BRANCH"
+                -Dsonar.projectKey=Ambiance \\
+                -Dsonar.projectName=Ambiance \\
+                -Dsonar.host.url=${SONARQUBE_SERVER} \\
+                -Dsonar.branch.name="${env.CHANGE_BRANCH}"
             """
         }
     }
