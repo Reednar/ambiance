@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script {
                     echo "Initialisation : checkout du code source"
-                    checkout scm // Permet d'éviter les erreurs avec file not found pour les fichiers Jenkinsfile.sonar et Jenkinsfile.deploy
+                    checkout scm // Permet d'éviter les erreurs avec file not found pour les fichiers Jenkinsfile.sonar et Jenkinsfile.deploy.
                 }
             }
         }
