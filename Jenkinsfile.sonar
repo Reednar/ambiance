@@ -25,7 +25,7 @@ pipeline {
                           -Dsonar.projectName=Ambiance \
                           -Dsonar.host.url=${SONARQUBE_SERVER} \
                           -Dsonar.login=${SONAR_TOKEN} \
-                          -Dsonar.branch.name=${env.BRANCH_NAME}  // Utilise la branche git en cours
+                          -Dsonar.branch.name="${env.CHANGE_BRANCH}"  // Utilise la branche git en cours
                         '''
                     }
                 }
@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     // Attend que l'analyse soit finie et récupère le résultat du Quality Gate
-                    timeout(time: 1, unit: 'HOURS') {
+                    timeout(time: 1, unit: 'MINUTES') {
                         waitForQualityGate abortPipeline: true
                     }
                 }
