@@ -21,20 +21,6 @@ node {
         }
     }
 
-    stage('Webhook Validation') {
-        // Vérification du secret reçu dans le webhook
-        script {
-            // Suppose que le secret envoyé par SonarQube est dans l'en-tête "X-Sonar-Webhook-Secret"
-            def receivedSecret = request.getHeader('X-Sonar-Webhook-Secret')
-
-            if (receivedSecret != secretWebhook) {
-                error("Invalid webhook secret")
-            } else {
-                echo "Webhook secret valid"
-            }
-        }
-    }
-
     stage('Quality Gate') {
         timeout(time: 5, unit: 'MINUTES') {
             waitForQualityGate abortPipeline: true
