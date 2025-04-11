@@ -1,52 +1,33 @@
-pipeline {
-    agent any
+node {
+    // Déclaration des variables d'environnement
+    def SONARQUBE_SERVER = 'https://sonarqube.ambiance-ensitech.me'
+    def SONAR_TOKEN = credentials('sonar-token')
 
-    environment {
-        SONARQUBE_SERVER = 'https://sonarqube.ambiance-ensitech.me'   // L'URL de ton serveur SonarQube
-        SONAR_TOKEN = credentials('sonar-token')   // Nom du secret Jenkins pour le token SonarQube
+    // Récupération du secret pour le webhook
+    def secretWebhook = credentials('secret-webhook-sonarqube')
+
+    stage('Checkout') {
+        git 'https://github.com/Reednar/ambiance.git'
     }
 
-    stages {
-        stage('Checkout') {
-            steps {
-                // Checkout du code depuis GitHub
-                git 'https://github.com/Reednar/ambiance.git'
-            }
-        }
-
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    // Exécution de l'analyse SonarQube
-                    withSonarQubeEnv('SonarQubeServer') {  // Utilise ton 'SonarQube' configuré dans Jenkins
-                        sh '''
-                        sonar-scanner \
-                          -Dsonar.projectKey=Ambiance \
-                          -Dsonar.projectName=Ambiance \
-                          -Dsonar.host.url=${SONARQUBE_SERVER} \
-                          -Dsonar.login=${SONAR_TOKEN} \
-                          -Dsonar.branch.name="${env.CHANGE_BRANCH}"  // Utilise la branche git en cours
-                        '''
-                    }
-                }
-            }
-        }
-
-        stage('Quality Gate') {
-            steps {
-                script {
-                    // Attend que l'analyse soit finie et récupère le résultat du Quality Gate
-                    timeout(time: 1, unit: 'MINUTES') {
-                        waitForQualityGate abortPipeline: true
-                    }
-                }
-            }
+    stage('SonarQube Analysis') {
+        withSonarQubeEnv('SonarQubeServer') {
+            sh """
+                sonar-scanner \\
+                -Dsonar.projectKey=Ambiance \\
+                -Dsonar.projectName=Ambiance \\
+                -Dsonar.host.url=${SONARQUBE_SERVER}
+            """
         }
     }
 
-    post {
-        always {
-            cleanWs()  // Nettoyage de l'espace de travail après le build
+    stage('Quality Gate') {
+        timeout(time: 5, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
         }
+    }
+
+    stage('Cleanup') {
+        cleanWs()
     }
 }
