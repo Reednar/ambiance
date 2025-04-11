@@ -16,25 +16,57 @@ node {
     ]) {
 
         stage('Checkout') {
+            script {
+                def startCheckout = new Date()
+                echo "🔧 Checkout started at: ${startCheckout}"
+            }
             git branch: 'develop', url: 'git@github.com:Reednar/ambiance.git'
+            script {
+                def endCheckout = new Date()
+                echo "✅ Checkout done at: ${endCheckout} (Duration: ${(endCheckout.time - startCheckout.time)/1000} sec)"
+            }
         }
 
         stage('Setup Environment') {
+            script {
+                def startSetupEnv = new Date()
+                echo "🔧 Setup Environment started at: ${startSetupEnv}"
+            }
             sh '''
                 export NVM_DIR="$HOME/.nvm"
                 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
                 echo "Using Node.js version: $(node -v)"
                 echo "Using npm version: $(npm -v)"
             '''
+            script {
+                def endSetupEnv = new Date()
+                echo "✅ Setup Environment done at: ${endSetupEnv} (Duration: ${(endSetupEnv.time - startSetupEnv.time)/1000} sec)"
+            }
         }
 
         stage('Install Dependencies') {
             parallel(
                 "Install Frontend Dependencies": {
-                    sh 'cd ambiance-front && npm install'
+                    script {
+                        def startFrontendInstall = new Date()
+                        echo "🔧 Frontend dependencies installation started at: ${startFrontendInstall}"
+                    }
+                    sh 'cd ambiance-front && npm ci --prefer-offline'
+                    script {
+                        def endFrontendInstall = new Date()
+                        echo "✅ Frontend dependencies installed at: ${endFrontendInstall} (Duration: ${(endFrontendInstall.time - startFrontendInstall.time)/1000} sec)"
+                    }
                 },
                 "Install Backend Dependencies": {
-                    sh 'cd ambiance-back && npm install'
+                    script {
+                        def startBackendInstall = new Date()
+                        echo "🔧 Backend dependencies installation started at: ${startBackendInstall}"
+                    }
+                    sh 'cd ambiance-back && npm ci'
+                    script {
+                        def endBackendInstall = new Date()
+                        echo "✅ Backend dependencies installed at: ${endBackendInstall} (Duration: ${(endBackendInstall.time - startBackendInstall.time)/1000} sec)"
+                    }
                 }
             )
         }
@@ -42,37 +74,81 @@ node {
         stage('Build Projects') {
             parallel(
                 "Build Angular Frontend": {
-                    sh 'cd ambiance-front && npm run build --omit=dev'
+                    script {
+                        def startFrontendBuild = new Date()
+                        echo "🔧 Angular frontend build started at: ${startFrontendBuild}"
+                    }
+                    sh 'cd ambiance-front && npm run build'
+                    script {
+                        def endFrontendBuild = new Date()
+                        echo "✅ Angular frontend build completed at: ${endFrontendBuild} (Duration: ${(endFrontendBuild.time - startFrontendBuild.time)/1000} sec)"
+                    }
                 },
                 "Build NestJS Backend": {
+                    script {
+                        def startBackendBuild = new Date()
+                        echo "🔧 NestJS backend build started at: ${startBackendBuild}"
+                    }
                     sh 'cd ambiance-back && npm run build'
+                    script {
+                        def endBackendBuild = new Date()
+                        echo "✅ NestJS backend build completed at: ${endBackendBuild} (Duration: ${(endBackendBuild.time - startBackendBuild.time)/1000} sec)"
+                    }
                 }
             )
         }
 
         stage('Deploy Angular') {
+            script {
+                def startDeployFrontend = new Date()
+                echo "🔧 Angular deployment started at: ${startDeployFrontend}"
+            }
             sh """
                 rm -rf ${FRONT_DIR}/*
                 cp -r ambiance-front/dist/* ${FRONT_DIR}/
             """
+            script {
+                def endDeployFrontend = new Date()
+                echo "✅ Angular deployment completed at: ${endDeployFrontend} (Duration: ${(endDeployFrontend.time - startDeployFrontend.time)/1000} sec)"
+            }
         }
 
         stage('Deploy NestJS') {
+            script {
+                def startDeployBackend = new Date()
+                echo "🔧 NestJS deployment started at: ${startDeployBackend}"
+            }
             sh """
                 rm -rf ${BACK_DIR}/*
                 cp -r ambiance-back/dist/* ${BACK_DIR}/
                 cp ambiance-back/package*.json ${BACK_DIR}/
             """
+            script {
+                def endDeployBackend = new Date()
+                echo "✅ NestJS deployment completed at: ${endDeployBackend} (Duration: ${(endDeployBackend.time - startDeployBackend.time)/1000} sec)"
+            }
         }
 
         stage('Install Backend Production Dependencies') {
+            script {
+                def startBackendProdInstall = new Date()
+                echo "🔧 Backend production dependencies installation started at: ${startBackendProdInstall}"
+            }
             sh """
                 cd ${BACK_DIR}
                 npm ci --omit=dev
             """
+            script {
+                def endBackendProdInstall = new Date()
+                echo "✅ Backend production dependencies installed at: ${endBackendProdInstall} (Duration: ${(endBackendProdInstall.time - startBackendProdInstall.time)/1000} sec)"
+            }
         }
 
         stage('Inject .env') {
+            script {
+                def startInjectEnv = new Date()
+                echo "🔧 Injecting .env started at: ${startInjectEnv}"
+            }
             sh """
                 rm -f ${BACK_DIR}/.env
                 cat <<EOF > ${BACK_DIR}/.env
@@ -84,9 +160,17 @@ DATABASE_PASSWORD=${DATABASE_PASSWORD}
 DATABASE_NAME=${DATABASE_NAME}
 EOF
             """
+            script {
+                def endInjectEnv = new Date()
+                echo "✅ .env injected at: ${endInjectEnv} (Duration: ${(endInjectEnv.time - startInjectEnv.time)/1000} sec)"
+            }
         }
 
         stage('Restart NestJS') {
+            script {
+                def startRestartNestJS = new Date()
+                echo "🔧 Restarting NestJS started at: ${startRestartNestJS}"
+            }
             sh """
                 cd ${BACK_DIR}
                 if pm2 describe nestjs > /dev/null; then
@@ -96,6 +180,10 @@ EOF
                 fi
                 pm2 save
             """
+            script {
+                def endRestartNestJS = new Date()
+                echo "✅ Restarted NestJS at: ${endRestartNestJS} (Duration: ${(endRestartNestJS.time - startRestartNestJS.time)/1000} sec)"
+            }
         }
     }
 }
