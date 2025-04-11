@@ -42,10 +42,14 @@ node {
         stage('Build Projects') {
             parallel(
                 "Build Angular Frontend": {
-                    sh 'cd ambiance-front && npm run build'
+                    timeout(time: 10, unit: 'MINUTES') {
+                        sh 'cd ambiance-front && npm run build'
+                    }
                 },
                 "Build NestJS Backend": {
-                    sh 'cd ambiance-back && npm run build'
+                    timeout(time: 10, unit: 'MINUTES') {
+                        sh 'cd ambiance-back && npm run build'
+                    }
                 }
             )
         }
