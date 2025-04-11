@@ -1,10 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ChatGateway } from '../../gateways/chat.gateway';
-import { MessagesModule } from '../messages/messages.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Message } from '../../entities/messages.entity';
+import { User } from '../../entities/users.entity';
+import { Discussion } from '../../entities/discussions.entity';
+import { MessageService } from '../../services/messages/messages.service';
 
 @Module({
-  imports: [MessagesModule], // Importez MessagesModule pour accéder à MessagesService
-  providers: [ChatGateway], // Fournissez ChatGateway
-  exports: [ChatGateway], // Exportez ChatGateway si nécessaire
+  imports: [
+    TypeOrmModule.forFeature([Message, User, Discussion]),
+  ],
+  providers: [ChatGateway, MessageService],
 })
 export class ChatModule {}

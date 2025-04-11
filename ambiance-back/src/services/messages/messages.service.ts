@@ -1,62 +1,71 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Message } from '../../entities/messages.entity';
-import { User } from '../../entities/users.entity'; // Import de l'entité User
-import { Discussion } from '../../entities/discussions.entity'; // Import de l'entité Discussion
+import { User } from '../../entities/users.entity';
+import { Discussion } from '../../entities/discussions.entity';
 
 @Injectable()
-export class MessagesService {
+export class MessageService {
   constructor(
     @InjectRepository(Message)
-    private readonly messagesRepository: Repository<Message>,
+    private messageRepository: Repository<Message>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
     @InjectRepository(Discussion)
-    private readonly discussionRepository: Repository<Discussion>,
+    private discussionRepository: Repository<Discussion>,
   ) {}
 
-  async create(messageData: Partial<Message>): Promise<Message> {
-    const message = this.messagesRepository.create(messageData);
-    return await this.messagesRepository.save(message);
+  async create(data: any): Promise<Message> {
+    const user = await this.userRepository.findOneByOrFail({ idUtilisateur: data.idUtilisateur });
+    const discussion = await this.discussionRepository.findOneByOrFail({ idDiscussion: data.idDiscussion });
+
+    const message = this.messageRepository.create({
+      contenu: data.contenu,
+      idUtilisateur: user,
+      idDiscussion: discussion,
+    });
+
+    return this.messageRepository.save(message);
   }
 
-  async findByDiscussion(discussionId: number): Promise<Message[]> {
-    return await this.messagesRepository.find({
-      where: { idDiscussion: { idDiscussion: discussionId } as Discussion },
+  findAll(): Promise<Message[]> {
+    return this.messageRepository.find({ relations: ['idUtilisateur', 'idDiscussion'] });
+  }
+
+  async findOne(id: number): Promise<Message> {
+    const message = await this.messageRepository.findOne({
+      where: { idMessage: id },
       relations: ['idUtilisateur', 'idDiscussion'],
-      order: { dateEnvoi: 'ASC' },
     });
+    if (!message) {
+      throw new NotFoundException(`Message ${id} non trouvé`);
+    }
+    return message;
   }
 
-  async getUserById(userId: number): Promise<User | null> {
-    return await this.messagesRepository.manager.findOne(User, { where: { idUtilisateur: userId } });
+  async update(id: number, data: any): Promise<Message> {
+    const message = await this.findOne(id);
+
+    if (data.contenu !== undefined) {
+      message.contenu = data.contenu;
+    }
+
+    if (data.idUtilisateur !== undefined) {
+      const user = await this.userRepository.findOneByOrFail({ idUtilisateur: data.idUtilisateur });
+      message.idUtilisateur = user;
+    }
+
+    if (data.idDiscussion !== undefined) {
+      const discussion = await this.discussionRepository.findOneByOrFail({ idDiscussion: data.idDiscussion });
+      message.idDiscussion = discussion;
+    }
+
+    return this.messageRepository.save(message);
   }
 
-  async getDiscussionById(discussionId: number): Promise<Discussion | null> {
-    return await this.messagesRepository.manager.findOne(Discussion, { where: { idDiscussion: discussionId } });
-  }
-
-  async createDiscussion(title: string, participants: number[]): Promise<Discussion> {
-    const newDiscussion = this.discussionRepository.create({
-      typeDiscussion: 1, // Exemple de type
-      dateCreation: new Date(),
-    });
-    return await this.discussionRepository.save(newDiscussion);
-  }
-
-  async updateDiscussion(id: number, updateData: Partial<Discussion>): Promise<Discussion> {
-    await this.discussionRepository.update(id, updateData);
-    return await this.discussionRepository.findOneBy({ idDiscussion: id });
-  }
-
-  async deleteDiscussion(id: number): Promise<void> {
-    await this.discussionRepository.delete(id);
-  }
-
-  async findDiscussionById(id: number): Promise<Discussion> {
-    return await this.discussionRepository.findOneBy({ idDiscussion: id });
-  }
-
-  async findAllDiscussions(): Promise<Discussion[]> {
-    return await this.discussionRepository.find();
+  async remove(id: number): Promise<void> {
+    const message = await this.findOne(id);
+    await this.messageRepository.remove(message);
   }
 }

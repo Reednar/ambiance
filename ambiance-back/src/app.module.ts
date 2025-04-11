@@ -21,20 +21,24 @@ import { Participation } from './entities/participation.entity';
 import { ParticipationModule } from './modules/participation/participation.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { Paiement } from './entities/paiements.entity'; // Import Paiement entity
-import { MessagesService } from './services/messages/messages.service';
-import { MessagesController } from './controllers/discussion/discussion.controller';
 import { Message } from './entities/messages.entity';
 import { MessagesModule } from './modules/messages/messages.module';
 import { Discussion } from './entities/discussions.entity';
+import { DiscussionService } from './services/discussion/discussion.service';
+import { DiscussionController } from './controllers/discussions/discussions.controller';
 //websocket 
 import { ChatGateway } from './gateways/chat.gateway';
 import { ChatModule } from './modules/chat/chat.module';
+import { MessageService } from './services/messages/messages.service';
+import { DiscussionModule } from './modules/discussions/discussions.module';
+
 @Module({
   controllers: [
     AppController,
     PublicationsController,
     UsersController,
     GroupsController,
+    DiscussionController,
   ],
   imports: [
     ConfigModule.forRoot({
@@ -68,6 +72,7 @@ import { ChatModule } from './modules/chat/chat.module';
     CommentairesModule,
     ParticipationModule,
     AuthModule,
+    DiscussionModule,
     MessagesModule,
     ChatModule,
     // Mettre les autres modules ici

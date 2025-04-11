@@ -1,37 +1,60 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Discussion } from '../../entities/discussions.entity';
+import { Groupe } from '../../entities/groups.entity';
 
 @Injectable()
 export class DiscussionService {
   constructor(
     @InjectRepository(Discussion)
-    private readonly discussionRepository: Repository<Discussion>,
+    private discussionRepository: Repository<Discussion>,
+    @InjectRepository(Groupe)
+    private groupeRepository: Repository<Groupe>,
   ) {}
 
-  async createDiscussion(title: string, participants: number[]): Promise<Discussion> {
-    const newDiscussion = this.discussionRepository.create({
-      typeDiscussion: 1, // Exemple de type, ajustez selon vos besoins
-      dateCreation: new Date(),
+  async create(data: any): Promise<Discussion> {
+    const groupe = await this.groupeRepository.findOneByOrFail({ idGroupe: data.idGroupe });
+    const discussion = this.discussionRepository.create({
+      typeDiscussion: data.typeDiscussion,
+      idGroupe: groupe,
     });
-    return await this.discussionRepository.save(newDiscussion);
+    return this.discussionRepository.save(discussion);
   }
 
-  async updateDiscussion(id: number, updateData: Partial<Discussion>): Promise<Discussion> {
-    await this.discussionRepository.update(id, updateData);
-    return await this.discussionRepository.findOneBy({ idDiscussion: id });
+  findAll(): Promise<Discussion[]> {
+    return this.discussionRepository.find({ relations: ['idGroupe'] });
   }
 
-  async deleteDiscussion(id: number): Promise<void> {
-    await this.discussionRepository.delete(id);
+  async findOne(id: number): Promise<Discussion> {
+    const discussion = await this.discussionRepository.findOne({
+      where: { idDiscussion: id },
+      relations: ['idGroupe'],
+    });
+    if (!discussion) {
+      throw new NotFoundException(`Discussion ${id} non trouvée`);
+    }
+    return discussion;
   }
 
-  async findDiscussionById(id: number): Promise<Discussion> {
-    return await this.discussionRepository.findOneBy({ idDiscussion: id });
+  async update(id: number, data: any): Promise<Discussion> {
+    const discussion = await this.findOne(id);
+
+    if (data.typeDiscussion !== undefined) {
+      discussion.typeDiscussion = data.typeDiscussion;
+    }
+
+    if (data.idGroupe !== undefined) {
+    const groupe = await this.groupeRepository.findOneByOrFail({ idGroupe: data.idGroupe });
+
+      discussion.idGroupe = groupe;
+    }
+
+    return this.discussionRepository.save(discussion);
   }
 
-  async findAllDiscussions(): Promise<Discussion[]> {
-    return await this.discussionRepository.find();
+  async remove(id: number): Promise<void> {
+    const discussion = await this.findOne(id);
+    await this.discussionRepository.remove(discussion);
   }
 }

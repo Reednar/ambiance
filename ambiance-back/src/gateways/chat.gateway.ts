@@ -1,43 +1,56 @@
-// filepath: ambiance-back/src/gateways/chat.gateway.ts
 import {
   WebSocketGateway,
   WebSocketServer,
   SubscribeMessage,
   MessageBody,
   ConnectedSocket,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { MessagesService } from '../services/messages/messages.service';
+import { MessageService } from '../services/messages/messages.service';
+import { User } from '../entities/users.entity';
+import { Discussion } from '../entities/discussions.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @WebSocketGateway({ cors: true })
-export class ChatGateway {
+export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  constructor(private readonly messagesService: MessagesService) {}
+  constructor(
+    private readonly messageService: MessageService,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Discussion)
+    private readonly discussionRepository: Repository<Discussion>,
+  ) {}
 
   @SubscribeMessage('sendMessage')
   async handleMessage(
-    @MessageBody() message: { senderId: number; discussionId: number; content: string },
+    @MessageBody()
+    payload: { senderId: number; discussionId: number; content: string },
     @ConnectedSocket() client: Socket,
   ): Promise<void> {
-    // Fetch the User and Discussion entities
-    const user = await this.messagesService.getUserById(message.senderId);
-    const discussion = await this.messagesService.getDiscussionById(message.discussionId);
+    try {
+      const user = await this.userRepository.findOneByOrFail({ idUtilisateur: payload.senderId });
+      const discussion = await this.discussionRepository.findOneByOrFail({ idDiscussion: payload.discussionId });
 
-    if (!user || !discussion) {
-      throw new Error('User or Discussion not found');
+      const savedMessage = await this.messageService.create({
+        contenu: payload.content,
+        idUtilisateur: user.idUtilisateur, 
+        idDiscussion: discussion.idDiscussion,  
+      });
+      
+      console.log('Message sauvegardé :', savedMessage);
+
+      //this.server.emit('receiveMessage', savedMessage);
+      client.emit("receiveMessage", "ah gros on est la ");
+    } catch (error) {
+      console.error('Erreur lors de l’envoi du message :', error.message);
+      client.emit('errorMessage', { message: error.message });
     }
-
-    // Save the message in the database
-    const savedMessage = await this.messagesService.create({
-      contenu: message.content,
-      idUtilisateur: user, // Pass the full User entity
-      idDiscussion: discussion, // Pass the full Discussion entity
-    });
-
-    // Broadcast the message to all connected clients
-    this.server.emit('receiveMessage', savedMessage);
   }
 
   handleConnection(client: Socket): void {

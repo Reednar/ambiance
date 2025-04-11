@@ -8,8 +8,8 @@ socket.on("connect", () => {
 
   socket.emit("sendMessage", {
     senderId: 1,
-    discussionId: 2,
-    content: "Hello depuis le client test",
+    discussionId: 1,
+    content: "moi je vais bien alors que pensez vous de l'evenement ?",
   });
 });
 
