@@ -3,19 +3,27 @@ node {
     def SONAR_TOKEN = credentials('sonar-token')
     def secretWebhook = credentials('secret-webhook-sonarqube')
 
+    // Récupération de la branche cible de la PR
+    def currentBranch = env.BRANCH_NAME
+    def targetBranch = sh(script: "git rev-parse --abbrev-ref HEAD", returnStdout: true).trim()
+    
+    // Affichage des informations de branche pour le débogage
+    echo "🧪 Current Branch: ${currentBranch}"
+    echo "🧪 Target Branch (PR): ${targetBranch}"
+
     stage('Checkout') {
-        git 'https://github.com/Reednar/ambiance.git'
+        // On fait un checkout de la branche spécifique de la PR
+        checkout scm
     }
 
     stage('SonarQube Analysis') {
-        echo "🧪 BRANCH_NAME = ${env.BRANCH_NAME}"
-
-        if (env.BRANCH_NAME == 'develop' || env.BRANCH_NAME.startsWith('PR-')) {
+        // L'analyse est lancée uniquement si la branche est 'develop' ou une PR vers 'develop'
+        if (currentBranch == 'develop' || currentBranch.startsWith('PR-')) {
             withSonarQubeEnv('SonarQubeServer') {
                 sh """
                     sonar-scanner \\
-                    -Dsonar.projectKey=ambiance-develop \\
-                    -Dsonar.projectName=ambiance-develop \\
+                    -Dsonar.projectKey=ambiance \\
+                    -Dsonar.projectName=ambiance \\
                     -Dsonar.host.url=${SONARQUBE_SERVER} \\
                     -Dsonar.sources=. \\
                     -Dsonar.java.binaries=build \\
@@ -28,7 +36,7 @@ node {
     }
 
     stage('Quality Gate') {
-        if (env.BRANCH_NAME == 'develop' || env.BRANCH_NAME.startsWith('PR-')) {
+        if (currentBranch == 'develop' || currentBranch.startsWith('PR-')) {
             timeout(time: 5, unit: 'MINUTES') {
                 waitForQualityGate abortPipeline: true
             }
