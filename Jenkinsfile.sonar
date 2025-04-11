@@ -5,10 +5,14 @@ node {
     def secretWebhook = credentials('secret-webhook-sonarqube')
 
     stage('Checkout') {
-        git 'https://github.com/Reednar/ambiance.git'
+        checkout([$class: 'GitSCM',
+            branches: [[name: '*/develop']],
+            userRemoteConfigs: [[url: 'https://github.com/Reednar/ambiance.git']]
+        ])
     }
 
     stage('SonarQube Analysis') {
+        echo "🧪 BRANCH_NAME = ${env.BRANCH_NAME}"
         // Vérifie si on est sur la branche develop
         if (env.BRANCH_NAME == 'develop') {
             withSonarQubeEnv('SonarQubeServer') {
