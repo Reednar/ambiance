@@ -2,8 +2,6 @@ node {
     // Déclaration des variables d'environnement
     def SONARQUBE_SERVER = 'https://sonarqube.ambiance-ensitech.me'
     def SONAR_TOKEN = credentials('sonar-token')
-
-    // Récupération du secret pour le webhook
     def secretWebhook = credentials('secret-webhook-sonarqube')
 
     stage('Checkout') {
@@ -11,22 +9,32 @@ node {
     }
 
     stage('SonarQube Analysis') {
-        withSonarQubeEnv('SonarQubeServer') {
-            sh """
-                sonar-scanner \\
-                -Dsonar.projectKey=ambiance \\
-                -Dsonar.projectName=ambiance \\
-                -Dsonar.host.url=${SONARQUBE_SERVER} \\
-                -Dsonar.sources=. \\
-                -Dsonar.java.binaries=build \\
-                -Dsonar.newCode.period=30
-            """
+        // Vérifie si on est sur la branche develop
+        if (env.BRANCH_NAME == 'develop') {
+            withSonarQubeEnv('SonarQubeServer') {
+                sh """
+                    sonar-scanner \\
+                    -Dsonar.projectKey=ambiance-develop \\
+                    -Dsonar.projectName=ambiance-develop \\
+                    -Dsonar.host.url=${SONARQUBE_SERVER} \\
+                    -Dsonar.sources=. \\
+                    -Dsonar.java.binaries=build \\
+                    -Dsonar.newCode.period=30
+                """
+            }
+        } else {
+            echo "🔁 Skipping SonarQube analysis (current branch: ${env.BRANCH_NAME})"
         }
     }
 
     stage('Quality Gate') {
-        timeout(time: 5, unit: 'MINUTES') {
-            waitForQualityGate abortPipeline: true
+        // Ne passe le quality gate que si analyse effectuée
+        if (env.BRANCH_NAME == 'develop') {
+            timeout(time: 5, unit: 'MINUTES') {
+                waitForQualityGate abortPipeline: true
+            }
+        } else {
+            echo "⏩ Skipping Quality Gate (non-develop branch)"
         }
     }
 
