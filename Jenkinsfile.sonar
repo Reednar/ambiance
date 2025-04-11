@@ -16,7 +16,10 @@ node {
                 sonar-scanner \\
                 -Dsonar.projectKey=ambiance \\
                 -Dsonar.projectName=ambiance \\
-                -Dsonar.host.url=${SONARQUBE_SERVER}
+                -Dsonar.host.url=${SONARQUBE_SERVER} \\
+                -Dsonar.sources=. \\
+                -Dsonar.java.binaries=build \\
+                -Dsonar.newCode.period=30
             """
         }
     }
