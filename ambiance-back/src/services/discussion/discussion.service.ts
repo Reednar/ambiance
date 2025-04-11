@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Discussion } from '../../entities/discussions.entity';
 import { Groupe } from '../../entities/groups.entity';
+import { Participation } from '../../entities/participation.entity';
 
 @Injectable()
 export class DiscussionService {
@@ -11,6 +12,8 @@ export class DiscussionService {
     private discussionRepository: Repository<Discussion>,
     @InjectRepository(Groupe)
     private groupeRepository: Repository<Groupe>,
+    @InjectRepository(Participation)
+    private participationRepository: Repository<Participation>,
   ) {}
 
   async create(data: any): Promise<Discussion> {
@@ -45,7 +48,7 @@ export class DiscussionService {
     }
 
     if (data.idGroupe !== undefined) {
-    const groupe = await this.groupeRepository.findOneByOrFail({ idGroupe: data.idGroupe });
+      const groupe = await this.groupeRepository.findOneByOrFail({ idGroupe: data.idGroupe });
 
       discussion.idGroupe = groupe;
     }
@@ -56,5 +59,20 @@ export class DiscussionService {
   async remove(id: number): Promise<void> {
     const discussion = await this.findOne(id);
     await this.discussionRepository.remove(discussion);
+  }
+
+
+
+  async findGroupNamesAndDiscussionIdsByUser(userId: number): Promise<{ nomGroupe: string; idDiscussion: number }[]> {
+    return this.discussionRepository
+      .createQueryBuilder('discussion')
+      .innerJoin('discussion.idGroupe', 'groupe') // Relation avec la table Groupes
+      .innerJoin('groupe.participations', 'participation') // Relation avec la table Participation
+      .where('participation.idUtilisateur = :userId', { userId }) // Filtrer par utilisateur
+      .select([
+        'groupe.NomDuGroupe AS nomGroupe', // Nom du groupe
+        'discussion.idDiscussion AS idDiscussion', // ID de la discussion
+      ])
+      .getRawMany(); // Récupérer les résultats sous forme brute
   }
 }

@@ -68,4 +68,22 @@ export class MessageService {
     const message = await this.findOne(id);
     await this.messageRepository.remove(message);
   }
+
+  async findMessagesByDiscussion(discussionId: number): Promise<any[]> {
+    return this.messageRepository
+      .createQueryBuilder('message')
+      .innerJoinAndSelect('message.idUtilisateur', 'user') // Inclure les informations de l'utilisateur
+      .where('message.idDiscussion = :discussionId', { discussionId }) // Filtrer par discussion
+      .select([
+        'message.idMessage', // ID du message
+        'message.contenu', // Contenu du message
+        'message.dateEnvoi', // Date d'envoi
+        'user.idUtilisateur', // ID de l'utilisateur
+        'user.nom', // Nom de l'utilisateur
+        'user.prenom', // Prénom de l'utilisateur
+        'user.pseudo', // Pseudo de l'utilisateur
+      ])
+      .orderBy('message.dateEnvoi', 'ASC') // Trier par date d'envoi
+      .getRawMany(); // Récupérer les résultats sous forme brute
+  }
 }
