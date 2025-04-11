@@ -14,7 +14,7 @@ export class DiscussionController {
   @Post("create")
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'create a discussion' }) 
-  create(@Body() data: any) {
+  create(@Body() data: any) {// mettre une protection pour une conversation par groupe
     return this.discussionService.create(data);
   }
 
