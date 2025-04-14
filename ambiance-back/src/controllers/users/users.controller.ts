@@ -8,11 +8,13 @@ import {
   Put,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from '../../services/users/users.service';
 import { User } from '../../entities/users.entity';
 import bcrypt from 'bcrypt';
+import { AuthGuard } from '@nestjs/passport';
 const bcrypt = require('bcrypt');
 
 @ApiTags('users')
@@ -20,8 +22,10 @@ const bcrypt = require('bcrypt');
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get()
-  @ApiOperation({ summary: 'Return all Users' })
+
+  @Post('findAll')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Return all Users if the requester is an admin' })
   @ApiResponse({
     status: 200,
     description: 'Successful response',
@@ -46,7 +50,16 @@ export class UsersController {
       },
     },
   })
-  findAll(): Promise<User[]> {
+  async findAll(@Body() body: { userId: number }): Promise<User[]> {
+    const user = await this.usersService.findOne(body.userId);
+
+    if (!user || user.role !== 'Administrateur') {
+      throw new HttpException(
+        'Access denied: Only administrators can access this resource.',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
     return this.usersService.findAll();
   }
 
@@ -55,7 +68,8 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Post()
+  @Post("create")
+  @ApiOperation({ summary: 'Create a new User' })
   create(@Body() body: { 
     prenom: string,
     nom: string,

@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 import { User } from './users.entity';
 import { Discussion } from './discussions.entity';
 
-@Entity('Messages') // Correspond au nom de la table
+@Entity('Messages')
 export class Message {
   @PrimaryGeneratedColumn({ name: 'idMessage' })
   idMessage: number;
