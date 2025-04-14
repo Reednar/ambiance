@@ -14,7 +14,7 @@ socket.on("connect", () => {
     socket.emit("sendMessage", {
       senderId: 1, // ID de l'utilisateur
       discussionId: 1, // ID de la discussion (groupe)
-      content: "Bonjour à tous dans le groupe 1 !",
+      content: "Alexis est gay",
     });
   }, 1000);
 
@@ -23,7 +23,7 @@ socket.on("connect", () => {
     socket.emit("sendMessage", {
       senderId: 1,
       discussionId: 2, // ID d'une autre discussion
-      content: "Un message pour le groupe 2.",
+      content: "Tqt on le sait tous",
     });
   }, 3000);
 });

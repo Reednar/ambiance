@@ -28,11 +28,6 @@ export class DiscussionController {
     return this.discussionService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() data: any) {
-    return this.discussionService.update(+id, data);
-  }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.discussionService.remove(+id);

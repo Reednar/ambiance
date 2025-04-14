@@ -133,4 +133,14 @@ export class GroupsService {
       .getRawMany();
   }
 
+  async isOrganisateur(IdGroupe: number, senderId: number): Promise<boolean> {
+    const participation = await this.participationRepository
+      .createQueryBuilder('participation')
+      .where('participation.idGroupe = :IdGroupe', { IdGroupe })
+      .andWhere('participation.idUtilisateur = :senderId', { senderId })
+      .andWhere('participation.organisateur = :organisateur', { organisateur: true })
+      .getOne();
+
+    return !!participation; // Retourne true si une participation avec le rôle d'organisateur est trouvée, sinon false
+  }
 }

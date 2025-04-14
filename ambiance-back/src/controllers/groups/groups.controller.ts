@@ -14,9 +14,18 @@ export class GroupsController {
     private PublicationsService: PublicationsService,
   ) {}
 
-  @Get()
-  @ApiOperation({ summary: 'Return all groups' })
-  async getGroupes() {
+
+  @Post('findAll')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Return all groups if the requester is an admin' })
+  async getGroupes(@Body() body: { userId: number }) {
+    // Vérification si l'utilisateur est administrateur
+    const utilisateur = await this.UsersService.findOne(body.userId);
+    if (!utilisateur || utilisateur.role !== 'Administrateur') {
+      throw new NotFoundException('Accès refusé : Seuls les administrateurs peuvent accéder à cette ressource.');
+    }
+
+    // Retourne tous les groupes si l'utilisateur est administrateur
     return await this.GroupsService.findAll();
   }
 
@@ -67,17 +76,31 @@ export class GroupsController {
   @Post("removeUser")
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Remove a user from a group' })
-  async removeUserFromGroup(@Body() body: { IdGroupe: number; IdUtilisateur: number }) {
+  async removeUserFromGroup(@Body() body: { IdGroupe: number; IdUtilisateur: number; senderId: number }) {
+    // Vérification si le groupe existe
     const groupe = await this.GroupsService.findOne(body.IdGroupe);
     if (!groupe) {
       throw new NotFoundException('Groupe non trouvé');
     }
 
+    // Vérification si l'utilisateur à supprimer existe
     const utilisateur = await this.UsersService.findOne(body.IdUtilisateur);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
 
+    // Vérification si le sender est l'organisateur du groupe
+    const sender = await this.UsersService.findOne(body.senderId);
+    if (!sender) {
+      throw new NotFoundException('Utilisateur (sender) non trouvé');
+    }
+
+    const isOrganisateur = await this.GroupsService.isOrganisateur(body.IdGroupe, body.senderId);
+    if (!isOrganisateur) {
+      throw new NotFoundException('Accès refusé : Seul l\'organisateur du groupe peut supprimer un utilisateur.');
+    }
+
+    // Suppression de l'utilisateur du groupe
     await this.GroupsService.removeUserFromGroup(body.IdGroupe, body.IdUtilisateur);
 
     return { message: 'User removed from group' };
