@@ -269,4 +269,52 @@ export class PublicationsController {
 
     return await this.publicationsService.findByUser(body.utilisateurId);
   }
+
+  @Post('userParticipations')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get all publications the user participates in' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successful response',
+    examples: {
+      example1: {
+        summary: 'Publications the user participates in',
+        value: [
+          {
+            idPublication: 1,
+            codePostal: '78000',
+            rue: '2',
+            ville: 'Montigny',
+            titre: 'Cinéma',
+            dateEvenement: '2024-11-06T10:36:19.000Z',
+            description: 'Scary movie',
+            prix: '12.00',
+            lien: 'cineugc.com',
+            dateCreation: '2024-11-06T10:36:58.000Z',
+            participantMax: 10,
+            participantMin: 2,
+            typePost: 'activité',
+          },
+        ],
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  async getUserParticipations(@Body() body: { utilisateurId: number }) {
+    // Vérifier si l'utilisateur existe
+    const utilisateur = await this.usersService.findOne(body.utilisateurId);
+    if (!utilisateur) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+
+    // Récupérer les participations de l'utilisateur
+    const participations = await this.publicationsService.findParticipationsByUser(body.utilisateurId);
+    // Extraire les publications des participations
+    //const publications = participations.map((participation) => participation.idGroupe.publication);
+
+    return participations;
+  }
 }
