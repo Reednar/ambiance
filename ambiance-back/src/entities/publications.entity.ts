@@ -4,8 +4,10 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { User } from './users.entity';
+import { PublicationCategories } from './publication-categories.entity';
 
 @Entity('Publications')
 export class Publication {
@@ -80,4 +82,11 @@ export class Publication {
 
   @Column({ name: 'IdUtilisateur', type: 'int', nullable: false })
   utilisateurId: number; // Explicitly define utilisateurId as a column
+
+  @OneToMany(() => PublicationCategories, pc => pc.publication)
+  publicationCategories: PublicationCategories[];
+
+  
+  categories: any;
+
 }

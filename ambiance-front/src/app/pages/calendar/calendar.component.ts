@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import frLocale from '@fullcalendar/core/locales/fr'; 
+import Swiper from 'swiper';
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.scss']
+  styleUrls: ['./calendar.component.css']
 })
 
 export class CalendarComponent {
@@ -41,4 +42,24 @@ export class CalendarComponent {
     // Vous pouvez personnaliser le format pour inclure une majuscule sur les mois ici
     titleFormat: { year: 'numeric', month: 'long' } // Affiche le mois en long avec une majuscule
   };
+
+  ngAfterViewInit(): void {
+    new Swiper('.swiper', {
+      loop: true,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev'
+      },
+      effect: 'slide',
+      speed: 800
+    });
+  }
 }

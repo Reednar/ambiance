@@ -1,0 +1,16 @@
+.editable {
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.editable:hover {
+  border-color: #0d6efd;
+  box-shadow: 0 0 5px rgba(13, 110, 253, 0.3);
+}
+
+.profile-pic img {
+  transition: transform 0.3s;
+}
+
+.profile-pic img:hover {
+  transform: scale(1.05);
+}
