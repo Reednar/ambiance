@@ -33,4 +33,10 @@ export class PublicationsService {
   async remove(id: number): Promise<void> {
     await this.publicationRepository.delete(id);
   }
+
+  async findByUser(utilisateurId: number): Promise<Publication[]> {
+    return await this.publicationRepository.find({
+      where: { utilisateurId },
+    });
+  }
 }

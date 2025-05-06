@@ -12,10 +12,16 @@ export class AuthController {
    */
   @Post('login')
   async login(@Body() body: { mail: string; password: string }) {
-    // Simulation d'un utilisateur validé (à remplacer par une vérification réelle)
     if (body.mail && body.password) {
-      const user = { mail: body.mail , password: body.password };
-      return this.authService.login(user);
+      const user = { mail: body.mail, password: body.password };
+      const loginResponse = await this.authService.login(user);
+
+      // Ajout de l'idUtilisateur dans la réponse
+      return {
+        access_token: loginResponse.access_token,
+        refresh_token: loginResponse.refresh_token,
+        idUtilisateur: loginResponse.idUtilisateur, // Inclure l'idUtilisateur
+      };
     }
     throw new UnauthorizedException('Identifiants invalides');
   }
@@ -26,6 +32,16 @@ export class AuthController {
       return await this.authService.refreshToken(token);
     } catch (error) {
       throw new UnauthorizedException('Refresh token invalide');
+    }
+  }
+
+  @Post('logout')
+  async logout(@Body('refreshToken') token: string) {
+    try {
+      await this.authService.logout(token);
+      return { message: 'Déconnexion réussie' };
+    } catch (error) {
+      throw new UnauthorizedException('Erreur lors de la déconnexion');
     }
   }
 }

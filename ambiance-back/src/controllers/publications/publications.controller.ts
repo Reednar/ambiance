@@ -268,4 +268,46 @@ async getPublications(): Promise<PublicationDto[]> {
 
     return await this.publicationsService.create(publicationData);
   }
+
+  @Post('userPublications')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get all publications created by a specific user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successful response',
+    examples: {
+      example1: {
+        summary: 'Publications by user example',
+        value: [
+          {
+            idPublication: 1,
+            codePostal: '78000',
+            rue: '2',
+            ville: 'Montigny',
+            titre: 'Cinéma',
+            dateEvenement: '2024-11-06T10:36:19.000Z',
+            description: 'Scary movie',
+            prix: '12.00',
+            lien: 'cineugc.com',
+            dateCreation: '2024-11-06T10:36:58.000Z',
+            participantMax: 10,
+            participantMin: 2,
+            typePost: 'activité',
+          },
+        ],
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  async getUserPublications(@Body() body: { utilisateurId: number }) {
+    const utilisateur = await this.usersService.findOne(body.utilisateurId);
+    if (!utilisateur) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+
+    return await this.publicationsService.findByUser(body.utilisateurId);
+  }
 }

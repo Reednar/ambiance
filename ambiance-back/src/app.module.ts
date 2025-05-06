@@ -27,6 +27,17 @@ import { PublicationCategories } from './entities/publication-categories.entity'
 import { CategoriesModule } from './modules/categories/categories.module';
 import { PublicationCategoriesModule } from './modules/publication-categories/publication-categories.module';
 import { PublicationCategoriesController } from './controllers/publication-categories/publication-categories.controller';
+import { Message } from './entities/messages.entity';
+import { MessagesModule } from './modules/messages/messages.module';
+import { Discussion } from './entities/discussions.entity';
+import { DiscussionService } from './services/discussion/discussion.service';
+import { DiscussionController } from './controllers/discussions/discussions.controller';
+//websocket 
+import { ChatGateway } from './gateways/chat.gateway';
+import { ChatModule } from './modules/chat/chat.module';
+import { MessageService } from './services/messages/messages.service';
+import { DiscussionModule } from './modules/discussions/discussions.module';
+
 @Module({
   controllers: [
     AppController,
@@ -35,6 +46,7 @@ import { PublicationCategoriesController } from './controllers/publication-categ
     GroupsController,
     CategoriesController,
     PublicationCategoriesController
+    DiscussionController,
   ],
   imports: [
     ConfigModule.forRoot({
@@ -57,7 +69,9 @@ import { PublicationCategoriesController } from './controllers/publication-categ
         PublicationCategories,
         Commentaire,
         Participation,
-        Paiement, // Add Paiement entity here
+        Paiement,
+        Discussion,
+        Message,      
       ], // Ajouter les entités ici
       synchronize: false, // Permet de manipuler les entités de la base de données avec les fichiers entity.ts en temps réel
     }),
@@ -70,6 +84,9 @@ import { PublicationCategoriesController } from './controllers/publication-categ
     AuthModule,
     CategoriesModule,
     PublicationCategoriesModule
+    DiscussionModule,
+    MessagesModule,
+    ChatModule,
     // Mettre les autres modules ici
   ],
   providers: [AppService],

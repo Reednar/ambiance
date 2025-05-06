@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Publication } from './publications.entity';
+import { Participation } from './participation.entity';
 
 @Entity('Groupes') 
 export class Groupe {
@@ -17,4 +18,8 @@ export class Groupe {
   })
   @JoinColumn({ name: 'IdPublication' })
   publication: Publication;
+
+  // Ajout de la relation avec Participation
+  @OneToMany(() => Participation, (participation) => participation.idGroupe)
+  participations: Participation[];
 }
