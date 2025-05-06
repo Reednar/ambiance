@@ -11,8 +11,10 @@ export class AuthInterceptor implements HttpInterceptor {
   private publicUrls = [
     '/auth/login',
     '/auth/register',
-    '/public',
-    '/register'
+    '/register',
+    '/auth',
+    '/auth/refresh',
+    '/publications',
   ];
 
   constructor(private authService: AuthService, private router: Router) {}
@@ -22,13 +24,19 @@ export class AuthInterceptor implements HttpInterceptor {
   
     const isPublic = this.publicUrls.some(url => req.url.includes(url));
   
-    if (isPublic || !token) {
+    console.log("token : " + token);
+    if ((isPublic || !token) && req.url != '/publicationCreateForm') {
+      console.log(isPublic + " " + !token)
       return next.handle(req); // Laisser passer les routes publiques
     }
   
+    console.log("1st")
     if (this.authService.isTokenExpired()) {
+      console.log("token expiré")
+
       return this.authService.refreshToken().pipe(
         switchMap((response: { access_token: string }) => {
+          console.log("new access token : " + response.access_token);
           const clonedReq = req.clone({
             setHeaders: { Authorization: `Bearer ${response.access_token}` },
           });

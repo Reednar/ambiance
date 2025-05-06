@@ -19,6 +19,10 @@ export interface Publication {
   utilisateur?: any; // Optionnel : tu peux le typer plus précisément
   categories: { id: number; nom: string }[]; // Id + nom pour affichage
   publicationCategories?: PublicationCategorie[];
+  // image: Blob;
+  // ImageMimeType?: string;
+  image: string | null;  // base64 image
+  imageMimeType: string | null;
 }
 
 export interface Categorie {

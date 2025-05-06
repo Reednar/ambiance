@@ -53,6 +53,8 @@ loadPublications(): void {
   this.publicationsService.getAll().subscribe({
     next: (data) => {
       this.publications = data;
+      this.publications.forEach(element => {
+      });
     },
     error: (err) => {
       console.error('Erreur lors du chargement des publications :', err);

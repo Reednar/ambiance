@@ -14,3 +14,46 @@
 .profile-pic img:hover {
   transform: scale(1.05);
 }
+
+  // .style {
+  //   padding-top: 70px; /* Mobile par défaut */
+  // }
+  
+ 
+  
+  @media (max-width: 768px) {
+    .testStyle {
+      padding-top: 90px !important;
+    }
+  }
+  
+  @media (max-width: 992px) {
+    .testStyle {
+      padding-top: 120px !important;
+    }
+  }
+  
+  @media (max-width: 1200px) {
+    .testStyle {
+      padding-top: 110px !important;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .testStyle {
+      padding-top: 30px !important;
+    }
+  }
+
+  @media (max-width: 706px) {
+    .testStyle {
+      padding-top: 50px !important;
+    }
+  }
+
+  @media (max-width: 1800px) {
+    .testStyle {
+      padding-top: 100px !important;
+    }
+  }
+  

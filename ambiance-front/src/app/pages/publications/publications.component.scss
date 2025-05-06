@@ -539,13 +539,66 @@
 // }
 
 
+// .poste-card {
+//   height: 340px;
+//   border-radius: 1rem;
+//   overflow: hidden;
+//   background-color: #343a40;
+//   color: #fff;
+//   box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+//   transition: transform 0.2s ease;
+// }
+
+// .poste-card:hover {
+//   transform: scale(1.02);
+// }
+
+// .poste-img {
+//   height: 55%;
+//   width: 100%;
+//   object-fit: cover;
+// }
+
+// .poste-body {
+//   padding: 0.75rem;
+//   height: 45%;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: space-between;
+// }
+
+// .poste-titre {
+//   font-size: 1rem;
+//   font-weight: 600;
+//   margin-bottom: 0.25rem;
+// }
+
+// .poste-prix {
+//   font-weight: 500;
+//   color: #ffc107;
+//   margin-bottom: 0.4rem;
+//   font-size: 0.9rem;
+// }
+
+// .poste-categories span {
+//   background-color: #495057;
+//   color: #fff;
+//   padding: 0.2rem 0.5rem;
+//   margin-right: 0.3rem;
+//   border-radius: 0.3rem;
+//   font-size: 0.7rem;
+// }
+
+
+
 .poste-card {
+  position: relative; /* ← nécessaire pour positionner les éléments absolus */
   height: 340px;
   border-radius: 1rem;
   overflow: hidden;
   background-color: #343a40;
   color: #fff;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
   transition: transform 0.2s ease;
 }
 
@@ -587,4 +640,33 @@
   margin-right: 0.3rem;
   border-radius: 0.3rem;
   font-size: 0.7rem;
+}
+
+/* Nouveau : nom de l'école en haut à droite */
+.poste-ecole {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.65); /* plus foncé */
+  color: #ffffff;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  backdrop-filter: blur(3px); /* flou derrière si dispo */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8); /* ombre portée */
+}
+
+
+/* Nouveau : participants en bas à droite */
+.poste-participants {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 500;
 }

@@ -74,6 +74,14 @@ export class Publication {
   @Column({ name: 'Ascenseur', type: 'boolean', nullable: true })
   ascenseur: boolean;
 
+  @Column({ type: 'longblob', nullable: true })
+  image: Buffer;
+
+  @Column({ name: 'ImageMimeType', type: 'varchar', length: 100, nullable: true })
+  imageMimeType: string;
+
+
+
   @ManyToOne(() => User, (utilisateur) => utilisateur.publications, {
     onDelete: 'CASCADE',
   })
