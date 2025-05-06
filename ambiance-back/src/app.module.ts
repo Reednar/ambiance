@@ -45,7 +45,7 @@ import { DiscussionModule } from './modules/discussions/discussions.module';
     UsersController,
     GroupsController,
     CategoriesController,
-    PublicationCategoriesController
+    PublicationCategoriesController,
     DiscussionController,
   ],
   imports: [
@@ -83,7 +83,7 @@ import { DiscussionModule } from './modules/discussions/discussions.module';
     ParticipationModule,
     AuthModule,
     CategoriesModule,
-    PublicationCategoriesModule
+    PublicationCategoriesModule,
     DiscussionModule,
     MessagesModule,
     ChatModule,
