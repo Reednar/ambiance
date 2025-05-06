@@ -31,7 +31,7 @@ node {
         stage('Install Dependencies') {
             parallel(
                 "Install Frontend Dependencies": {
-                    sh 'cd ambiance-front && npm ci --prefer-offline'
+                    sh 'cd ambiance-front && npm install'
                 },
                 "Install Backend Dependencies": {
                     sh 'cd ambiance-back && npm ci'
