@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/users.entity'; // Update this line
@@ -33,5 +33,15 @@ export class UsersService {
 
   async remove(id: number): Promise<void> {
     await this.userRepository.delete(id);
+  }
+
+  async isAdmin(userId: number): Promise<boolean> {
+    const user = await this.findOne(userId);
+
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+
+    return user.role === 'Administrateur'; // Assurez-vous que le champ `role` correspond aux valeurs définies dans l'entité User
   }
 }
