@@ -58,80 +58,6 @@
             </div>
         </div>
 
-
-        <!-- <section class="section">
-            <div class="container">
-                <div class="row g-2 g-md-3">
-                    <div class="col-6 col-md-4 col-lg-3" *ngFor="let pub of publications">
-                        <div class="product-card-3">
-                            <div class="product-card-image">
-                                <div class="product-wishlist">
-                                    <a class="btn btn-outline-primary" href="#">
-                                        {{ pub.prix | number:'1.0-2' }}€
-                                    </a>
-                                </div>
-                                <div class="product-media">
-                                    <a href="#">
-                                        <img alt="" class="img-fluid" src="assets/images/backgrounds/bde.png"
-                                            title="" />
-                                    </a>
-                                    <div class="product-action nav justify-content-center gap-2">
-                                        <a class="btn btn-outline-success rounded-circle" href="#" title="J'aime">
-                                            <i class="bi bi-heart-fill"></i>
-                                        </a>
-                                        <a class="btn btn-outline-light rounded-circle" href="#"
-                                            title="Ajouter à la liste de souhaits">
-                                            <i class="bi bi-bookmark-heart"></i>
-                                        </a>
-                                        <a class="btn btn-outline-danger rounded-circle" href="#" title="Je n'aime pas">
-                                            <i class="bi bi-heartbreak"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="product-card-info">
-                                <div class="rating-star text">
-                                    <span class="badge bg-info me-1" *ngFor="let cat of pub.publicationCategories">
-                                        {{ cat.categorie.nom }}
-                                    </span>
-                                </div>
-
-                                <h6 class="product-title">
-                                    <a href="#">{{ pub.titre }}</a>
-                                </h6>
-                                <div class="product-price">
-                                    <span class="text-primary">{{ pub.ville }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section> -->
-
-
-
-<!-- 
-        <div class="container">
-            <div class="row g-3">
-              <div class="col-6 col-md-4 col-lg-3" *ngFor="let pub of publications">
-                <div class="poste-card">
-                    <img src="" alt="Poste" class="poste-img" onerror="this.onerror=null;this.src='assets/images/backgrounds/bde.png';">
-                    <div class="poste-body">
-                    <div>
-                      <div class="poste-titre">{{ pub.titre }}</div>
-                      <div class="poste-prix">{{ pub.prix | number:'1.0-2' }} €</div>
-                    </div>
-                    <div class="poste-categories">
-                      <span  *ngFor="let cat of pub.publicationCategories">{{ cat.categorie.nom }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> -->
-
           <div class="container">
             <div class="row g-3">
               <div class="col-6 col-md-4 col-lg-3" *ngFor="let pub of publications">
@@ -139,15 +65,7 @@
                   
                   <!-- Nom de l'école -->
                   <div class="poste-ecole">Ensitech</div>
-                  <!-- <img *ngIf="publication.image" [src]="publication.image" alt="Image de la publication" style="max-width: 100%;"> -->
-
-                  <!-- <img 
-                    [src]="pub.image"
-                    alt="Poste" 
-                    class="poste-img" 
-                    onerror="this.onerror=null;this.src='assets/images/backgrounds/bde.png';"
-                  > -->
-                  <img *ngIf="pub.image" [src]="pub.image" alt="Image de l'événement" class="poste-img" />
+                  <img *ngIf="pub.image" [src]="pub.image" alt="Image de l'événement" class="poste-img" onerror="this.onerror=null;this.src='assets/images/backgrounds/bde.png';"/>
 
                   <div class="poste-body">
                     <div>
