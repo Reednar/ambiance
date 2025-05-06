@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Post } from '../../entity/publications';
-import { PostsService } from '../../service/publications.service';
+import { Publication } from '../../entity/publications';
+import { PublicationsService } from '../../service/publications.service';
 import { User } from '../../entity/users';
 import { UsersService } from '../../service/users.service';
 import { Subject } from 'rxjs';
@@ -11,12 +11,12 @@ import { Subject } from 'rxjs';
   styleUrls: ['./moderation.component.scss']
 })
 export class ModerationComponent implements OnInit, OnDestroy { 
-  posts: Post[] = [];
+  posts: Publication[] = [];
   users: User[] = [];
   postCountByDate: { [date: string]: number } = {};
   private destroy$ = new Subject<void>();
 
-  constructor(private postsService: PostsService, private usersService: UsersService) {}
+  constructor(private PublicationsService: PublicationsService, private usersService: UsersService) {}
 
   ngOnInit(): void {
     this.fetchPosts();
@@ -31,7 +31,7 @@ export class ModerationComponent implements OnInit, OnDestroy {
 
   // Récupérer les posts
   fetchPosts(): void {
-    this.postsService.getPosts().subscribe({
+    this.PublicationsService.getAll().subscribe({
       next: (data) => {
         this.posts = data;
       },

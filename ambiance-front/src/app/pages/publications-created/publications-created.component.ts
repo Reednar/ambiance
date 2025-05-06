@@ -6,7 +6,33 @@ import { Table } from 'primeng/table';
   styleUrls: ['./publications-created.component.scss']
 })
 export class PublicationsCreatedComponent {
+// ✅ Catégories fictives pour les tests
 
+
+// ✅ Catégories sélectionnées
+selectedCategories: any[] = [];
+selectedCategoriesLabel: string = '';
+
+// ✅ Recherche
+searchQuery: string = '';
+
+// ✅ Date sélectionnée
+selectedDate: string = '';
+
+  
+categories = [
+  { name: 'Catégorie 1', selected: false },
+  { name: 'Catégorie 2', selected: false },
+  { name: 'Catégorie 3', selected: false },
+  // Ajouter d'autres catégories ici
+];
+
+dropdownOpen = false; // L'état de la liste déroulante
+
+// Fonction pour basculer l'affichage de la liste déroulante
+toggleDropdown() {
+  this.dropdownOpen = !this.dropdownOpen;
+}
   publications = [
     {
       image: '/assets/images/products/s4.jpg',
@@ -76,16 +102,10 @@ export class PublicationsCreatedComponent {
     }
   ];
 
-    searchQuery: string = '';
     selectedCategory: string | null = null;
-    selectedCategories: string[] = [];
     filteredPublications = [...this.publications];
   
-    categories = [
-      { label: 'Social', value: 'Social' },
-      { label: 'Technology', value: 'Technology' }
-    ];
-  
+
     ngOnInit() {
       this.filteredPublications = [...this.publications];
     }
@@ -102,5 +122,31 @@ export class PublicationsCreatedComponent {
   
     onGlobalFilter(table: Table, event: Event){
       table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+    }
+
+    categoriesOptions = [
+      { name: 'Sport', selected: false },
+      { name: 'Musique', selected: false },
+      { name: 'Cuisine', selected: false },
+      // Ajoute tes vraies catégories ici
+    ];
+
+    updateSelectedCategories() {
+      const selected = this.categoriesOptions
+        .filter(c => c.selected)
+        .map(c => c.name);
+    
+      this.selectedCategories = selected;
+    
+      if (selected.length === 0) {
+        this.selectedCategoriesLabel = '';
+      } else if (selected.length === 1) {
+        this.selectedCategoriesLabel = selected[0];
+      } else if (selected.length <= 4){
+        this.selectedCategoriesLabel = selected.join(', ');
+      }
+      else{
+        this.selectedCategoriesLabel = `${selected.length} catégories sélectionnées`;
+      }
     }
 }

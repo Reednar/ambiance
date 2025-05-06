@@ -25,3 +25,14 @@
 .mr-2 {
   margin-right: 0.5rem;
 }
+
+/* S'assurer que la dropdown-menu prend la largeur du parent */
+.dropdown-menu {
+  width: auto !important; /* Permet à la dropdown-menu de s'ajuster à la taille du bouton */
+  min-width: 100%; /* Utilise la largeur du bouton comme base */
+}
+
+/* Si tu veux que le bouton ait une largeur de 100% de son parent */
+#categoriesDropdown {
+  width: 100%; /* Le bouton prendra la largeur de son parent (colonne) */
+}

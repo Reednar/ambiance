@@ -74,18 +74,18 @@ export class AuthService {
     // return localStorage.getItem('refresh_token');
   }
 
-  refreshToken() {
-    const refreshToken = this.getRefreshToken();
+  // refreshToken() {
+  //   const refreshToken = this.getRefreshToken();
   
-    return this.http.post<{ access_token: string }>(
-      `${environment.baseUrl}/auth/refresh`,
-      { refreshToken }
-    ).pipe(
-      tap(response => {
-        this.saveToken(response.access_token, refreshToken!);
-      })
-    );
-  }
+  //   return this.http.post<{ access_token: string }>(
+  //     `${environment.baseUrl}/auth/refresh`,
+  //     { refreshToken }
+  //   ).pipe(
+  //     tap(response => {
+  //       this.saveToken(response.access_token, refreshToken!);
+  //     })
+  //   );
+  // }
 
   removeToken(): void {
     sessionStorage.removeItem('access_token');
@@ -102,4 +102,23 @@ export class AuthService {
     const currentTime = Math.floor(Date.now() / 1000); // Temps actuel en secondes
     return decodedToken.exp < currentTime; // True si le token est expiré
   }
+
+  refreshToken(): Observable<{ access_token: string }> {
+    console.log('refreshToken called');
+    const refreshToken = this.getRefreshToken();
+    console.log('refreshToken dans méthode refresh', refreshToken);
+    
+    return this.http.post<{ access_token: string }>(
+      `${environment.baseUrl}/auth/refresh`,
+      { refreshToken }
+    ).pipe(
+      tap(response => {
+        // Remplacer le token d'accès actuel dans le sessionStorage par le nouveau
+        const newAccessToken = response.access_token;
+        console.log('Nouveau token d\'accès:', newAccessToken);
+        sessionStorage.setItem('access_token', newAccessToken);  // Mise à jour du token dans le sessionStorage
+      })
+    );
+  }
+  
 }

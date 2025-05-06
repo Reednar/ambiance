@@ -21,6 +21,12 @@ import { Participation } from './entities/participation.entity';
 import { ParticipationModule } from './modules/participation/participation.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { Paiement } from './entities/paiements.entity'; // Import Paiement entity
+import { Categorie } from './entities/categories.entity';
+import { CategoriesController } from './controllers/categories/categories.controller';
+import { PublicationCategories } from './entities/publication-categories.entity';
+import { CategoriesModule } from './modules/categories/categories.module';
+import { PublicationCategoriesModule } from './modules/publication-categories/publication-categories.module';
+import { PublicationCategoriesController } from './controllers/publication-categories/publication-categories.controller';
 import { Message } from './entities/messages.entity';
 import { MessagesModule } from './modules/messages/messages.module';
 import { Discussion } from './entities/discussions.entity';
@@ -38,6 +44,8 @@ import { DiscussionModule } from './modules/discussions/discussions.module';
     PublicationsController,
     UsersController,
     GroupsController,
+    CategoriesController,
+    PublicationCategoriesController
     DiscussionController,
   ],
   imports: [
@@ -57,6 +65,8 @@ import { DiscussionModule } from './modules/discussions/discussions.module';
         User,
         Groupe,
         Image,
+        Categorie,
+        PublicationCategories,
         Commentaire,
         Participation,
         Paiement,
@@ -72,6 +82,8 @@ import { DiscussionModule } from './modules/discussions/discussions.module';
     CommentairesModule,
     ParticipationModule,
     AuthModule,
+    CategoriesModule,
+    PublicationCategoriesModule
     DiscussionModule,
     MessagesModule,
     ChatModule,

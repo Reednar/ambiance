@@ -4,8 +4,10 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { User } from './users.entity';
+import { PublicationCategories } from './publication-categories.entity';
 
 @Entity('Publications')
 export class Publication {
@@ -72,6 +74,14 @@ export class Publication {
   @Column({ name: 'Ascenseur', type: 'boolean', nullable: true })
   ascenseur: boolean;
 
+  @Column({ type: 'longblob', nullable: true })
+  image: Buffer;
+
+  @Column({ name: 'ImageMimeType', type: 'varchar', length: 100, nullable: true })
+  imageMimeType: string;
+
+
+
   @ManyToOne(() => User, (utilisateur) => utilisateur.publications, {
     onDelete: 'CASCADE',
   })
@@ -80,4 +90,11 @@ export class Publication {
 
   @Column({ name: 'IdUtilisateur', type: 'int', nullable: false })
   utilisateurId: number; // Explicitly define utilisateurId as a column
+
+  @OneToMany(() => PublicationCategories, pc => pc.publication)
+  publicationCategories: PublicationCategories[];
+
+  
+  categories: any;
+
 }

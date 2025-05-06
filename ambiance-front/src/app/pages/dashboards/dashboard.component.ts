@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Post } from '../../entity/publications';
-import { PostsService } from '../../service/publications.service';
+import { Publication } from '../../entity/publications';
+import { PublicationsService } from '../../service/publications.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,11 +10,11 @@ import { PostsService } from '../../service/publications.service';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit, OnDestroy { 
-  posts: Post[] = [];
+  posts: Publication[] = [];
   postCountByDate: { [date: string]: number } = {};
   private destroy$ = new Subject<void>();
 
-  constructor(private postsService: PostsService) {}
+  constructor(private PublicationsService: PublicationsService) {}
 
   ngOnInit(): void {
     this.fetchPosts();
@@ -27,7 +27,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   fetchPosts(): void {
-    this.postsService.getPosts().pipe(
+    this.PublicationsService.getAll().pipe(
       takeUntil(this.destroy$) // S'assure que l'observable est désabonné lors de la destruction du composant
     ).subscribe({
       next: (data) => {
@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   
   private countPostsByDate(): void {
     const countByDate = this.posts.reduce((acc: any, post) => {
-      const date = post.dateCreation.split('T')[0];
+      const date = post.dateCreation.toString().split('T')[0];
       acc[date] = (acc[date] || 0) + 1;
       return acc;
     }, {});  
