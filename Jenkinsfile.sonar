@@ -7,7 +7,7 @@ node {
     def secretWebhook = credentials('secret-webhook-sonarqube')
 
     stage('Checkout') {
-        git branch: 'develop', url: 'https://github.com/Reednar/ambiance.git'
+        checkout scm
     }
 
     stage('SonarQube Analysis') {
