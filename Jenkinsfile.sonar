@@ -14,8 +14,8 @@ node {
         withSonarQubeEnv('SonarQubeServer') {
             sh """
                 sonar-scanner \\
-                -Dsonar.projectKey=Ambiance \\
-                -Dsonar.projectName=Ambiance \\
+                -Dsonar.projectKey=ambiance \\
+                -Dsonar.projectName=ambiance \\
                 -Dsonar.host.url=${SONARQUBE_SERVER}
             """
         }
