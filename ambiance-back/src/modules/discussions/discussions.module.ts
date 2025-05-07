@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DiscussionService } from '../../services/discussion/discussion.service';
 import { DiscussionController } from '../../controllers/discussions/discussions.controller';
@@ -12,7 +12,7 @@ import { User } from 'src/entities/users.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Discussion, Groupe, Participation,Message,User])], // Ajout de Participation
   controllers: [DiscussionController],
-  providers: [DiscussionService,MessageService],
+  providers: [DiscussionService,MessageService,Logger],
   exports: [DiscussionService], // utile si tu veux l'utiliser ailleurs
 })
 export class DiscussionModule {}

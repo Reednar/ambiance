@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, NotFoundException, UseGuards, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, NotFoundException, UseGuards, Body,Req,Logger } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PublicationsService } from '../../services/publications/publications.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -7,7 +7,9 @@ import { UsersService } from '../../services/users/users.service';
 @ApiTags('publications')
 @Controller('publications')
 export class PublicationsController {
-  constructor(private publicationsService: PublicationsService, private readonly usersService: UsersService) { }
+  constructor(private publicationsService: PublicationsService, private readonly usersService: UsersService,
+    private readonly logger: Logger,
+  ) { }
 
   @Get('test')//endpoint (endpoit ALWAYS before controller endpoint)
   @UseGuards(AuthGuard('jwt')) //protected request
@@ -17,7 +19,8 @@ export class PublicationsController {
 
   @Post("delete")
   @UseGuards(AuthGuard('jwt'))
-  async deletePublication(@Body() Body: { idPublication: number, utilisateurId: number }) {
+  async deletePublication(@Body() Body: { idPublication: number, utilisateurId: number }, @Req() req: Request) {
+    this.logger.log(`[${req.method} ${req.url}] Deleting publication`, Body);
     const utilisateur = await this.usersService.findOne(Body.utilisateurId);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
@@ -76,7 +79,8 @@ export class PublicationsController {
     placeHandicape: boolean,
     rampe: boolean,
     ascenseur: boolean,
-  }) {
+  },@Req() req: Request) {
+    this.logger.log(`[${req.method} ${req.url}] Updating publication`, Body.idPublication);
     const utilisateur = await this.usersService.findOne(Body.utilisateurId);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
@@ -123,7 +127,8 @@ export class PublicationsController {
       },
     },
   })
-  async getPublications() {
+  async getPublications(@Req() req: Request) {
+    this.logger.log(`[${req.method} ${req.url}] Fetching all publications`);
     return await this.publicationsService.findAll();
   }
 
@@ -167,7 +172,8 @@ export class PublicationsController {
       },
     },
   })
-  async getPublicationById(@Param('id') id: number) {
+  async getPublicationById(@Param('id') id: number, @Req() req: Request) {
+    this.logger.log(`[${req.method} ${req.url}] Fetching publication with ID: ${id}`);
     const publication = await this.publicationsService.findOne(id);
     if (!publication) {
       throw new NotFoundException('publication not found');
@@ -219,7 +225,8 @@ export class PublicationsController {
       rampe: boolean,
       ascenseur: boolean,
       utilisateurId: number;
-    }) {
+    }, @Req() req: Request) {
+    this.logger.log(`[${req.method} ${req.url}] Creating a new publication`, Body);
     const utilisateur = await this.usersService.findOne(Body.utilisateurId);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
@@ -261,7 +268,8 @@ export class PublicationsController {
     status: 404,
     description: 'User not found',
   })
-  async getUserPublications(@Body() body: { utilisateurId: number }) {
+  async getUserPublications(@Body() body: { utilisateurId: number }, @Req() req: Request) {
+    this.logger.log(`[${req.method} ${req.url}] Fetching publications for user`, body.utilisateurId);
     const utilisateur = await this.usersService.findOne(body.utilisateurId);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
@@ -303,7 +311,8 @@ export class PublicationsController {
     status: 404,
     description: 'User not found',
   })
-  async getUserParticipations(@Body() body: { utilisateurId: number }) {
+  async getUserParticipations(@Body() body: { utilisateurId: number }, @Req() req: Request) {
+    this.logger.log(`[${req.method} ${req.url}] Fetching participations for user`, body.utilisateurId);
     // Vérifier si l'utilisateur existe
     const utilisateur = await this.usersService.findOne(body.utilisateurId);
     if (!utilisateur) {

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentairesService } from '../../services/commentaires/commentaires.service';
 import { CommentairesController } from '../../controllers/commentaires/commentaires.controller';
@@ -15,7 +15,7 @@ import { Participation } from 'src/entities/participation.entity';
     TypeOrmModule.forFeature([Commentaire, User, Publication,Participation]), // Définir les entités ici
      // Importez le module contenant ParticipationRepository
   ],
-  providers: [CommentairesService, UsersService, PublicationsService], // Ajouter les services nécessaires
+  providers: [CommentairesService, UsersService, PublicationsService,Logger], // Ajouter les services nécessaires
   controllers: [CommentairesController],
   exports: [CommentairesService], // Exporter le service si nécessaire
 })
