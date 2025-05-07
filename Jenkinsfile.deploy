@@ -65,10 +65,12 @@ node {
         }
 
         stage('Deploy NestJS') {
-            sh """
-                find ${BACK_DIR} -mindepth 1 -not -path "${BACK_DIR}/logs" -not -path "${BACK_DIR}/logs/*" -exec rm -rf {} +
-                cp -r ambiance-back/dist/* ${BACK_DIR}/
-                cp ambiance-back/package*.json ${BACK_DIR}/
+            sh """#!/bin/bash
+                shopt -s extglob
+                cd ${BACK_DIR}
+                rm -rf !("logs")
+                cp -r ../ambiance-back/dist/* .
+                cp ../ambiance-back/package*.json .
             """
         }
 
