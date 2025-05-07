@@ -17,7 +17,6 @@ node {
                 -Dsonar.projectKey=ambiance \\
                 -Dsonar.projectName=ambiance \\
                 -Dsonar.host.url=${SONARQUBE_SERVER} \\
-                -Dsonar.token=${SONAR_TOKEN} \\
                 -Dsonar.branch.name=
             """
         }
