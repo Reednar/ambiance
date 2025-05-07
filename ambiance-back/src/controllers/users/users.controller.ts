@@ -88,10 +88,10 @@ export class UsersController {
     pays: string,
    }, @Req() req: Request){
     this.logger.log(`[${req.method} ${req.url}] Creating a new user`, body);
-    var futureUser ={ ...body, role: 'Utilisateur' } as User;
+    let futureUser ={ ...body, role: 'Utilisateur' } as User;
 
     //hashage du mot de passe
-    var password = futureUser.motDePasse;
+    let password = futureUser.motDePasse;
     bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS), (err, salt) => {
       if (err) throw new HttpException('Error generating salt', HttpStatus.INTERNAL_SERVER_ERROR);
       bcrypt.hash(password, salt, async (err, hash) => {

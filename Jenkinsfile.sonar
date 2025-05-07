@@ -7,7 +7,7 @@ node {
     def secretWebhook = credentials('secret-webhook-sonarqube')
 
     stage('Checkout') {
-        git 'https://github.com/Reednar/ambiance.git'
+        checkout scm
     }
 
     stage('SonarQube Analysis') {
@@ -16,7 +16,8 @@ node {
                 sonar-scanner \\
                 -Dsonar.projectKey=ambiance \\
                 -Dsonar.projectName=ambiance \\
-                -Dsonar.host.url=${SONARQUBE_SERVER}
+                -Dsonar.host.url=${SONARQUBE_SERVER} \\
+                -Dsonar.branch.name=
             """
         }
     }
