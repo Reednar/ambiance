@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Param, NotFoundException, UseGuards, Body,Req,Logger } from '@nestjs/common';
+import { Controller, Get, Post, Param, NotFoundException, UseGuards, Body,Req,Logger,UploadedFile, UseInterceptors, Param  } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PublicationsService } from '../../services/publications/publications.service';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from '../../services/users/users.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { PublicationDto } from 'src/dtos/publications.dto';
 
 @ApiTags('publications')
 @Controller('publications')
@@ -100,37 +102,65 @@ export class PublicationsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Return all publications' })
-  @ApiResponse({
-    status: 200,
-    description: 'Successful response',
-    examples: {
-      example1: {
-        summary: 'Successful response example',
-        value: [
-          {
-            idPublication: 1,
-            codePostal: '78000',
-            rue: '2',
-            ville: 'Montigny',
-            titre: 'Cinéma',
-            dateEvenement: '2024-11-06T10:36:19.000Z',
-            description: 'Scary movie',
-            prix: '12.00',
-            lien: 'cineugc.com',
-            dateCreation: '2024-11-06T10:36:58.000Z',
-            participantMax: 10,
-            participantMin: 2,
-            typePost: 'activité',
-          },
-        ],
-      },
-    },
-  })
-  async getPublications(@Req() req: Request) {
-    this.logger.log(`[${req.method} ${req.url}] Fetching all publications`);
-    return await this.publicationsService.findAll();
-  }
+@ApiOperation({ summary: 'Return all publications' })
+@ApiResponse({
+  status: 200,
+  description: 'Successful response',
+  type: PublicationDto,
+})
+@Get()
+@ApiOperation({ summary: 'Return all publications' })
+@ApiResponse({
+  status: 200,
+  description: 'Successful response',
+  type: PublicationDto,
+})
+async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
+  this.logger.log(`[${req.method} ${req.url}] Fetching all publications`);
+  const publications = await this.publicationsService.findAll();
+
+  return publications.map(pub => {
+    const dto = new PublicationDto();
+
+    dto.idPublication = pub.idPublication;
+    dto.codePostal = pub.codePostal;
+    dto.rue = pub.rue;
+    dto.ville = pub.ville;
+    dto.titre = pub.titre;
+    dto.dateEvenement = pub.dateEvenement;
+    dto.description = pub.description;
+    dto.prix = pub.prix;
+    dto.lien = pub.lien;
+    dto.dateCreation = pub.dateCreation;
+    dto.participantMax = pub.participantMax;
+    dto.participantMin = pub.participantMin;
+    dto.typePost = pub.typePost;
+    dto.placeHandicape = pub.placeHandicape;
+    dto.rampe = pub.rampe;
+    dto.ascenseur = pub.ascenseur;
+    dto.utilisateurId = pub.utilisateurId;
+
+    // Si pub.image est déjà un Buffer, tu peux directement le convertir
+    if (pub.image && pub.imageMimeType) {
+      const base64 = pub.image.toString('base64');  // Utilisation du Buffer sans data
+      dto.image = `data:${pub.imageMimeType};base64,${base64}`;
+    } else {
+      dto.image = null;
+    }
+
+    dto.imageMimeType = pub.imageMimeType ?? null;
+
+    dto.categories = pub.publicationCategories?.map(pc => ({
+      id: pc.categorie?.idCategorie ?? null,
+      nom: pc.categorie?.nom ?? null,
+    })) ?? [];
+
+    return dto;
+  });
+}
+
+
+
 
   @Get(':id')
   @ApiOperation({ summary: 'Return one publication by id' })
@@ -204,12 +234,14 @@ export class PublicationsController {
           participantMax: 10,
           participantMin: 2,
           typePost: 'activité',
+          image: 'https://domain.com/chemin/vers/image.jpg'
         },
       },
     },
   })
-  async createPublication(@Body() Body:
-    {
+  @UseInterceptors(FileInterceptor('image'))
+  async createPublication(
+    @Body() Body: {
       codePostal: string;
       rue: string;
       ville: string;
@@ -222,17 +254,31 @@ export class PublicationsController {
       participantMin: number;
       typePost: 'Evenement' | 'activité';
       placeHandicape: boolean;
-      rampe: boolean,
-      ascenseur: boolean,
+      rampe: boolean;
+      ascenseur: boolean;
       utilisateurId: number;
     }, @Req() req: Request) {
     this.logger.log(`[${req.method} ${req.url}] Creating a new publication`, Body);
+
+    },@Req() req: Request,
+    @UploadedFile() image: Express.Multer.File
+  ) {
+     this.logger.log(`[${req.method} ${req.url}] Creating a new publication`, Body);
+
     const utilisateur = await this.usersService.findOne(Body.utilisateurId);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
-    const publication = { ...Body, utilisateur };
-    return await this.publicationsService.create(publication);
+
+    // Création de l'objet publication avec image
+    const publicationData = { 
+      ...Body, 
+      utilisateur, 
+      image: image.buffer,  // image binaire
+      imageMimeType: image.mimetype  // type mime de l'image
+    };
+
+    return await this.publicationsService.create(publicationData);
   }
 
   @Post('userPublications')

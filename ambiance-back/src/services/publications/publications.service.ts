@@ -14,7 +14,9 @@ export class PublicationsService {
   ) {}
 
   async findAll(): Promise<Publication[]> {
-    return await this.publicationRepository.find();
+    return await this.publicationRepository.find({
+      relations: ['publicationCategories', 'publicationCategories.categorie'],
+    });
   }
 
   async findOne(id: number): Promise<Publication> {

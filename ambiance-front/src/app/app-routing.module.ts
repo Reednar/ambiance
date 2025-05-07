@@ -1,29 +1,33 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AppLayoutComponent } from './layout/app.layout.component';
+import { HomeComponent } from './pages/home/home.component';
+import { PublicationsComponent } from './pages/publications/publications.component';
+import { PublicationsCreatedComponent } from './pages/publications-created/publications-created.component';
+import { CalendarComponent } from './pages/calendar/calendar.component';
+import { RegisterComponent } from './pages/user/register/register.component';
+import { LoginComponent } from './pages/user/login/login.component';
+import { DashboardComponent } from './pages/dashboards/dashboard.component';
+import { ModerationComponent } from './pages/moderation/moderation.component';
+import { PublicationsCreateFormComponent } from './pages/publications-create-form/publications-create-form.component';
+import { ProfileComponent } from './pages/user/profile/profile.component';
+
 
 const routes: Routes = [
-  {
-    path: '', component: AppLayoutComponent ,
-    children: [
-      { path: '', loadChildren: () => import('../app/pages/home/home.module').then(m => m.HomeModule)},
-      { path: 'publications', loadChildren: () => import('../app/pages/publications/publications.module').then(m => m.PublicationsModule) },
-      { 
-        path: 'publicationsCreate', 
-        loadChildren: () => import('./pages/publications-create/publications-create.module').then(m => m.PublicationsCreateModule) 
-      },
-      { path: 'publicationsCreated', loadChildren: () => import('./pages/publications-created/publications-created.module').then(m => m.PublicationsCreatedModule) },
-      { path: 'calendar', loadChildren: () => import('./pages/calendar/calendar.module').then(m => m.CalendarPageModule) },
-      { path: 'register', loadChildren: () => import('./pages/user/register/register.module').then(m => m.RegisterModule) },
-      { path: 'login', loadChildren: () => import('./pages/user/login/login.module').then(m => m.LoginModule) },
-    ]
-  },
+  { path: '', component: HomeComponent },
+  { path: 'publications', component: PublicationsComponent },
+  { path: 'publicationsCreated', component: PublicationsCreatedComponent },
+  { path: 'publicationsCreateForm', component: PublicationsCreateFormComponent },
+  { path: 'calendar', component: CalendarComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'dashboards', component: DashboardComponent },
+  { path: 'moderation', component: ModerationComponent },
+  { path: 'profile', component: ProfileComponent },
+
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes ,
-  { scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', onSameUrlNavigation: 'reload' }
-  )],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

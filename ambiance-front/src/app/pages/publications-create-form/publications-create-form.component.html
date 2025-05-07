@@ -1,0 +1,105 @@
+<div class="container py-5" style="padding-top: 100px;">
+  <div class="row justify-content-center">
+    <div class="col-lg-8" style="padding-top: 80px;">
+
+      <form (ngSubmit)="submit()" #eventForm="ngForm" novalidate>
+
+        <ng-container *ngIf="step === 1">
+          <h2 class="text-center mb-4">Création d'un événement : Informations de base</h2>
+
+          <div class="mb-3">
+            <label class="form-label">Titre</label>
+            <input type="text" class="form-control" [(ngModel)]="formData.titre" name="titre" required />
+            <small *ngIf="submitted && !formData.titre" class="text-danger">Le titre est requis.</small>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Date</label>
+            <input type="date" class="form-control form-control-sm" [(ngModel)]="formData.date" name="date" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Nombre de personnes</label>
+            <input type="number" class="form-control" [(ngModel)]="formData.nbPersonnes" name="nbPersonnes" required />
+            <small *ngIf="submitted && formData.nbPersonnes <= 0" class="text-danger">Indiquez un nombre valide.</small>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Prix</label>
+            <input type="number" class="form-control" [(ngModel)]="formData.prix" name="prix" required />
+            <small *ngIf="submitted && formData.prix <= 0" class="text-danger">Indiquez un prix valide.</small>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" [(ngModel)]="formData.description" name="description" rows="4" required></textarea>
+            <small *ngIf="submitted && !formData.description" class="text-danger">La description est requise.</small>
+          </div>
+
+          <div class="mb-3">
+            <label for="image">Image :</label>
+            <input type="file" id="image" (change)="onFileSelected($event)" accept="image/*" />
+          </div>
+
+          <div class="mb-3">
+            <div class="dropdown">
+              <a class="btn btn-outline-primary dropdown-toggle w-100 text-start" href="#" id="categoriesDropdown"
+                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ selectedCategoriesLabel || 'Sélectionner des catégories' }}
+              </a>
+              <ul class="dropdown-menu w-100" aria-labelledby="categoriesDropdown">
+                <li *ngFor="let category of categoriesOptions" (click)="$event.stopPropagation()">
+                  <label class="dropdown-item m-0 d-flex align-items-center">
+                    <input type="checkbox"
+                           [(ngModel)]="category.selected"
+                           name="category-{{category.name}}"
+                           (change)="updateSelectedCategories()"
+                           class="me-2" />
+                    {{ category.name }}
+                  </label>
+                </li>
+              </ul>
+            </div>
+            <small *ngIf="submitted && formData.categories.length === 0" class="text-danger">
+              Sélectionnez au moins une catégorie.
+            </small>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="step === 2">
+          <h2 class="text-center mb-4">Informations sur le lieu</h2>
+
+          <div class="mb-3">
+            <label class="form-label">Lieu</label>
+            <input type="text" class="form-control" [(ngModel)]="formData.lieu" name="lieu" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Ville</label>
+            <input type="text" class="form-control" [(ngModel)]="formData.ville" name="ville" required />
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="step === 3">
+          <h2 class="text-center mb-4">Accessibilité Handicap</h2>
+
+          <div class="form-check mb-3">
+            <p-checkbox [(ngModel)]="formData.placeHandicapee" name="placeHandicapee" inputId="placeHandicapee1"></p-checkbox>
+            <label for="placeHandicapee1" class="form-check-label ms-2">Places handicapées disponibles</label>
+          </div>
+
+          <div class="form-check mb-3">
+            <p-checkbox [(ngModel)]="formData.autresFacilites" name="autresFacilites" inputId="placeHandicapee2"></p-checkbox>
+            <label for="placeHandicapee2" class="form-check-label ms-2">Autres facilités handicapées</label>
+          </div>
+        </ng-container>
+
+        <div class="d-flex justify-content-between mt-4">
+          <button *ngIf="step > 1" class="btn btn-secondary" type="button" (click)="previousStep()">Précédent</button>
+          <button *ngIf="step < 3" class="btn btn-primary ms-auto" type="button" (click)="nextStep()">Suivant</button>
+          <button *ngIf="step === 3" class="btn btn-success ms-auto" type="submit">Valider</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

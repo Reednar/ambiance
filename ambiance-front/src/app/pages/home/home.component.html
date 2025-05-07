@@ -1,24 +1,556 @@
-<h1>Bienvenue sur la page d'accueil</h1>
-<p>Contenu de la page d'accueil</p>
-
-<div class="articles-container">
-    <div class="article-card" *ngFor="let article of articles">
-        <div class="image-wrapper">
-            <img [src]="article.image" alt="Article image">
-            <span class="read-time">{{ article.readTime }} €</span>
-        </div>
-        <div class="article-content">
-            <div class="author-info">
-                <img [src]="article.authorAvatar" alt="Author">
-                <div class="categories">
-                    <span class="category" *ngFor="let cat of article.category">{{ cat }}</span>
+<div class="wrapper">
+    <div class="mob-header-btn-fixed-01 d-lg-none sf-hidden"></div>
+    <div aria-labelledby="offcanvas_mobile_header_01"
+        class="offcanvas-lg mobile-nav-offcanvas offcanvas-start d-lg-none sf-hidden" id="offcanvas_mobile_header_01"
+        tabindex="-1"></div>
+    <main>
+        <div class="swiper swiper-container swiper-initialized swiper-horizontal swiper-pointer-events swiper-backface-hidden"
+            data-swiper-options='{
+              "slidesPerView": 1,
+              "spaceBetween": 0,
+              "pagination": {
+                "el": ".swiper-pagination",
+                "clickable": true
+              },
+              "navigation": {
+                "nextEl": ".swiper-next-01",
+                "prevEl": ".swiper-prev-01"
+              },
+              "autoplay": {
+                "delay": 5000,
+                "disableOnInteraction": false
+              }
+            }'>
+            <div aria-live="off" class="swiper-wrapper" id="swiper-wrapper-e662f377dbaf6aad"
+                style="transition-duration:0ms;transform:translate3d(0px,0px,0px)">
+                <div aria-label="1 / 2" class="swiper-slide swiper-slide-active" role="group" style="width:1905px">
+                    <div class="bg-no-repeat bg-cover bg-right-center px-8"
+                        style="background-image:url('assets/images/backgrounds/bde2.png')">
+                        <div class="container">
+                            <div class="row min-vh-100 align-items-center py-12">
+                                <div class="col-lg-8 col-xl-6 pt-8 pt-lg-12">
+                                    <h6 class="fw-500 text-white mb-4">Vous recherchez des événements ?</h6>
+                                    <h1 class="display-2 fw-600 text-white">Ambiance : L'endroit qui réunit les
+                                        étudiants</h1>
+                                    <div class="pt-5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div aria-label="2 / 2" class="swiper-slide swiper-slide-next" role="group" style="width:1905px">
+                    <div class="bg-no-repeat bg-cover bg-right-center px-8"
+                        style="background-image:url('assets/images/backgrounds/bde.png')">
+                        <div class="container">
+                            <div class="row min-vh-100 align-items-center py-12">
+                                <div class="col-lg-8 col-xl-6 pt-8 pt-lg-12">
+                                    <h6 class="fw-500 text-white mb-4">Vous recherchez des news sur certaines écoles ?
+                                    </h6>
+                                    <h1 class="display-2 fw-600 text-white">Ambiance : L'endroit qui réunit les
+                                        étudiants</h1>
+                                    <div class="pt-5">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <h3 class="title">{{ article.title }}</h3>
-            <div class="article-meta">
-                <span class="views">{{ article.views | number }}</span>
-                <span class="date">{{ article.date | date: 'EEE, MMM yyyy' }}</span>
-            </div>
+            <div aria-controls="swiper-wrapper-e662f377dbaf6aad" aria-disabled="false" aria-label="Next slide"
+                class="swiper-arrow-style-01 swiper-next swiper-next-01" role="button" tabindex="0"><i
+                    class="bi bi-chevron-right"></i></div>
+            <div aria-controls="swiper-wrapper-e662f377dbaf6aad" aria-disabled="true" aria-label="Previous slide"
+                class="swiper-arrow-style-01 swiper-prev swiper-prev-01 swiper-button-disabled" role="button"
+                tabindex="-1"><i class="bi bi-chevron-left"></i></div>
+            <div
+                class="swiper-pagination swiper-pagination-white swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal">
+                <span aria-current="true" aria-label="Go to slide 1"
+                    class="swiper-pagination-bullet swiper-pagination-bullet-active" role="button"
+                    tabindex="0"></span><span aria-label="Go to slide 2" class="swiper-pagination-bullet" role="button"
+                    tabindex="0"></span>
+            </div><span aria-atomic="true" aria-live="assertive" class="swiper-notification sf-hidden"></span>
         </div>
-    </div>
+        <section class="section bg-gray-100" style="background-color: #0d1d2d !important;">
+            <div class="container">
+                <div class="row justify-content-center section-heading">
+                    <div class="col-lg-6 text-center">
+                        <h3 class="h2 mt-2">Événements par catégories</h3>
+                    </div>
+                </div>
+                <div class="row g-2 g-md-3">
+                    <div class="col-6 col-lg-3">
+                        <div class="hover-scale">
+                            <div class="hover-scale-in"><a href="#"> <img alt="" class="img-fluid"
+                                        src="assets/images/categories/sport.png" title="" />
+                                </a>
+                            </div>
+                            <div class="text-center mx-2 mx-sm-4 mt-n5 position-relative z-index-1 bg-body shadow p-4">
+                                <h6 class="m-0"><a class="text-reset" href="#">Sport</a></h6><small>25
+                                    Annonces</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="hover-scale">
+                            <div class="hover-scale-in"><a href="#"><img alt="" class="img-fluid"
+                                        src="assets/images/categories/musique.png" title="" /></a>
+                            </div>
+                            <div class="text-center mx-2 mx-sm-4 mt-n5 position-relative z-index-1 bg-body shadow p-4">
+                                <h6 class="m-0"><a class="text-reset" href="#">Musique</a></h6><small>6
+                                    Annonces</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="hover-scale">
+                            <div class="hover-scale-in"><a href="#"><img alt="" class="img-fluid"
+                                        src="assets/images/categories/cine.png" title="" /></a>
+                            </div>
+                            <div class="text-center mx-2 mx-sm-4 mt-n5 position-relative z-index-1 bg-body shadow p-4">
+                                <h6 class="m-0"><a class="text-reset" href="#">Cinéma</a></h6><small>5
+                                    Annonces</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="hover-scale">
+                            <div class="hover-scale-in"><a href="#"><img alt="" class="img-fluid"
+                                        src="assets/images/categories/voyage.png" title="" /></a>
+                            </div>
+                            <div class="text-center mx-2 mx-sm-4 mt-n5 position-relative z-index-1 bg-body shadow p-4">
+                                <h6 class="m-0"><a class="text-reset" href="#">Voyage</a></h6><small>2
+                                    Annonces</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section">
+            <div class="container">
+                <div class="row justify-content-center section-heading">
+                    <div class="col-lg-6 text-center">
+                        <p class="fs-6 m-0">10/04/2025
+                        <h3 class="h2 mt-2">Dernières annonces mises en lignes</h3>
+                    </div>
+                </div>
+                <div class="row g-2 g-md-3">
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="product-card-2">
+                            <div class="product-card-image">
+                                <div class="product-wishlist"><a class="btn btn-outline-primary" href="#">28,5€</a>
+                                </div>
+                                <div class="product-media"><a href="#"><img alt="" class="img-fluid"
+                                            src="assets/images/backgrounds/bde.png" title="" /></a>
+                                    <div class="product-action nav justify-content-center gap-2">
+                                        <!-- Like -->
+                                        <a class="btn btn-outline-success rounded-circle" href="#" title="J'aime">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </a>
+        
+                                        <!-- Ajouter à la liste de souhaits -->
+                                        <a class="btn btn-outline-light rounded-circle" href="#"
+                                            title="Ajouter à la liste de souhaits">
+                                            <i class="bi bi-bookmark-heart"></i>
+                                        </a>
+        
+                                        <!-- Dislike -->
+                                        <a class="btn btn-outline-danger rounded-circle" href="#" title="Je n'aime pas">
+                                            <i class="bi bi-heartbreak"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card-info">
+                                <div class="rating-star text"><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span>
+                                </div>
+                                <h6 class="product-title"><a href="#">Séance de révision : Mathématiques</a></h6>
+                                <div class="product-price"><span class="text-primary">Ensitech</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="product-card-2">
+                            <div class="product-card-image">
+                                <div class="product-wishlist"><a class="btn btn-outline-primary" href="#">28,5€</a>
+                                </div>
+                                <div class="product-media"><a href="#"><img alt="" class="img-fluid"
+                                            src="assets/images/backgrounds/bde.png" title="" /></a>
+                                    <div class="product-action nav justify-content-center">
+                                        <div class="product-action nav justify-content-center gap-2">
+                                            <!-- Like -->
+                                            <a class="btn btn-outline-success rounded-circle" href="#" title="J'aime">
+                                                <i class="bi bi-heart-fill"></i>
+                                            </a>
+        
+                                            <!-- Ajouter à la liste de souhaits -->
+                                            <a class="btn btn-outline-light rounded-circle" href="#"
+                                                title="Ajouter à la liste de souhaits">
+                                                <i class="bi bi-bookmark-heart"></i>
+                                            </a>
+        
+                                            <!-- Dislike -->
+                                            <a class="btn btn-outline-danger rounded-circle" href="#" title="Je n'aime pas">
+                                                <i class="bi bi-heartbreak"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card-info">
+                                <div class="rating-star text"><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span>
+                                </div>
+                                <h6 class="product-title"><a href="#">Séance de révision : Mathématiques</a></h6>
+                                <div class="product-price"><span class="text-primary">Ensitech</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="product-card-2">
+                            <div class="product-card-image">
+                                <div class="product-wishlist"><a class="btn btn-outline-primary" href="#">28,5€</a>
+                                </div>
+                                <div class="product-media"><a href="#"><img alt="" class="img-fluid"
+                                            src="assets/images/backgrounds/bde.png" title="" /></a>
+                                    <div class="product-action nav justify-content-center gap-2">
+                                        <!-- Like -->
+                                        <a class="btn btn-outline-success rounded-circle" href="#" title="J'aime">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </a>
+        
+                                        <!-- Ajouter à la liste de souhaits -->
+                                        <a class="btn btn-outline-light rounded-circle" href="#"
+                                            title="Ajouter à la liste de souhaits">
+                                            <i class="bi bi-bookmark-heart"></i>
+                                        </a>
+        
+                                        <!-- Dislike -->
+                                        <a class="btn btn-outline-danger rounded-circle" href="#" title="Je n'aime pas">
+                                            <i class="bi bi-heartbreak"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card-info">
+                                <div class="rating-star text"><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span>
+                                </div>
+                                <h6 class="product-title"><a href="#">Séance de révision : Mathématiques</a></h6>
+                                <div class="product-price"><span class="text-primary">Ensitech</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="product-card-2">
+                            <div class="product-card-image">
+                                <div class="product-wishlist"><a class="btn btn-outline-primary" href="#">28,5€</a>
+                                </div>
+                                <div class="product-media"><a href="#"><img alt="" class="img-fluid"
+                                            src="assets/images/backgrounds/bde.png" title="" /></a>
+                                    <div class="product-action nav justify-content-center gap-2">
+                                        <!-- Like -->
+                                        <a class="btn btn-outline-success rounded-circle" href="#" title="J'aime">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </a>
+        
+                                        <!-- Ajouter à la liste de souhaits -->
+                                        <a class="btn btn-outline-light rounded-circle" href="#"
+                                            title="Ajouter à la liste de souhaits">
+                                            <i class="bi bi-bookmark-heart"></i>
+                                        </a>
+        
+                                        <!-- Dislike -->
+                                        <a class="btn btn-outline-danger rounded-circle" href="#" title="Je n'aime pas">
+                                            <i class="bi bi-heartbreak"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card-info">
+                                <div class="rating-star text"><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span>
+                                </div>
+                                <h6 class="product-title"><a href="#">Séance de révision : Mathématiques</a></h6>
+                                <div class="product-price"><span class="text-primary">Ensitech</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="product-card-2">
+                            <div class="product-card-image">
+                                <div class="product-wishlist"><a class="btn btn-outline-primary" href="#">28,5€</a>
+                                </div>
+                                <div class="product-media"><a href="#"><img alt="" class="img-fluid"
+                                            src="assets/images/backgrounds/bde.png" title="" /></a>
+                                    <div class="product-action nav justify-content-center gap-2">
+                                        <!-- Like -->
+                                        <a class="btn btn-outline-success rounded-circle" href="#" title="J'aime">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </a>
+        
+                                        <!-- Ajouter à la liste de souhaits -->
+                                        <a class="btn btn-outline-light rounded-circle" href="#"
+                                            title="Ajouter à la liste de souhaits">
+                                            <i class="bi bi-bookmark-heart"></i>
+                                        </a>
+        
+                                        <!-- Dislike -->
+                                        <a class="btn btn-outline-danger rounded-circle" href="#" title="Je n'aime pas">
+                                            <i class="bi bi-heartbreak"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card-info">
+                                <div class="rating-star text"><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span>
+                                </div>
+                                <h6 class="product-title"><a href="#">Séance de révision : Mathématiques</a></h6>
+                                <div class="product-price"><span class="text-primary">Ensitech</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="product-card-2">
+                            <div class="product-card-image">
+                                <div class="product-wishlist"><a class="btn btn-outline-primary" href="#">28,5€</a>
+                                </div>
+                                <div class="product-media"><a href="#"><img alt="" class="img-fluid"
+                                            src="assets/images/backgrounds/bde.png" title="" /></a>
+                                    <div class="product-action nav justify-content-center gap-2">
+                                        <!-- Like -->
+                                        <a class="btn btn-outline-success rounded-circle" href="#" title="J'aime">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </a>
+        
+                                        <!-- Ajouter à la liste de souhaits -->
+                                        <a class="btn btn-outline-light rounded-circle" href="#"
+                                            title="Ajouter à la liste de souhaits">
+                                            <i class="bi bi-bookmark-heart"></i>
+                                        </a>
+        
+                                        <!-- Dislike -->
+                                        <a class="btn btn-outline-danger rounded-circle" href="#" title="Je n'aime pas">
+                                            <i class="bi bi-heartbreak"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card-info">
+                                <div class="rating-star text"><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span>
+                                </div>
+                                <h6 class="product-title"><a href="#">Séance de révision : Mathématiques</a></h6>
+                                <div class="product-price"><span class="text-primary">Ensitech</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="product-card-2">
+                            <div class="product-card-image">
+                                <div class="product-wishlist"><a class="btn btn-outline-primary" href="#">28,5€</a>
+                                </div>
+                                <div class="product-media"><a href="#"><img alt="" class="img-fluid"
+                                            src="assets/images/backgrounds/bde.png" title="" /></a>
+                                    <div class="product-action nav justify-content-center gap-2">
+                                        <!-- Like -->
+                                        <a class="btn btn-outline-success rounded-circle" href="#" title="J'aime">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </a>
+        
+                                        <!-- Ajouter à la liste de souhaits -->
+                                        <a class="btn btn-outline-light rounded-circle" href="#"
+                                            title="Ajouter à la liste de souhaits">
+                                            <i class="bi bi-bookmark-heart"></i>
+                                        </a>
+        
+                                        <!-- Dislike -->
+                                        <a class="btn btn-outline-danger rounded-circle" href="#" title="Je n'aime pas">
+                                            <i class="bi bi-heartbreak"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card-info">
+                                <div class="rating-star text"><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span>
+                                </div>
+                                <h6 class="product-title"><a href="#">Séance de révision : Mathématiques</a></h6>
+                                <div class="product-price"><span class="text-primary">Ensitech</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="product-card-2">
+                            <div class="product-card-image">
+                                <div class="product-wishlist"><a class="btn btn-outline-primary" href="#">28,5€</a>
+                                </div>
+                                <div class="product-media"><a href="#"><img alt="" class="img-fluid"
+                                            src="assets/images/backgrounds/bde.png" title="" /></a>
+                                    <div class="product-action nav justify-content-center gap-2">
+                                        <!-- Like -->
+                                        <a class="btn btn-outline-success rounded-circle" href="#" title="J'aime">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </a>
+        
+                                        <!-- Ajouter à la liste de souhaits -->
+                                        <a class="btn btn-outline-light rounded-circle" href="#"
+                                            title="Ajouter à la liste de souhaits">
+                                            <i class="bi bi-bookmark-heart"></i>
+                                        </a>
+        
+                                        <!-- Dislike -->
+                                        <a class="btn btn-outline-danger rounded-circle" href="#" title="Je n'aime pas">
+                                            <i class="bi bi-heartbreak"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card-info">
+                                <div class="rating-star text"><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span><span class="badge bg-info">Sale</span><span
+                                        class="badge bg-info">Sale</span>
+                                </div>
+                                <h6 class="product-title"><a href="#">Séance de révision : Mathématiques</a></h6>
+                                <div class="product-price"><span class="text-primary">Ensitech</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="container">
+                <div class="row g-3">
+                    <div class="col-lg-4">
+                        <div class="position-relative hover-scale">
+                            <div class="hover-scale-in"><img alt="" class="w-100" src="assets/image_9.jpg" title="" />
+                            </div>
+                            <div
+                                class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center top-0 left-0">
+                                <div class="text-center bg-body px-4 py-3">
+                                    <h6 class="text-uppercase fw-300 text-primary mb-3">NOUVEL INSTITUT</h6>
+                                    <h3 class="fw-600 h4">Ensitech</h3>
+                                    <div class="pt-2"><a class="btn btn-mode btn-sm" href="#">Voir leurs événements</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="position-relative hover-scale">
+                            <div class="hover-scale-in"><img alt="" class="w-100" src="assets/image_10.jpg" title="" />
+                            </div>
+                            <div
+                                class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center top-0 left-0">
+                                <div class="text-center bg-body px-4 py-3">
+                                    <h6 class="text-uppercase fw-300 text-primary mb-3">NOUVEL INSTITUT</h6>
+                                    <h3 class="fw-600 h4">École 2600</h3>
+                                    <div class="pt-2"><a class="btn btn-mode btn-sm" href="#">Voir leurs événements</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="position-relative hover-scale">
+                            <div class="hover-scale-in"><img alt="" class="w-100" src="assets/image_11.jpg" title="" />
+                            </div>
+                            <div
+                                class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center top-0 left-0">
+                                <div class="text-center bg-body px-4 py-3">
+                                    <h6 class="text-uppercase fw-300 text-primary mb-3">NOUVEL INSTITUT</h6>
+                                    <h3 class="fw-600 h4">IPSSI</h3>
+                                    <div class="pt-2"><a class="btn btn-mode btn-sm" href="#">Voir leurs événements</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section">
+            <div class="container">
+              
+            </div>
+        </section>
+        <section class="section bg-gray-100" style="background-color: #0d1d2d !important;">
+            <div class="container">
+                <div class="row justify-content-center mb-4">
+                    <div class="col-lg-6 text-center">
+                        <h3 class="h2 mb-2">Dernières News des BDE</h3>
+                        <p class="fs-6 m-0">10/04/2025</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 my-3">
+                        <div class="hover-scale text-center">
+                            <div class="hover-scale-in position-relative"><a href="#"><img alt="" class="img-fluid"
+                                        src="assets/image_12.jpg" title="" /></a>
+                                <div
+                                    class="position-absolute top-0 start-0 mt-3 ms-3 bg-white d-flex flex-column align-items-center px-3 py-2">
+                                    <span class="h4 text-dark m-0">25</span> <small>MAR</small>
+                                </div>
+                            </div>
+                            <div class="px-3 py-4 mx-3 mx-lg-5 bg-body mt-n6 position-relative">
+                                <h5><a class="text-reset" href="#">Ensitech</a></h5>
+                                <p class="m-0">Un club de jeu vidéo à ouvert, vous pouvez dès maintenant vous y rendre
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 my-3">
+                        <div class="hover-scale text-center">
+                            <div class="hover-scale-in position-relative"><a href="#"><img alt="" class="img-fluid"
+                                        src="assets/image_13.jpg" title="" /></a>
+                                <div
+                                    class="position-absolute top-0 start-0 mt-3 ms-3 bg-white d-flex flex-column align-items-center px-3 py-2">
+                                    <span class="h4 text-dark m-0">25</span> <small>MAR</small>
+                                </div>
+                            </div>
+                            <div class="px-3 py-4 mx-3 mx-lg-5 bg-body mt-n6 position-relative">
+                                <h5><a class="text-reset" href="#">Ensitech</a></h5>
+                                <p class="m-0">Bilel a viré vimard, on est sauvé</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 my-3">
+                        <div class="hover-scale text-center">
+                            <div class="hover-scale-in position-relative"><a href="#"><img alt="" class="img-fluid"
+                                        src="assets/image_14.jpg" title="" /></a>
+                                <div
+                                    class="position-absolute top-0 start-0 mt-3 ms-3 bg-white d-flex flex-column align-items-center px-3 py-2">
+                                    <span class="h4 text-dark m-0">25</span> <small>MAR</small>
+                                </div>
+                            </div>
+                            <div class="px-3 py-4 mx-3 mx-lg-5 bg-body mt-n6 position-relative">
+                                <h5><a class="text-reset" href="#">Ensitech</a></h5>
+                                <p class="m-0">Date de création de bancs pour l'école</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
 </div>

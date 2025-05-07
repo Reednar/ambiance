@@ -1,15 +1,241 @@
-<h1>Voici votre calendrier</h1>
-<p>Vous pouvez y voir vos futurs événements ou sorties prévues !</p>
-
-<full-calendar [options]="calendarOptions"></full-calendar>
-
-<div class="articles-container">
-  <h2>Les prochaines sorties/événements</h2>
-  <ul>
-    <li *ngFor="let event of events">
-      <strong>{{ event.title }}</strong> - {{ event.date | date:'fullDate' }}
-    </li>
-  </ul>
+ 
+    <div class="swiper swiper-container swiper-initialized swiper-horizontal swiper-pointer-events swiper-backface-hidden"
+    data-swiper-options='{
+      "slidesPerView": 1,
+      "spaceBetween": 0,
+      "pagination": {
+        "el": ".swiper-pagination",
+        "clickable": true
+      },
+      "navigation": {
+        "nextEl": ".swiper-next-01",
+        "prevEl": ".swiper-prev-01"
+      },
+      "autoplay": {
+        "delay": 5000,
+        "disableOnInteraction": false
+      }
+    }'>
+    <div aria-live="off" class="swiper-wrapper" id="swiper-wrapper-e662f377dbaf6aad"
+        style="transition-duration:0ms;transform:translate3d(0px,0px,0px)">
+        <div aria-label="1 / 2" class="swiper-slide swiper-slide-active" role="group" style="width:1905px">
+            <div class="bg-no-repeat bg-cover bg-right-center px-8"
+                style="background-image:url('assets/images/backgrounds/cal.png')">
+                <div class="container">
+                    <div class="row min-vh-100 align-items-center py-12">
+                        <div class="col-lg-8 col-xl-6 pt-8 pt-lg-12">
+                            <h6 class="fw-500 text-white mb-4"></h6>
+                            <h1 class="display-2 fw-600 text-white"></h1>
+                            <div class="pt-5">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
 </div>
 
 
+
+    <h1 class="text-4xl font-bold text-white mb-6 border-l-4 pl-4 border-gray-400"
+        style="padding-top: 100px; text-align: center;">
+        Votre calendrier avec vos événements prévus
+    </h1>
+
+    <full-calendar [options]="calendarOptions" style="max-height: 70% !important;"></full-calendar>
+
+
+    <div class="articles-container"
+        style="background-color: #0d1d2d !important; min-height: 500px; padding-bottom: 70px;">
+        <h2 style="margin-top: 50px; margin-bottom: 50px;">Les écoles qui vous propose des sorties/événements</h2>
+        <!-- <ul>
+    <li *ngFor="let event of events">
+      <strong>{{ event.title }}</strong> - {{ event.date | date:'fullDate' }}
+    </li>
+  </ul> -->
+        <section>
+            <div class="container">
+                <div class="row g-3">
+                    <div class="col-lg-4">
+                        <div class="position-relative hover-scale">
+                            <div class="hover-scale-in"><img alt="" class="w-100" src="assets/image_9.jpg" title="" />
+                            </div>
+                            <div
+                                class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center top-0 left-0">
+                                <div class="text-center bg-body px-4 py-3">
+                                    <h3 class="fw-600 h4">Ensitech</h3>
+                                    <div class="pt-2"><a class="btn btn-mode btn-sm" href="#">Voir leurs événements</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="position-relative hover-scale">
+                            <div class="hover-scale-in"><img alt="" class="w-100" src="assets/image_10.jpg" title="" />
+                            </div>
+                            <div
+                                class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center top-0 left-0">
+                                <div class="text-center bg-body px-4 py-3">
+                                    <h3 class="fw-600 h4">École 2600</h3>
+                                    <div class="pt-2"><a class="btn btn-mode btn-sm" href="#">Voir leurs événements</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="position-relative hover-scale">
+                            <div class="hover-scale-in"><img alt="" class="w-100" src="assets/image_11.jpg" title="" />
+                            </div>
+                            <div
+                                class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center top-0 left-0">
+                                <div class="text-center bg-body px-4 py-3">
+                                    <h3 class="fw-600 h4">IPSSI</h3>
+                                    <div class="pt-2"><a class="btn btn-mode btn-sm" href="#">Voir leurs événements</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <section class="section">
+        <div class="container">
+            <div class="row justify-content-center section-heading"
+                style="background-image: url('assets/images/backgrounds/event-background.jpg'); background-size: cover; background-position: center; padding-bottom: 20px; ">
+                <div class="col-lg-6 text-center">
+                    <h3 class="h2 mt-2 text-white" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">Les événements
+                        auxquels vous participez</h3>
+                </div>
+            </div>
+
+            <div class="row g-2 g-md-3">
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="product-card-2">
+                        <div class="product-card-image">
+                            <div class="product-wishlist"><a class="btn btn-outline-primary" href="#">28,5€</a>
+                            </div>
+                            <div class="product-media"><a href="#"><img alt="" class="img-fluid"
+                                        src="assets/images/backgrounds/bde.png" title="" /></a>
+                                <div class="product-action nav justify-content-center"><a class="btn btn-primary"
+                                        href="#"><i class="fi-shopping-cart"></i> </a><a class="btn btn-primary"
+                                        href="#"><i class="fi-repeat"></i>
+                                    </a><a class="btn btn-primary" data-bs-target="#px-quick-view"
+                                        data-bs-toggle="modal" href="javascript:void(0)"><i class="fi-eye"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card-info">
+                            <div class="rating-star text"><span class="badge bg-info">Sale</span><span
+                                    class="badge bg-info">Sale</span><span class="badge bg-info">Sale</span><span
+                                    class="badge bg-info">Sale</span>
+                            </div>
+                            <h6 class="product-title"><a href="#">Séance de révision : Mathématiques</a></h6>
+                            <div class="product-price"><span class="text-primary">Ensitech</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="product-card-2">
+                        <div class="product-card-image">
+                            <div class="badge-ribbon"><span class="badge bg-info"
+                                    style="background-color: black !important">Sale</span></div>
+                            <div class="product-wishlist"><a class="btn btn-outline-primary" href="#"><i
+                                        class="fi-heart"></i></a>
+                            </div>
+                            <div class="product-media"><a href="#"><img alt="" class="img-fluid"
+                                        src="assets/image_8.jpg" title="" /></a>
+                                <div class="product-action nav justify-content-center"><a class="btn btn-primary"
+                                        href="#"><i class="fi-shopping-cart"></i> </a><a class="btn btn-primary"
+                                        href="#"><i class="fi-repeat"></i>
+                                    </a><a class="btn btn-primary" data-bs-target="#px-quick-view"
+                                        data-bs-toggle="modal" href="javascript:void(0)"><i class="fi-eye"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card-info">
+                            <div class="rating-star text"><i class="bi bi-star-fill active"></i> <i
+                                    class="bi bi-star-fill active"></i> <i class="bi bi-star-fill active"></i>
+                                <i class="bi bi-star-fill active"></i> <i class="bi bi-star"></i>
+                            </div>
+                            <h6 class="product-title"><a href="#">Fine-knit sweater</a></h6>
+                            <div class="product-price"><span class="text-primary">$28.<small>50</small></span>
+                                <del class="fs-sm text-muted">$38.<small>50</small></del>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="product-card-2">
+                        <div class="product-card-image">
+                            <div class="badge-ribbon"><span class="badge bg-info">Sale</span></div>
+                            <div class="product-wishlist"><a class="btn btn-outline-primary" href="#"><i
+                                        class="fi-heart"></i></a>
+                            </div>
+                            <div class="product-media"><a href="#"><img alt="" class="img-fluid"
+                                        src='data:image/svg+xml,&lt;svg xmlns="http://www.w3.org/2000/svg" width="900" height="1000"&gt;&lt;rect fill-opacity="0"/&gt;&lt;/svg&gt;'
+                                        style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-19)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"
+                                        title="" /></a>
+                                <div class="product-action nav justify-content-center"><a class="btn btn-primary"
+                                        href="#"><i class="fi-shopping-cart"></i> </a><a class="btn btn-primary"
+                                        href="#"><i class="fi-repeat"></i>
+                                    </a><a class="btn btn-primary" data-bs-target="#px-quick-view"
+                                        data-bs-toggle="modal" href="javascript:void(0)"><i class="fi-eye"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card-info">
+                            <div class="rating-star text"><i class="bi bi-star-fill active"></i> <i
+                                    class="bi bi-star-fill active"></i> <i class="bi bi-star-fill active"></i>
+                                <i class="bi bi-star-fill active"></i> <i class="bi bi-star"></i>
+                            </div>
+                            <h6 class="product-title"><a href="#">Fine-knit sweater</a></h6>
+                            <div class="product-price"><span class="text-primary">$28.<small>50</small></span>
+                                <del class="fs-sm text-muted">$38.<small>50</small></del>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="product-card-2">
+                        <div class="product-card-image">
+                            <div class="badge-ribbon"><span class="badge bg-info">Sale</span></div>
+                            <div class="product-wishlist"><a class="btn btn-outline-primary" href="#"><i
+                                        class="fi-heart"></i></a>
+                            </div>
+                            <div class="product-media"><a href="#"><img alt="" class="img-fluid"
+                                        src='data:image/svg+xml,&lt;svg xmlns="http://www.w3.org/2000/svg" width="900" height="1000"&gt;&lt;rect fill-opacity="0"/&gt;&lt;/svg&gt;'
+                                        style="background-blend-mode:normal!important;background-clip:content-box!important;background-position:50% 50%!important;background-color:rgba(0,0,0,0)!important;background-image:var(--sf-img-20)!important;background-size:100% 100%!important;background-origin:content-box!important;background-repeat:no-repeat!important"
+                                        title="" /></a>
+                                <div class="product-action nav justify-content-center"><a class="btn btn-primary"
+                                        href="#"><i class="fi-shopping-cart"></i> </a><a class="btn btn-primary"
+                                        href="#"><i class="fi-repeat"></i>
+                                    </a><a class="btn btn-primary" data-bs-target="#px-quick-view"
+                                        data-bs-toggle="modal" href="javascript:void(0)"><i class="fi-eye"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card-info">
+                            <div class="rating-star text"><i class="bi bi-star-fill active"></i> <i
+                                    class="bi bi-star-fill active"></i> <i class="bi bi-star-fill active"></i>
+                                <i class="bi bi-star-fill active"></i> <i class="bi bi-star"></i>
+                            </div>
+                            <h6 class="product-title"><a href="#">Fine-knit sweater</a></h6>
+                            <div class="product-price"><span class="text-primary">$28.<small>50</small></span>
+                                <del class="fs-sm text-muted">$38.<small>50</small></del>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>

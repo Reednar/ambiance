@@ -1,0 +1,21 @@
+
+  
+
+  @media (max-width: 768px) {
+    .p-card {
+      font-size: 0.875rem; /* Réduit la taille de la police pour les écrans moyens et plus petits */
+    }
+    .p-chart {
+      height: 200px; /* Ajuste la taille du graphique pour les petits écrans */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .p-card {
+      font-size: 0.75rem; /* Plus petit pour les écrans mobiles */
+    }
+    .p-chart {
+      height: 180px; /* Encore plus petit pour les très petits écrans */
+    }
+  }
+  

@@ -1,0 +1,56 @@
+/* Formulaire étapes */
+.form-step-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.form-step-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+/* Champs obligatoires avec bordures rouges si erreur */
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched,
+.p-calendar.ng-invalid.ng-touched,
+.p-multiselect.ng-invalid.ng-touched {
+  border: 1px solid #dc3545 !important;
+}
+
+/* Boutons Suivant / Précédent */
+.step-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+/* Bouton désactivé */
+.btn[disabled] {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Texte erreur */
+.p-error {
+  font-size: 0.85rem;
+  color: #dc3545;
+  margin-top: 5px;
+  display: block;
+}
+
+/* Responsive pour petits écrans */
+@media (max-width: 576px) {
+  .step-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

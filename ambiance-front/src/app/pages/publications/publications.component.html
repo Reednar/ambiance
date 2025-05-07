@@ -1,44 +1,180 @@
-<h1>Liste des publications</h1>
-
-<!-- Barre de recherche et filtres -->
-<div>
-    <!-- Champ de recherche -->
-    <span class="p-input-icon-left mb-2">
-        <i class="pi pi-search"></i>
-        <input pInputText type="text" [(ngModel)]="searchQuery" (ngModelChange)="filterPublications()"
-            placeholder="Mot-clé de recherche" class="w-full" />
-    </span>
-
-    <!-- Filtre par catégorie
-    <p-dropdown [options]="categories" [(ngModel)]="selectedCategory" placeholder="Filtrer par catégorie" class="w-60"
-        (onChange)="filterPublications()">
-    </p-dropdown> -->
-
-    <!-- Filtre par catégories multiples -->
-    <p-multiSelect [options]="categories" [(ngModel)]="selectedCategories" defaultLabel="Sélectionner des catégories"
-        class="w-80" (onChange)="filterPublications()">
-    </p-multiSelect>
-</div>
-
-<!-- Affichage des publications -->
-<div class="articles-container">
-    <div class="article-card" *ngFor="let publication of filteredPublications">
-        <div class="image-wrapper">
-            <img [src]="publication.image" alt="Article image">
-            <span class="read-time">{{ publication.codePostal }} €</span>
+<section class="section" style="padding-top: 60px; background-color: black !important;">
+    <div class="container">
+        <div class="row justify-content-center section-heading"
+            style="background-image: url('assets/images/backgrounds/event-background.jpg'); background-size: cover; background-position: center; padding-bottom: 20px; ">
+            <div class="col-lg-6 text-center">
+                <h3 class="h2 mt-2 text-white"></h3>
+            </div>
         </div>
-        <div class="article-content">
-            <div class="author-info">
-                <img [src]="publication.autheurAvatar" alt="Author">
-                <div class="categories">
-                    <span class="category" *ngFor="let cat of publication.categories">{{ cat }}</span>
+        <!-- <h3 class="h2 mt-2 text-white" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">Voir les événements disponibles</h3> -->
+        <!-- <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="h2 mt-2 text-white" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">
+          Voir les événements disponibles
+        </h3>
+        
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+            style="background-color: transparent; border: 1px solid white; color: white;">
+            Filtrer
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown">
+            <li><a class="dropdown-item" (click)="filterByCategory('sport')">Sport</a></li>
+            <li><a class="dropdown-item" (click)="filterByCategory('musique')">Musique</a></li>
+            <li><a class="dropdown-item" (click)="filterByCategory('jeux')">Jeux</a></li>
+            <li><a class="dropdown-item" (click)="filterByCategory('divers')">Divers</a></li>
+          </ul>
+        </div>
+      </div>
+       -->
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <h3 class="h2 mt-2 text-white me-auto" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">
+                Voir les événements disponibles
+            </h3>
+
+            <div class="card flex justify-content-center">
+                <p-calendar [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [showIcon]="true"
+                    [placeholder]="'Sélectionner une plage de dates'" dateFormat="dd/mm/yy" class="custom-calendar">
+                </p-calendar>
+
+
+
+            </div>
+
+
+
+            <!-- Bouton Filtrer -->
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false"
+                    style="background-color: transparent; border: 1px solid white; color: white;">
+                    Filtrer
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown">
+                    <li><a class="dropdown-item" (click)="filterByCategory('sport')">Sport</a></li>
+                    <li><a class="dropdown-item" (click)="filterByCategory('musique')">Musique</a></li>
+                    <li><a class="dropdown-item" (click)="filterByCategory('jeux')">Jeux</a></li>
+                    <li><a class="dropdown-item" (click)="filterByCategory('divers')">Divers</a></li>
+                </ul>
+            </div>
+        </div>
+
+
+        <!-- <section class="section">
+            <div class="container">
+                <div class="row g-2 g-md-3">
+                    <div class="col-6 col-md-4 col-lg-3" *ngFor="let pub of publications">
+                        <div class="product-card-3">
+                            <div class="product-card-image">
+                                <div class="product-wishlist">
+                                    <a class="btn btn-outline-primary" href="#">
+                                        {{ pub.prix | number:'1.0-2' }}€
+                                    </a>
+                                </div>
+                                <div class="product-media">
+                                    <a href="#">
+                                        <img alt="" class="img-fluid" src="assets/images/backgrounds/bde.png"
+                                            title="" />
+                                    </a>
+                                    <div class="product-action nav justify-content-center gap-2">
+                                        <a class="btn btn-outline-success rounded-circle" href="#" title="J'aime">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </a>
+                                        <a class="btn btn-outline-light rounded-circle" href="#"
+                                            title="Ajouter à la liste de souhaits">
+                                            <i class="bi bi-bookmark-heart"></i>
+                                        </a>
+                                        <a class="btn btn-outline-danger rounded-circle" href="#" title="Je n'aime pas">
+                                            <i class="bi bi-heartbreak"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-card-info">
+                                <div class="rating-star text">
+                                    <span class="badge bg-info me-1" *ngFor="let cat of pub.publicationCategories">
+                                        {{ cat.categorie.nom }}
+                                    </span>
+                                </div>
+
+                                <h6 class="product-title">
+                                    <a href="#">{{ pub.titre }}</a>
+                                </h6>
+                                <div class="product-price">
+                                    <span class="text-primary">{{ pub.ville }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-            <h3 class="title">{{ publication.titre }}</h3>
-            <div class="article-meta">
-                <span class="views">{{ publication.vus | number }}</span>
-                <span class="date">{{ publication.date | date: 'EEE, MMM yyyy' }}</span>
+        </section> -->
+
+
+
+<!-- 
+        <div class="container">
+            <div class="row g-3">
+              <div class="col-6 col-md-4 col-lg-3" *ngFor="let pub of publications">
+                <div class="poste-card">
+                    <img src="" alt="Poste" class="poste-img" onerror="this.onerror=null;this.src='assets/images/backgrounds/bde.png';">
+                    <div class="poste-body">
+                    <div>
+                      <div class="poste-titre">{{ pub.titre }}</div>
+                      <div class="poste-prix">{{ pub.prix | number:'1.0-2' }} €</div>
+                    </div>
+                    <div class="poste-categories">
+                      <span  *ngFor="let cat of pub.publicationCategories">{{ cat.categorie.nom }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-        </div>
-    </div>
-</div>
+          </div> -->
+
+          <div class="container">
+            <div class="row g-3">
+              <div class="col-6 col-md-4 col-lg-3" *ngFor="let pub of publications">
+                <div class="poste-card">
+                  
+                  <!-- Nom de l'école -->
+                  <div class="poste-ecole">Ensitech</div>
+                  <!-- <img *ngIf="publication.image" [src]="publication.image" alt="Image de la publication" style="max-width: 100%;"> -->
+
+                  <!-- <img 
+                    [src]="pub.image"
+                    alt="Poste" 
+                    class="poste-img" 
+                    onerror="this.onerror=null;this.src='assets/images/backgrounds/bde.png';"
+                  > -->
+                  <img *ngIf="pub.image" [src]="pub.image" alt="Image de l'événement" class="poste-img" />
+
+                  <div class="poste-body">
+                    <div>
+                      <div class="poste-titre">{{ pub.titre }}</div>
+                      <div class="poste-prix">{{ pub.prix | number:'1.0-2' }} €</div>
+                    </div>
+                    <div class="poste-categories">
+                      <span *ngFor="let cat of pub.publicationCategories">
+                        {{ cat.categorie.nom }}
+                      </span>
+                      <span *ngFor="let cat of pub.publicationCategories">
+                        {{ cat.categorie.nom }}
+                      </span>
+                      <span *ngFor="let cat of pub.publicationCategories">
+                        {{ cat.categorie.nom }}
+                      </span>
+                    </div>
+                  </div>
+          
+                  <!-- Participants -->
+                  <div class="poste-participants">
+                    <!-- {{ pub.participants.length }}/{{ pub.limiteParticipants }} -->
+                      5/10
+                  </div>
+          
+                </div>
+              </div>
+            </div>
+          </div>
+          
