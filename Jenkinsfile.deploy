@@ -1,4 +1,7 @@
 node {
+    // Clean the workspace before starting the pipeline
+    cleanWs()
+
     // Define environment variables
     def NODE_VERSION = '22.11.0'
     def NPM_VERSION = '10.8.3'
