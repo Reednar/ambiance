@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, NotFoundException, UseGuards, Body,Req,Logger,UploadedFile, UseInterceptors, Param  } from '@nestjs/common';
+import { Controller, Get, Post, Param, NotFoundException, UseGuards, Body,Req,Logger,UploadedFile, UseInterceptors,   } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PublicationsService } from '../../services/publications/publications.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -257,12 +257,7 @@ async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
       rampe: boolean;
       ascenseur: boolean;
       utilisateurId: number;
-    }, @Req() req: Request) {
-    this.logger.log(`[${req.method} ${req.url}] Creating a new publication`, Body);
-
-    },@Req() req: Request,
-    @UploadedFile() image: Express.Multer.File
-  ) {
+    }, @Req() req: Request,@UploadedFile() image: Express.Multer.File){
      this.logger.log(`[${req.method} ${req.url}] Creating a new publication`, Body);
 
     const utilisateur = await this.usersService.findOne(Body.utilisateurId);
