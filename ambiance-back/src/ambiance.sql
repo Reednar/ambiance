@@ -180,6 +180,20 @@ CREATE TABLE IF NOT EXISTS `Utilisateurs` (
   PRIMARY KEY (`IdUtilisateur`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
+CREATE TABLE ecole (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL,
+    site_web VARCHAR(255),
+    telephone VARCHAR(20),
+    description TEXT,
+    contact_email VARCHAR(255) NOT NULL,
+    type_ecole ENUM('publique', 'privée', 'autre') NOT NULL,
+    rue VARCHAR(255) NOT NULL,
+    ville VARCHAR(100) NOT NULL,
+    code_postal VARCHAR(20) NOT NULL
+);
+
 -- Les données exportées n'étaient pas sélectionnées.
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
