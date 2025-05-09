@@ -181,18 +181,21 @@ CREATE TABLE IF NOT EXISTS `Utilisateurs` (
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-CREATE TABLE ecole (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(255) NOT NULL,
-    site_web VARCHAR(255),
-    telephone VARCHAR(20),
-    description TEXT,
-    contact_email VARCHAR(255) NOT NULL,
-    type_ecole ENUM('publique', 'privée', 'autre') NOT NULL,
-    rue VARCHAR(255) NOT NULL,
-    ville VARCHAR(100) NOT NULL,
-    code_postal VARCHAR(20) NOT NULL
-);
+CREATE TABLE IF NOT EXISTS `ecole` (
+  `id_ecole` INT AUTO_INCREMENT NOT NULL,
+  `nom` VARCHAR(255) NOT NULL,
+  `site_web` VARCHAR(255),
+  `telephone` VARCHAR(20),
+  `description` TEXT,
+  `contact_email` VARCHAR(255) NOT NULL,
+  `type_ecole` ENUM('publique', 'privée', 'autre') NOT NULL,
+  `rue` VARCHAR(255) NOT NULL,
+  `ville` VARCHAR(100) NOT NULL,
+  `code_postal` VARCHAR(20) NOT NULL,
+  `id_createur` INT NOT NULL,
+  PRIMARY KEY (`id_ecole`),
+  CONSTRAINT `Ecole_ibfk_1` FOREIGN KEY (`id_createur`) REFERENCES `Utilisateurs` (`IdUtilisateur`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
