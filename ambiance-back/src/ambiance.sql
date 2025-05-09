@@ -181,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `Utilisateurs` (
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-CREATE TABLE IF NOT EXISTS `ecole` (
+CREATE TABLE IF NOT EXISTS `Ecoles` (
   `id_ecole` INT AUTO_INCREMENT NOT NULL,
   `nom` VARCHAR(255) NOT NULL,
   `site_web` VARCHAR(255),
@@ -195,6 +195,18 @@ CREATE TABLE IF NOT EXISTS `ecole` (
   `id_createur` INT NOT NULL,
   PRIMARY KEY (`id_ecole`),
   CONSTRAINT `Ecole_ibfk_1` FOREIGN KEY (`id_createur`) REFERENCES `Utilisateurs` (`IdUtilisateur`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Les données exportées n'étaient pas sélectionnées.
+
+CREATE TABLE IF NOT EXISTS `MembresBDE` (
+  `id_utilisateur` INT NOT NULL,
+  `id_ecole` INT NOT NULL,
+  `status` ENUM('pending', 'verified') NOT NULL DEFAULT 'pending',
+  `date_fin` DATE DEFAULT NULL,
+  `is_actif` TINYINT(1) NOT NULL DEFAULT 1,
+  CONSTRAINT `MembresBDE_ibfk_1` FOREIGN KEY (`id_utilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE,
+  CONSTRAINT `MembresBDE_ibfk_2` FOREIGN KEY (`id_ecole`) REFERENCES `Ecoles` (`id_ecole`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.

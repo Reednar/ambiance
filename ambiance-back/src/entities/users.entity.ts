@@ -1,5 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Publication } from './publications.entity';
+import { School } from './schools.entity';
+import { MembresBDE } from './membresBDE.entity';
 
 @Entity('Utilisateurs')
 export class User {
@@ -49,4 +51,10 @@ export class User {
   // Relation avec les publications
   @OneToMany(() => Publication, (publication) => publication.utilisateur)
   publications: Publication[];
+  
+  @OneToMany(() => School, (school) => school.createur)
+  ecoles: School[];
+
+  @OneToMany(() => MembresBDE, (membreBDE) => membreBDE.utilisateur)
+  membresBDE: MembresBDE[];
 }

@@ -37,6 +37,11 @@ import { ChatGateway } from './gateways/chat.gateway';
 import { ChatModule } from './modules/chat/chat.module';
 import { MessageService } from './services/messages/messages.service';
 import { DiscussionModule } from './modules/discussions/discussions.module';
+import { SchoolsModule } from './modules/schools/schools.module';
+import { SchoolsController } from './controllers/schools/schools.controller';
+import { School } from './entities/schools.entity';
+import { MembresBDE } from './entities/membresBDE.entity';
+import { MembresBDEService } from './services/membresBDE/membresBDE.service';
 
 @Module({
   controllers: [
@@ -47,6 +52,7 @@ import { DiscussionModule } from './modules/discussions/discussions.module';
     CategoriesController,
     PublicationCategoriesController,
     DiscussionController,
+    SchoolsController,
   ],
   imports: [
     ConfigModule.forRoot({
@@ -71,7 +77,9 @@ import { DiscussionModule } from './modules/discussions/discussions.module';
         Participation,
         Paiement,
         Discussion,
-        Message,      
+        Message,
+        School,
+        MembresBDE,      
       ], // Ajouter les entités ici
       synchronize: false, // Permet de manipuler les entités de la base de données avec les fichiers entity.ts en temps réel
     }),
@@ -87,6 +95,7 @@ import { DiscussionModule } from './modules/discussions/discussions.module';
     DiscussionModule,
     MessagesModule,
     ChatModule,
+    SchoolsModule,
     // Mettre les autres modules ici
   ],
   providers: [AppService,Logger],
