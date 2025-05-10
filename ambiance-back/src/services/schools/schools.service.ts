@@ -19,6 +19,14 @@ export class SchoolsService {
     return await this.schoolsRepository.findOneBy({ id });
   }
 
+  async findOneWithCreator(id: number): Promise<School> {
+    return await this.schoolsRepository
+      .createQueryBuilder('school')
+      .leftJoinAndSelect('school.createur', 'createur') // Charger la relation 'createur'
+      .where('school.id = :id', { id })
+      .getOne();
+  }
+
   async findAll(): Promise<School[]> {
     return await this.schoolsRepository.find();
   }

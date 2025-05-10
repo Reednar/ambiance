@@ -4,7 +4,7 @@ import { MembresBDE } from './membresBDE.entity';
 
 @Entity('Ecoles')
 export class School {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: 'id_ecole' })
   id: number;
 
   @Column({ type: 'varchar', length: 255, nullable: false })
