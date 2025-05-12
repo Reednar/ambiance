@@ -1,8 +1,5 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
 import Swiper from 'swiper';
-import 'swiper/scss';
-import 'swiper/scss/navigation';
-import 'swiper/scss/pagination';
 import { Categorie, Publication } from '../../entity/publications';
 import { PublicationsService } from '../../service/publications.service';
 import { CategoriesService } from '../../service/categories.service';
