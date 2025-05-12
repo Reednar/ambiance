@@ -15,10 +15,10 @@ import { Publication } from 'src/entities/publications.entity';
   imports: [
     TypeOrmModule.forFeature([Groupe, Participation, User,Publication]),
     UsersModule,
-    forwardRef(() => PublicationsModule), // Utiliser forwardRef pour éviter la dépendance circulaire
+    forwardRef(() => PublicationsModule),
   ],
   providers: [GroupsService,Logger,UsersService,PublicationsService],
   controllers: [GroupsController],
-  exports: [GroupsService],
+exports: [GroupsService, TypeOrmModule],
 })
 export class GroupsModule {}

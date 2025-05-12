@@ -18,3 +18,12 @@
         background-color:#212529 !important;
     }
 }
+
+.nav-item.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  right: 0;
+  left: auto;
+}

@@ -9,12 +9,14 @@ import { User } from 'src/entities/users.entity';
 import { Publication } from 'src/entities/publications.entity';
 import { ParticipationModule } from  '../../modules/participation/participation.module';// Importez le module contenant ParticipationRepository
 import { Participation } from 'src/entities/participation.entity';
+import { GroupsModule } from '../groups/groups.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Commentaire, User, Publication,Participation]), // Définir les entités ici
-     // Importez le module contenant ParticipationRepository
-  ],
+  TypeOrmModule.forFeature([Commentaire, User, Publication, Participation]),
+  GroupsModule, // 👈 Ajoute ça
+],
+
   providers: [CommentairesService, UsersService, PublicationsService,Logger], // Ajouter les services nécessaires
   controllers: [CommentairesController],
   exports: [CommentairesService], // Exporter le service si nécessaire
