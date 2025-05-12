@@ -936,7 +936,7 @@ button:not(:disabled) {
 }
 
 .input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
-  margin-left: calc(var(--bs-border-width)*-1)
+  margin-left: calc(var(--bs-border-width) * -1)
 }
 
 .btn {

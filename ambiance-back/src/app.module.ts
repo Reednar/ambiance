@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
@@ -89,6 +89,6 @@ import { DiscussionModule } from './modules/discussions/discussions.module';
     ChatModule,
     // Mettre les autres modules ici
   ],
-  providers: [AppService],
+  providers: [AppService,Logger],
 })
 export class AppModule {}

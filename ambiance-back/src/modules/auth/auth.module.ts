@@ -1,5 +1,5 @@
 // src/auth/auth.module.ts
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from '../../services/auth/auth.service';
@@ -17,7 +17,7 @@ import { UsersModule } from '../users/users.module';
       signOptions: { expiresIn: '1h' }, // Le token expirera dans 1 heure
     }),UsersModule 
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy,Logger],
   controllers: [AuthController],
   exports: [AuthService, PassportModule],
 })

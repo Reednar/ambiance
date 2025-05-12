@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, NotFoundException, UploadedFile, UseInterceptors, Param } from '@nestjs/common';
+import { Controller, Get, Post, Param, NotFoundException, UseGuards, Body,Req,Logger,UploadedFile, UseInterceptors,   } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PublicationsService } from '../../services/publications/publications.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -9,7 +9,9 @@ import { PublicationDto } from 'src/dtos/publications.dto';
 @ApiTags('publications')
 @Controller('publications')
 export class PublicationsController {
-  constructor(private publicationsService: PublicationsService, private readonly usersService: UsersService) { }
+  constructor(private publicationsService: PublicationsService, private readonly usersService: UsersService,
+    private readonly logger: Logger,
+  ) { }
 
   @Get('test')//endpoint (endpoit ALWAYS before controller endpoint)
   @UseGuards(AuthGuard('jwt')) //protected request
@@ -19,7 +21,8 @@ export class PublicationsController {
 
   @Post("delete")
   @UseGuards(AuthGuard('jwt'))
-  async deletePublication(@Body() Body: { idPublication: number, utilisateurId: number }) {
+  async deletePublication(@Body() Body: { idPublication: number, utilisateurId: number }, @Req() req: Request) {
+    this.logger.log(`[${req.method} ${req.url}] Deleting publication`, Body);
     const utilisateur = await this.usersService.findOne(Body.utilisateurId);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
@@ -78,7 +81,8 @@ export class PublicationsController {
     placeHandicape: boolean,
     rampe: boolean,
     ascenseur: boolean,
-  }) {
+  },@Req() req: Request) {
+    this.logger.log(`[${req.method} ${req.url}] Updating publication`, Body.idPublication);
     const utilisateur = await this.usersService.findOne(Body.utilisateurId);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
@@ -111,7 +115,8 @@ export class PublicationsController {
   description: 'Successful response',
   type: PublicationDto,
 })
-async getPublications(): Promise<PublicationDto[]> {
+async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
+  this.logger.log(`[${req.method} ${req.url}] Fetching all publications`);
   const publications = await this.publicationsService.findAll();
 
   return publications.map(pub => {
@@ -156,6 +161,7 @@ async getPublications(): Promise<PublicationDto[]> {
 
 
 
+
   @Get(':id')
   @ApiOperation({ summary: 'Return one publication by id' })
   @ApiResponse({
@@ -196,7 +202,8 @@ async getPublications(): Promise<PublicationDto[]> {
       },
     },
   })
-  async getPublicationById(@Param('id') id: number) {
+  async getPublicationById(@Param('id') id: number, @Req() req: Request) {
+    this.logger.log(`[${req.method} ${req.url}] Fetching publication with ID: ${id}`);
     const publication = await this.publicationsService.findOne(id);
     if (!publication) {
       throw new NotFoundException('publication not found');
@@ -250,9 +257,9 @@ async getPublications(): Promise<PublicationDto[]> {
       rampe: boolean;
       ascenseur: boolean;
       utilisateurId: number;
-    },
-    @UploadedFile() image: Express.Multer.File
-  ) {
+    }, @Req() req: Request,@UploadedFile() image: Express.Multer.File){
+     this.logger.log(`[${req.method} ${req.url}] Creating a new publication`, Body);
+
     const utilisateur = await this.usersService.findOne(Body.utilisateurId);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
@@ -302,12 +309,62 @@ async getPublications(): Promise<PublicationDto[]> {
     status: 404,
     description: 'User not found',
   })
-  async getUserPublications(@Body() body: { utilisateurId: number }) {
+  async getUserPublications(@Body() body: { utilisateurId: number }, @Req() req: Request) {
+    this.logger.log(`[${req.method} ${req.url}] Fetching publications for user`, body.utilisateurId);
     const utilisateur = await this.usersService.findOne(body.utilisateurId);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
 
     return await this.publicationsService.findByUser(body.utilisateurId);
+  }
+
+  @Post('userParticipations')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get all publications the user participates in' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successful response',
+    examples: {
+      example1: {
+        summary: 'Publications the user participates in',
+        value: [
+          {
+            idPublication: 1,
+            codePostal: '78000',
+            rue: '2',
+            ville: 'Montigny',
+            titre: 'Cinéma',
+            dateEvenement: '2024-11-06T10:36:19.000Z',
+            description: 'Scary movie',
+            prix: '12.00',
+            lien: 'cineugc.com',
+            dateCreation: '2024-11-06T10:36:58.000Z',
+            participantMax: 10,
+            participantMin: 2,
+            typePost: 'activité',
+          },
+        ],
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  async getUserParticipations(@Body() body: { utilisateurId: number }, @Req() req: Request) {
+    this.logger.log(`[${req.method} ${req.url}] Fetching participations for user`, body.utilisateurId);
+    // Vérifier si l'utilisateur existe
+    const utilisateur = await this.usersService.findOne(body.utilisateurId);
+    if (!utilisateur) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+
+    // Récupérer les participations de l'utilisateur
+    const participations = await this.publicationsService.findParticipationsByUser(body.utilisateurId);
+    // Extraire les publications des participations
+    //const publications = participations.map((participation) => participation.idGroupe.publication);
+
+    return participations;
   }
 }
