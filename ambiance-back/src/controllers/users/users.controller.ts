@@ -9,18 +9,23 @@ import {
   HttpException,
   HttpStatus,
   UseGuards,
+  Req,
+  Logger,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from '../../services/users/users.service';
 import { User } from '../../entities/users.entity';
 import bcrypt from 'bcrypt';
 import { AuthGuard } from '@nestjs/passport';
+import { privateDecrypt } from 'crypto';
 const bcrypt = require('bcrypt');
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService,
+    private readonly logger: Logger, 
+  ) {}
 
 
   @Post('findAll')
@@ -50,7 +55,8 @@ export class UsersController {
       },
     },
   })
-  async findAll(@Body() body: { userId: number }): Promise<User[]> {
+  async findAll(@Body() body: { userId: number },@Req() req: Request): Promise<User[]> {
+    this.logger.log(`[${req.method} ${req.url}] Fetching all users`, body.userId); // Log de la requête
     const user = await this.usersService.findOne(body.userId);
 
     if (!user || user.role !== 'Administrateur') {
@@ -64,7 +70,8 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<User> {
+  findOne(@Param('id') id: number,@Req() req: Request): Promise<User> {
+    this.logger.log(`[${req.method} ${req.url}] Fetching user with ID: ${id}`); // Log de la requête
     return this.usersService.findOne(id);
   }
 
@@ -79,11 +86,12 @@ export class UsersController {
     motDePasse: string,
     telephone: string,
     pays: string,
-   }) {
-    var futureUser ={ ...body, role: 'Utilisateur' } as User;
+   }, @Req() req: Request){
+    this.logger.log(`[${req.method} ${req.url}] Creating a new user`, body);
+    let futureUser ={ ...body, role: 'Utilisateur' } as User;
 
     //hashage du mot de passe
-    var password = futureUser.motDePasse;
+    let password = futureUser.motDePasse;
     bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS), (err, salt) => {
       if (err) throw new HttpException('Error generating salt', HttpStatus.INTERNAL_SERVER_ERROR);
       bcrypt.hash(password, salt, async (err, hash) => {
@@ -99,12 +107,15 @@ export class UsersController {
   update(
     @Param('id') id: number,
     @Body() updateUserDto: Partial<User>,
+    @Req() req: Request,
   ): Promise<User> {
+    this.logger.log(`[${req.method} ${req.url}] Updating user with ID: ${id}`, updateUserDto); 
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
+  remove(@Param('id') id: number,@Req() req:Request ): Promise<void> {
+    this.logger.log(`[${req.method} ${req.url}] Removing user with ID: ${id}`);
     return this.usersService.remove(id);
   }
 }

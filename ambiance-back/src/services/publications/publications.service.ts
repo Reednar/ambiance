@@ -11,7 +11,7 @@ export class PublicationsService {
     @InjectRepository(Publication) private readonly publicationRepository: Repository<Publication>,
     @InjectRepository(Participation) private readonly participationRepository: Repository<Participation>,
     @InjectRepository(Groupe) private readonly groupeRepository: Repository<Groupe>,
-    @InjectRepository(User) private readonly userRepository: Repository<User>, // Ajoute ce repository si tu en as besoin
+    @InjectRepository(User) private readonly userRepository: Repository<User>
   ) {}
 
   async findAll(): Promise<Publication[]> {
@@ -76,4 +76,28 @@ export class PublicationsService {
   }
   
   
+  async findParticipationsByUser(utilisateurId: number): Promise<any[]> {
+    const d = await this.participationRepository
+      .createQueryBuilder('participation')
+      .leftJoin('participation.idGroupe', 'groupe') // LEFT JOIN avec la table Groupes
+      .leftJoin('groupe.publication', 'publication') // LEFT JOIN avec la table Publications
+      .where('participation.idUtilisateur = :utilisateurId', { utilisateurId }) // Filtrer par IdUtilisateur
+      .select([
+        'publication.idPublication', // Sélectionner les colonnes nécessaires
+        'publication.codePostal',
+        'publication.rue',
+        'publication.ville',
+        'publication.titre',
+        'publication.dateEvenement',
+        'publication.description',
+        'publication.prix',
+        'publication.lien',
+        'publication.dateCreation',
+        'publication.participantMax',
+        'publication.participantMin',
+        'publication.typePost',
+      ])
+      .getRawMany(); // Récupérer les résultats
+    return d
+  }
 }
