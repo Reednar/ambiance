@@ -28,6 +28,13 @@ export class MembresBDEService {
     });
   }
 
+  async findMembersBySchool(idEcole: number): Promise<MembresBDE[]> {
+    return await this.membresBDERepository.find({
+      where: { idEcole },
+      relations: ['utilisateur'], // Charger les informations sur les utilisateurs
+    });
+  }
+
   async updateMemberStatus(idEcole: number, idUtilisateur: number, status: 'pending' | 'verified'): Promise<void> {
     await this.membresBDERepository.update({ idEcole, idUtilisateur }, { status });
   }
@@ -35,4 +42,6 @@ export class MembresBDEService {
   async removeMember(idEcole: number, idUtilisateur: number): Promise<void> {
     await this.membresBDERepository.delete({ idEcole, idUtilisateur });
   }
+
+  
 }

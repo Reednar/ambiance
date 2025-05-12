@@ -5,6 +5,8 @@ import { School } from '../../entities/schools.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from '../../services/users/users.service';
 import { MembresBDEService } from '../../services/membresBDE/membresBDE.service'; // Assurez-vous que ce service existe
+import { User } from 'src/entities/users.entity';
+import { MembresBDE } from 'src/entities/membresBDE.entity';
 
 @ApiTags('schools')
 @Controller('schools')
@@ -230,6 +232,7 @@ export class SchoolsController {
   }
 
   @Post('removeMember')
+  //@UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Remove a member from the BDE' })
   @ApiResponse({ status: 200, description: 'Member removed successfully' })
   @ApiResponse({ status: 404, description: 'School, creator, or member not found' })
@@ -266,5 +269,53 @@ export class SchoolsController {
 
     // Supprimer le membre de la table MembresBDE
     await this.membresBDEService.removeMember(idEcole, idUtilisateur);
+  }
+
+  @Post('getUsersBySchool')
+  //@UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get all users attached to a school' })
+  @ApiResponse({ status: 200, description: 'Users retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'School not found' })
+  async getUsersBySchool(
+    @Body() body: { idEcole: number },
+    @Req() req: Request,
+  ): Promise<User[]> {
+    const { idEcole } = body;
+
+    this.logger.log(`[${req.method} ${req.url}] Fetching users for school ID: ${idEcole}`);
+
+    // Vérifier si l'école existe
+    const school = await this.schoolsService.findOne(idEcole);
+    if (!school) {
+      throw new NotFoundException('School not found');
+    }
+
+    // Récupérer les utilisateurs rattachés à l'école
+    const users = await this.usersService.findUsersBySchool(idEcole);
+    return users;
+  }
+
+  @Post('getMembersBySchool')
+  //@UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get all BDE members for a school' })
+  @ApiResponse({ status: 200, description: 'Members retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'School not found' })
+  async getMembersBySchool(
+    @Body() body: { idEcole: number },
+    @Req() req: Request,
+  ): Promise<MembresBDE[]> {
+    const { idEcole } = body;
+
+    this.logger.log(`[${req.method} ${req.url}] Fetching BDE members for school ID: ${idEcole}`);
+
+    // Vérifier si l'école existe
+    const school = await this.schoolsService.findOne(idEcole);
+    if (!school) {
+      throw new NotFoundException('School not found');
+    }
+
+    // Récupérer les membres du BDE pour l'école
+    const members = await this.membresBDEService.findMembersBySchool(idEcole);
+    return members;
   }
 }

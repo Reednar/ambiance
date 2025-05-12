@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, NotFoundException, UseGuards, Body,Req,Logger,UploadedFile, UseInterceptors,   } from '@nestjs/common';
+import { Controller, Get, Post, Param, NotFoundException, UseGuards, Body, Req, Logger, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PublicationsService } from '../../services/publications/publications.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -9,19 +9,21 @@ import { PublicationDto } from 'src/dtos/publications.dto';
 @ApiTags('publications')
 @Controller('publications')
 export class PublicationsController {
-  constructor(private publicationsService: PublicationsService, private readonly usersService: UsersService,
+  constructor(
+    private publicationsService: PublicationsService,
+    private readonly usersService: UsersService,
     private readonly logger: Logger,
-  ) { }
+  ) {}
 
-  @Get('test')//endpoint (endpoit ALWAYS before controller endpoint)
+  @Get('test') //endpoint (endpoit ALWAYS before controller endpoint)
   @UseGuards(AuthGuard('jwt')) //protected request
   getProtectedData() {
     return { message: 'Accès autorisé à la route protégée.' };
   }
 
-  @Post("delete")
+  @Post('delete')
   @UseGuards(AuthGuard('jwt'))
-  async deletePublication(@Body() Body: { idPublication: number, utilisateurId: number }, @Req() req: Request) {
+  async deletePublication(@Body() Body: { idPublication: number; utilisateurId: number }, @Req() req: Request) {
     this.logger.log(`[${req.method} ${req.url}] Deleting publication`, Body);
     const utilisateur = await this.usersService.findOne(Body.utilisateurId);
     if (!utilisateur) {
@@ -37,7 +39,7 @@ export class PublicationsController {
     return await this.publicationsService.remove(publication.idPublication);
   }
 
-  @Post("update")
+  @Post('update')
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Update a publication' })
   @ApiResponse({
@@ -64,24 +66,28 @@ export class PublicationsController {
       },
     },
   })
-  async updatePublication(@Body() Body: {
-    idPublication: number,
-    utilisateurId: number,
-    codePostal: string,
-    rue: string,
-    ville: string,
-    titre: string,
-    dateEvenement: Date,
-    description: string,
-    prix: number,
-    lien: string,
-    participantMax: number,
-    participantMin: number,
-    typePost: 'Evenement' | 'activité',
-    placeHandicape: boolean,
-    rampe: boolean,
-    ascenseur: boolean,
-  },@Req() req: Request) {
+  async updatePublication(
+    @Body()
+    Body: {
+      idPublication: number;
+      utilisateurId: number;
+      codePostal: string;
+      rue: string;
+      ville: string;
+      titre: string;
+      dateEvenement: Date;
+      description: string;
+      prix: number;
+      lien: string;
+      participantMax: number;
+      participantMin: number;
+      typePost: 'Evenement' | 'activité';
+      placeHandicape: boolean;
+      rampe: boolean;
+      ascenseur: boolean;
+    },
+    @Req() req: Request,
+  ) {
     this.logger.log(`[${req.method} ${req.url}] Updating publication`, Body.idPublication);
     const utilisateur = await this.usersService.findOne(Body.utilisateurId);
     if (!utilisateur) {
@@ -102,65 +108,56 @@ export class PublicationsController {
   }
 
   @Get()
-@ApiOperation({ summary: 'Return all publications' })
-@ApiResponse({
-  status: 200,
-  description: 'Successful response',
-  type: PublicationDto,
-})
-@Get()
-@ApiOperation({ summary: 'Return all publications' })
-@ApiResponse({
-  status: 200,
-  description: 'Successful response',
-  type: PublicationDto,
-})
-async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
-  this.logger.log(`[${req.method} ${req.url}] Fetching all publications`);
-  const publications = await this.publicationsService.findAll();
+  @ApiOperation({ summary: 'Return all publications' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successful response',
+    type: PublicationDto,
+  })
+  async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
+    this.logger.log(`[${req.method} ${req.url}] Fetching all publications`);
+    const publications = await this.publicationsService.findAll();
 
-  return publications.map(pub => {
-    const dto = new PublicationDto();
+    return publications.map((pub) => {
+      const dto = new PublicationDto();
 
-    dto.idPublication = pub.idPublication;
-    dto.codePostal = pub.codePostal;
-    dto.rue = pub.rue;
-    dto.ville = pub.ville;
-    dto.titre = pub.titre;
-    dto.dateEvenement = pub.dateEvenement;
-    dto.description = pub.description;
-    dto.prix = pub.prix;
-    dto.lien = pub.lien;
-    dto.dateCreation = pub.dateCreation;
-    dto.participantMax = pub.participantMax;
-    dto.participantMin = pub.participantMin;
-    dto.typePost = pub.typePost;
-    dto.placeHandicape = pub.placeHandicape;
-    dto.rampe = pub.rampe;
-    dto.ascenseur = pub.ascenseur;
-    dto.utilisateurId = pub.utilisateurId;
+      dto.idPublication = pub.idPublication;
+      dto.codePostal = pub.codePostal;
+      dto.rue = pub.rue;
+      dto.ville = pub.ville;
+      dto.titre = pub.titre;
+      dto.dateEvenement = pub.dateEvenement;
+      dto.description = pub.description;
+      dto.prix = pub.prix;
+      dto.lien = pub.lien;
+      dto.dateCreation = pub.dateCreation;
+      dto.participantMax = pub.participantMax;
+      dto.participantMin = pub.participantMin;
+      dto.typePost = pub.typePost;
+      dto.placeHandicape = pub.placeHandicape;
+      dto.rampe = pub.rampe;
+      dto.ascenseur = pub.ascenseur;
+      dto.utilisateurId = pub.utilisateurId;
 
-    // Si pub.image est déjà un Buffer, tu peux directement le convertir
-    if (pub.image && pub.imageMimeType) {
-      const base64 = pub.image.toString('base64');  // Utilisation du Buffer sans data
-      dto.image = `data:${pub.imageMimeType};base64,${base64}`;
-    } else {
-      dto.image = null;
-    }
+      // Si pub.image est déjà un Buffer, tu peux directement le convertir
+      if (pub.image && pub.imageMimeType) {
+        const base64 = pub.image.toString('base64'); // Utilisation du Buffer sans data
+        dto.image = `data:${pub.imageMimeType};base64,${base64}`;
+      } else {
+        dto.image = null;
+      }
 
-    dto.imageMimeType = pub.imageMimeType ?? null;
+      dto.imageMimeType = pub.imageMimeType ?? null;
 
-    dto.categories = pub.publicationCategories?.map(pc => ({
-      id: pc.categorie?.idCategorie ?? null,
-      nom: pc.categorie?.nom ?? null,
-    })) ?? [];
+      dto.categories =
+        pub.publicationCategories?.map((pc) => ({
+          id: pc.categorie?.idCategorie ?? null,
+          nom: pc.categorie?.nom ?? null,
+        })) ?? [];
 
-    return dto;
-  });
-}
-
-
-
+      return dto;
+    });
+  }
 
   @Get(':id')
   @ApiOperation({ summary: 'Return one publication by id' })
@@ -211,7 +208,7 @@ async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
     return publication;
   }
 
-  @Post("create")
+  @Post('create')
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Create a publication' })
   @ApiResponse({
@@ -234,14 +231,15 @@ async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
           participantMax: 10,
           participantMin: 2,
           typePost: 'activité',
-          image: 'https://domain.com/chemin/vers/image.jpg'
+          image: 'https://domain.com/chemin/vers/image.jpg',
         },
       },
     },
   })
   @UseInterceptors(FileInterceptor('image'))
   async createPublication(
-    @Body() Body: {
+    @Body()
+    Body: {
       codePostal: string;
       rue: string;
       ville: string;
@@ -257,8 +255,11 @@ async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
       rampe: boolean;
       ascenseur: boolean;
       utilisateurId: number;
-    }, @Req() req: Request,@UploadedFile() image: Express.Multer.File){
-     this.logger.log(`[${req.method} ${req.url}] Creating a new publication`, Body);
+    },
+    @Req() req: Request,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    this.logger.log(`[${req.method} ${req.url}] Creating a new publication`, Body);
 
     const utilisateur = await this.usersService.findOne(Body.utilisateurId);
     if (!utilisateur) {
@@ -266,11 +267,11 @@ async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
     }
 
     // Création de l'objet publication avec image
-    const publicationData = { 
-      ...Body, 
-      utilisateur, 
-      image: image.buffer,  // image binaire
-      imageMimeType: image.mimetype  // type mime de l'image
+    const publicationData = {
+      ...Body,
+      utilisateur,
+      image: image.buffer, // image binaire
+      imageMimeType: image.mimetype, // type mime de l'image
     };
 
     return await this.publicationsService.create(publicationData);
@@ -362,9 +363,53 @@ async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
 
     // Récupérer les participations de l'utilisateur
     const participations = await this.publicationsService.findParticipationsByUser(body.utilisateurId);
-    // Extraire les publications des participations
-    //const publications = participations.map((participation) => participation.idGroupe.publication);
 
     return participations;
+  }
+
+  @Post('schoolPublications')
+  //@UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get all publications attached to a specific school' })
+  @ApiResponse({
+    status: 200,
+    description: 'Publications retrieved successfully',
+    examples: {
+      example1: {
+        summary: 'Publications by school example',
+        value: [
+          {
+            idPublication: 1,
+            codePostal: '75000',
+            rue: '123 Rue de Test',
+            ville: 'Paris',
+            titre: 'Conférence',
+            dateEvenement: '2024-11-06T10:36:19.000Z',
+            description: 'Conférence sur les nouvelles technologies',
+            prix: '20.00',
+            lien: 'conference-tech.com',
+            dateCreation: '2024-11-06T10:36:58.000Z',
+            participantMax: 100,
+            participantMin: 10,
+            typePost: 'Evenement',
+          },
+        ],
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'School not found',
+  })
+  async getPublicationsBySchool(@Body() body: { idEcole: number }, @Req() req: Request) {
+    this.logger.log(`[${req.method} ${req.url}] Fetching publications for school ID: ${body.idEcole}`);
+
+    // Vérifier si l'école existe
+    const school = await this.usersService.findOne(body.idEcole);
+    if (!school) {
+      throw new NotFoundException('École non trouvée');
+    }
+
+    // Récupérer les publications rattachées à l'école
+    return await this.publicationsService.findBySchool(body.idEcole);
   }
 }

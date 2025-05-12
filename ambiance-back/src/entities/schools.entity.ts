@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { User } from './users.entity'; // Assurez-vous que le chemin est correct
+import { User } from './users.entity';
 import { MembresBDE } from './membresBDE.entity';
+import { Publication } from './publications.entity';
 
 @Entity('Ecoles')
 export class School {
@@ -34,10 +35,16 @@ export class School {
   @Column({ type: 'varchar', length: 20, nullable: false })
   code_postal: string;
 
-  @ManyToOne(() => User, (user) => user.ecoles, { nullable: false, onDelete: 'CASCADE' })
+  // Relation avec le créateur (User)
+  @ManyToOne(() => User, (user) => user.ecole, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id_createur' })
   createur: User;
 
+  // Relation avec MembresBDE
   @OneToMany(() => MembresBDE, (membreBDE) => membreBDE.ecole)
   membresBDE: MembresBDE[];
+
+  // Relation avec les publications
+  @OneToMany(() => Publication, (publication) => publication.ecole)
+  publications: Publication[];
 }
