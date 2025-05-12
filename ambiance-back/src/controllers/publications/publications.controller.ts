@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, NotFoundException, UseGuards, Body,Req,Logger,UploadedFile, UseInterceptors,   } from '@nestjs/common';
+import { Controller, Get, Post, Param, NotFoundException, UseGuards, Body,Req,Logger,UploadedFile, UseInterceptors, BadRequestException,   } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PublicationsService } from '../../services/publications/publications.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -229,88 +229,92 @@ async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
 }
 
 
-  @Post("create")
-  @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({ summary: 'Create a publication' })
-  @ApiResponse({
-    status: 201,
-    description: 'publication created',
-    examples: {
-      example1: {
-        summary: 'publication created example',
-        value: {
-          idPublication: 1,
-          codePostal: '78000',
-          rue: '2',
-          ville: 'Montigny',
-          titre: 'Cinéma',
-          dateEvenement: '2024-11-06T10:36:19.000Z',
-          description: 'Scary movie',
-          prix: '12.00',
-          lien: 'cineugc.com',
-          dateCreation: '2024-11-06T10:36:58.000Z',
-          participantMax: 10,
-          participantMin: 2,
-          typePost: 'activité',
-          image: 'https://domain.com/chemin/vers/image.jpg'
-        },
+@Post("create")
+@UseGuards(AuthGuard('jwt'))
+@ApiOperation({ summary: 'Create a publication' })
+@ApiResponse({
+  status: 201,
+  description: 'publication created',
+  examples: {
+    example1: {
+      summary: 'publication created example',
+      value: {
+        idPublication: 1,
+        codePostal: '78000',
+        rue: '2',
+        ville: 'Montigny',
+        titre: 'Cinéma',
+        dateEvenement: '2024-11-06T10:36:19.000Z',
+        description: 'Scary movie',
+        prix: '12.00',
+        lien: 'cineugc.com',
+        dateCreation: '2024-11-06T10:36:58.000Z',
+        participantMax: 10,
+        participantMin: 2,
+        typePost: 'activité',
+        image: 'https://domain.com/chemin/vers/image.jpg'
       },
     },
-  })
-  @UseInterceptors(FileInterceptor('image'))
-  async createPublication(
-    @Body() Body: {
-      titre: string;
-      dateEvenement: Date;
-      participantMax: number;
-      participantMin: number;
-      prix: number;
-      codePostal: string;
-      description: string;
-      rue: string;
-      ville: string;
-      lien: string;
-      typePost: 'Evenement' | 'activité';
-      placeHandicape: string | boolean;
-      rampe: string | boolean;
-      ascenseur: string | boolean;
-      utilisateurId: number;
-      categories: number[]; // Liste des ID des catégories à ajouter à la publication
-    },
-    @UploadedFile() image: Express.Multer.File
-  ) {
+  },
+})
+@UseInterceptors(FileInterceptor('image'))
+async createPublication(
+  @Body() body: {
+    titre: string;
+    dateEvenement: Date;
+    participantMax: number;
+    participantMin: number;
+    prix: number;
+    codePostal: string;
+    description: string;
+    rue: string;
+    ville: string;
+    lien: string;
+    typePost: 'Evenement' | 'activité';
+    placeHandicape: string | boolean;
+    rampe: string | boolean;
+    ascenseur: string | boolean;
+    utilisateurId: number;
+    categories: number[] | string; // Peut être un string JSON envoyé depuis le formulaire
+  },
+  @UploadedFile() image: Express.Multer.File,
+  @Req() req: Request
+) {
+this.logger.log(`[${req.method} ${req.url}] Creating a new publication with body: ${JSON.stringify(body)}`);
 
-    }, @Req() req: Request,@UploadedFile() image: Express.Multer.File){
-     this.logger.log(`[${req.method} ${req.url}] Creating a new publication`, Body);
-
-    const utilisateur = await this.usersService.findOne(Body.utilisateurId);
-    if (!utilisateur) {
-      throw new NotFoundException('Utilisateur non trouvé');
-    }
-
-    // Création de l'objet publication avec image
-    const publicationData = {
-      ...Body,
-      utilisateur,
-      placeHandicape: Body.placeHandicape === 'true' || Body.placeHandicape === true,
-      rampe: Body.rampe === 'true' || Body.rampe === true,
-      ascenseur: Body.ascenseur === 'true' || Body.ascenseur === true,
-      image: image.buffer,  // image binaire
-      imageMimeType: image.mimetype  // type mime de l'image
-    };
-    // return await this.publicationsService.create(publicationData);
-    const publication = await this.publicationsService.create(publicationData);
-    // Vérifie que Body.categories est un tableau
-    if (typeof Body.categories === 'string') {
-      Body.categories = JSON.parse(Body.categories); // Si c'est une chaîne, la convertir en tableau
-    }
-    // Ajouter les catégories à la publication créée
-    for (var IdCategorie of Body.categories) {
-      await this.publicationCategoriesService.addCategoryToPublication(publication.idPublication, IdCategorie);
-    }
-
-    return { message: 'Publication créée avec succès', publication };
+  const utilisateur = await this.usersService.findOne(body.utilisateurId);
+  if (!utilisateur) {
+    throw new NotFoundException('Utilisateur non trouvé');
   }
+
+  // Si les catégories sont envoyées en tant que string (ex: via formulaire multipart)
+  if (typeof body.categories === 'string') {
+    try {
+      body.categories = JSON.parse(body.categories);
+    } catch (err) {
+      throw new BadRequestException('Le champ "categories" doit être un tableau ou un JSON valide');
+    }
+  }
+
+  const publicationData = {
+    ...body,
+    utilisateur,
+    placeHandicape: body.placeHandicape === 'true' || body.placeHandicape === true,
+    rampe: body.rampe === 'true' || body.rampe === true,
+    ascenseur: body.ascenseur === 'true' || body.ascenseur === true,
+    image: image?.buffer ?? null,
+    imageMimeType: image?.mimetype ?? null,
+  };
+
+  const publication = await this.publicationsService.create(publicationData);
+
+  for (const idCategorie of body.categories as number[]) {
+    await this.publicationCategoriesService.addCategoryToPublication(publication.idPublication, idCategorie);
+  }
+
+  return { message: 'Publication créée avec succès', publication };
+}
+
 
   @Post('userPublications')
   @UseGuards(AuthGuard('jwt'))
