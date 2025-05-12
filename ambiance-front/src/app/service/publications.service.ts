@@ -34,4 +34,8 @@ export class PublicationsService {
   getProtected(): Observable<any> {
     return this.http.get(`${this.url}/test`);
   }
+
+  getPublicationsByUser(id: number): Observable<any> {
+    return this.http.get(`${this.url}/user/${id}`);
+  }
 }

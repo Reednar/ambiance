@@ -19,6 +19,10 @@ export class CategoriesService {
     return this.http.get(`${this.url}/${id}`);
   }
 
+  findOneDto(id: number): Observable<any> {
+    return this.http.get(`${this.url}/dto/${id}`);
+  }
+
   create(data: { nom: string }): Observable<any> {
     return this.http.post(this.url, data);
   }

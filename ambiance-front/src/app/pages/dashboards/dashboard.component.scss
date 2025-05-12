@@ -3,19 +3,19 @@
 
   @media (max-width: 768px) {
     .p-card {
-      font-size: 0.875rem; /* Réduit la taille de la police pour les écrans moyens et plus petits */
+      font-size: 0.875rem;
     }
     .p-chart {
-      height: 200px; /* Ajuste la taille du graphique pour les petits écrans */
+      height: 200px;
     }
   }
   
   @media (max-width: 480px) {
     .p-card {
-      font-size: 0.75rem; /* Plus petit pour les écrans mobiles */
+      font-size: 0.75rem;
     }
     .p-chart {
-      height: 180px; /* Encore plus petit pour les très petits écrans */
+      height: 180px;
     }
   }
   

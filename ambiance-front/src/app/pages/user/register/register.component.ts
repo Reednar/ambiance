@@ -41,8 +41,6 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(): void {
     if (this.registerForm.valid) {
-      console.log('Formulaire soumis', this.registerForm.value);
-  
       // Créer un utilisateur avec les données du formulaire
       const user: Partial<User> = {
         prenom: this.registerForm.value.username,
@@ -54,7 +52,6 @@ export class RegisterComponent implements OnInit {
       // Appeler la méthode createUser du service
       this.userService.createUser(user).subscribe({
         next: (response) => {
-          console.log('Utilisateur créé avec succès', response);
           this.router.navigate(['/login']);
         },
         error: (error) => {
@@ -63,13 +60,11 @@ export class RegisterComponent implements OnInit {
       });
   
     } else {
-      console.log('Formulaire invalide');
     }
   }
   
   
 
   loginWithGoogle(): void {
-    console.log('Connexion avec Google');
   }
 }

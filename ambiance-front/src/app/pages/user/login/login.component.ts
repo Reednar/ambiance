@@ -32,20 +32,15 @@ export class LoginComponent implements OnInit {
   onLoginSubmit(): void {
     if (this.loginForm.valid) {
       const { mail, password } = this.loginForm.value;
-      console.log(mail, password);
       // Appel au service d'authentification pour se connecter
       this.authService.login({ mail, password }).subscribe(
         (response) => {
-          console.log('Connexion réussie', response);
           this.router.navigate(['/']); 
           //window.location.reload();
         },
         (error) => {
-          console.error('Erreur de connexion', error);
         }
       );
-    } else {
-      console.log('Formulaire invalide');
     }
   }
 }

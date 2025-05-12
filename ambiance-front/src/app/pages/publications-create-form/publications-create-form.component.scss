@@ -1,4 +1,3 @@
-/* Formulaire étapes */
 .form-step-container {
   max-width: 700px;
   margin: 40px auto;
@@ -18,7 +17,6 @@
   margin-bottom: 20px;
 }
 
-/* Champs obligatoires avec bordures rouges si erreur */
 input.ng-invalid.ng-touched,
 textarea.ng-invalid.ng-touched,
 .p-calendar.ng-invalid.ng-touched,
@@ -26,20 +24,17 @@ textarea.ng-invalid.ng-touched,
   border: 1px solid #dc3545 !important;
 }
 
-/* Boutons Suivant / Précédent */
 .step-buttons {
   display: flex;
   justify-content: space-between;
   margin-top: 30px;
 }
 
-/* Bouton désactivé */
 .btn[disabled] {
   pointer-events: none;
   opacity: 0.6;
 }
 
-/* Texte erreur */
 .p-error {
   font-size: 0.85rem;
   color: #dc3545;
@@ -47,10 +42,88 @@ textarea.ng-invalid.ng-touched,
   display: block;
 }
 
-/* Responsive pour petits écrans */
 @media (max-width: 576px) {
   .step-buttons {
     flex-direction: column;
     gap: 10px;
   }
+}
+
+.d-none {
+  display: none;
+}
+
+.custom-file-input {
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 600;
+  background-color: #007bff;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.custom-file-input:hover {
+  background-color: #0056b3;
+}
+
+.autocomplete-container {
+  position: relative;
+  width: auto;
+  padding-bottom: 15px;
+}
+
+.p-inputtext {
+  width: 100%;
+  padding-right: 30px;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding-top: 15px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #999;
+  z-index: 2;
+}
+
+.clear-btn:hover {
+  color: #666;
+}
+
+.autocomplete-suggestions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background-color: #808080;
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  border-radius: 4px;
+}
+
+.autocomplete-suggestions li {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.autocomplete-suggestions li:hover {
+  background-color: #666666;
+}
+
+.autocomplete-suggestions li.selected {
+  background-color: #555555;
 }

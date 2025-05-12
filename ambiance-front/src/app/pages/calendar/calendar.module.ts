@@ -10,13 +10,13 @@ import { FullCalendarModule } from '@fullcalendar/angular';
   declarations: [CalendarComponent],
   imports: [
     CommonModule,
-    FormsModule, // Assurez-vous qu'il est bien là
+    FormsModule,
     CalendarModule,
     FullCalendarModule,
     RouterModule.forChild([
       { path: '', component: CalendarComponent }
     ])
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA] // Ajout ici
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CalendarPageModule { }

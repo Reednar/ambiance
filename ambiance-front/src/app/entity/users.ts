@@ -1,9 +1,10 @@
+//  objet User
 export interface User {
     idUtilisateur: number;
     prenom: string;
     nom: string;
     pseudo: string;
-    dateDeNaissance: string; // ISO string format
+    dateDeNaissance: string;
     description: string;
     genre: string;
     mail: string;

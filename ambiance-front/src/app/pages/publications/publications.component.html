@@ -1,98 +1,118 @@
 <section class="section" style="padding-top: 60px; background-color: black !important;">
-    <div class="container">
-        <div class="row justify-content-center section-heading"
-            style="background-image: url('assets/images/backgrounds/event-background.jpg'); background-size: cover; background-position: center; padding-bottom: 20px; ">
-            <div class="col-lg-6 text-center">
-                <h3 class="h2 mt-2 text-white"></h3>
-            </div>
-        </div>
-        <!-- <h3 class="h2 mt-2 text-white" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">Voir les événements disponibles</h3> -->
-        <!-- <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="h2 mt-2 text-white" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">
+  <div class="container" style="min-height: 800px;">
+    <div class="row justify-content-center section-heading">
+      <div class="col-lg-6 text-center">
+        <h3 class="h2 mt-2 text-white"></h3>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <div>
+        <h3 class="h2 text-white m-0" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">
           Voir les événements disponibles
         </h3>
-        
+        <br>
+        <div *ngIf="selectedCategories.size > 0" class="d-flex align-items-center flex-wrap gap-2 categories-container">
+          <span class="categories-label">Catégories sélectionnées :</span>
+          <span *ngFor="let cat of getSelectedCategories()" class="category-item">
+            {{ cat.nom }}
+          </span>
+        </div>
+      </div>
+      <div class="d-flex align-items-center">
+        <button class="btn btn-outline-light ms-2" (click)="resetFilters()">
+          Réinitialiser
+        </button>
+        <div class="card flex justify-content-center" style="margin-right: 10px;">
+          <p-calendar [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [showIcon]="true"
+            (ngModelChange)="applyFilters()" [placeholder]="'Sélectionner une plage de dates'" dateFormat="dd/mm/yy"
+            class="custom-calendar">
+          </p-calendar>
+        </div>
         <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false"
-            style="background-color: transparent; border: 1px solid white; color: white;">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown"
+            aria-expanded="false" style="background-color: transparent; border: 1px solid white; color: white;">
             Filtrer
           </button>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown">
-            <li><a class="dropdown-item" (click)="filterByCategory('sport')">Sport</a></li>
-            <li><a class="dropdown-item" (click)="filterByCategory('musique')">Musique</a></li>
-            <li><a class="dropdown-item" (click)="filterByCategory('jeux')">Jeux</a></li>
-            <li><a class="dropdown-item" (click)="filterByCategory('divers')">Divers</a></li>
+          <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="filterDropdown">
+            <li *ngFor="let cat of categories">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" [id]="'cat-' + cat.idCategorie"
+                  [checked]="selectedCategories.has(cat.idCategorie)" (change)="toggleCategoryFilter(cat.idCategorie)">
+                <label class="form-check-label" [for]="'cat-' + cat.idCategorie">
+                  {{ cat.nom }}
+                </label>
+              </div>
+            </li>
           </ul>
         </div>
       </div>
-       -->
-        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-            <h3 class="h2 mt-2 text-white me-auto" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">
-                Voir les événements disponibles
-            </h3>
-
-            <div class="card flex justify-content-center">
-                <p-calendar [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [showIcon]="true"
-                    [placeholder]="'Sélectionner une plage de dates'" dateFormat="dd/mm/yy" class="custom-calendar">
-                </p-calendar>
-
-
-
+      <div class="container">
+        <div class="row g-3">
+          <ng-container *ngIf="isLoading; else publicationsList">
+            <div class="col-6 col-md-4 col-lg-3" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]">
+              <div class="poste-card skeleton-card">
+                <div class="poste-ecole skeleton-text"></div>
+                <div class="poste-img skeleton-img"></div>
+                <div class="poste-body" style="min-height: 200px;">
+                  <div class="skeleton-text w-75"></div>
+                  <div class="skeleton-text w-50"></div>
+                  <div class="poste-categories">
+                    <div class="skeleton-badge" *ngFor="let j of [1,2]"></div>
+                  </div>
+                </div>
+                <div class="poste-participants skeleton-text w-25"></div>
+              </div>
             </div>
-
-
-
-            <!-- Bouton Filtrer -->
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown"
-                    data-bs-toggle="dropdown" aria-expanded="false"
-                    style="background-color: transparent; border: 1px solid white; color: white;">
-                    Filtrer
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown">
-                    <li><a class="dropdown-item" (click)="filterByCategory('sport')">Sport</a></li>
-                    <li><a class="dropdown-item" (click)="filterByCategory('musique')">Musique</a></li>
-                    <li><a class="dropdown-item" (click)="filterByCategory('jeux')">Jeux</a></li>
-                    <li><a class="dropdown-item" (click)="filterByCategory('divers')">Divers</a></li>
-                </ul>
+          </ng-container>
+          <ng-container>
+            <div *ngIf="!isLoading && filteredPublications.length === 0" class="no-publications-message">
+              <p>0 publications trouvées avec ces filtres.</p>
             </div>
-        </div>
-
-          <div class="container">
-            <div class="row g-3">
-              <div class="col-6 col-md-4 col-lg-3" *ngFor="let pub of publications">
+          </ng-container>
+          <ng-template #publicationsList>
+            <div class="col-6 col-md-4 col-lg-3" *ngFor="let pub of filteredPublications">
+              <a [routerLink]="['/publication-show', pub.idPublication]" class="text-decoration-none text-dark">
                 <div class="poste-card">
-                  
-                  <!-- Nom de l'école -->
+                  <div *ngIf="hasJoined(pub.idPublication)" class="poste-joined-badge">Déjà rejoint</div>
                   <div class="poste-ecole">Ensitech</div>
-                  <img *ngIf="pub.image" [src]="pub.image" alt="Image de l'événement" class="poste-img" onerror="this.onerror=null;this.src='assets/images/backgrounds/bde.png';"/>
-
+                  <img [src]="pub.image" alt="Image de l'événement" class="poste-img"
+                    onerror="this.onerror=null;this.src='assets/no-image.jpg';" />
+                  <div class="poste-hover">
+                    {{ pub.description }}
+                  </div>
                   <div class="poste-body">
                     <div>
                       <div class="poste-titre">{{ pub.titre }}</div>
                       <div class="poste-prix">{{ pub.prix | number:'1.0-2' }} €</div>
+                      <br>
+                      <div class="poste-date">Date : {{ pub.dateEvenement | date:'dd/MM/yyyy : HH\'h\'mm' }}</div>
+                      <div class="poste-ville">{{ pub.ville }}</div>
                     </div>
                     <div class="poste-categories">
-                      <span *ngFor="let cat of pub.publicationCategories">
-                        {{ cat.categorie.nom }}
-                      </span>
-                      <span *ngFor="let cat of pub.publicationCategories">
-                        {{ cat.categorie.nom }}
-                      </span>
-                      <span *ngFor="let cat of pub.publicationCategories">
-                        {{ cat.categorie.nom }}
-                      </span>
+                      
+
+                      <span *ngIf="pub.categories.length > 0">
+                          {{ pub.categories[0].nom }}
+                          </span>
+
+                          <!-- Deuxième catégorie -->
+                          <span *ngIf="pub.categories.length > 1">
+                          {{ pub.categories[1].nom }}
+                          </span>
+
+                          <!-- Badge "3 ..." si plus de 2 catégories -->
+                          <span *ngIf="pub.categories.length > 2">
+                          ...
+                          </span>
                     </div>
                   </div>
-          
-                  <!-- Participants -->
-                  <div class="poste-participants">
-                    <!-- {{ pub.participants.length }}/{{ pub.limiteParticipants }} -->
-                      5/10
-                  </div>
-          
+                  <div class="poste-participants">{{ pub.nombreParticipants }} / {{ pub.participantMax }}</div>
                 </div>
-              </div>
+              </a>
             </div>
-          </div>
-          
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

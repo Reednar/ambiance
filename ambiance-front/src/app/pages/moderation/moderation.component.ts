@@ -55,7 +55,6 @@ export class ModerationComponent implements OnInit, OnDestroy {
   }
   
   onUpdate(user: User): void {
-    console.log('Modifier utilisateur :', user);
     // Ici tu peux ouvrir un modal ou une autre logique pour la mise à jour
   }
 
