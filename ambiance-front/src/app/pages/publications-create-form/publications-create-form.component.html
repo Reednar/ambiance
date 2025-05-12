@@ -1,46 +1,60 @@
 <div class="container py-5" style="padding-top: 100px;">
   <div class="row justify-content-center">
     <div class="col-lg-8" style="padding-top: 80px;">
-
       <form (ngSubmit)="submit()" #eventForm="ngForm" novalidate>
-
         <ng-container *ngIf="step === 1">
           <h2 class="text-center mb-4">Création d'un événement : Informations de base</h2>
-
           <div class="mb-3">
             <label class="form-label">Titre</label>
             <input type="text" class="form-control" [(ngModel)]="formData.titre" name="titre" required />
             <small *ngIf="submitted && !formData.titre" class="text-danger">Le titre est requis.</small>
           </div>
-
           <div class="mb-3">
-            <label class="form-label small fw-semibold">Date</label>
-            <input type="date" class="form-control form-control-sm" [(ngModel)]="formData.date" name="date" required />
+            <label class="form-label">Lien</label>
+            <input type="text" class="form-control" [(ngModel)]="formData.lien" name="lien" required />
+            <small *ngIf="submitted && !formData.lien" class="text-danger">Le lien est requis.</small>
           </div>
-
           <div class="mb-3">
-            <label class="form-label">Nombre de personnes</label>
-            <input type="number" class="form-control" [(ngModel)]="formData.nbPersonnes" name="nbPersonnes" required />
-            <small *ngIf="submitted && formData.nbPersonnes <= 0" class="text-danger">Indiquez un nombre valide.</small>
+            <label class="form-label small fw-semibold">Date et Heure</label>
+            <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="formData.dateEvenement"
+              name="dateEvenement" required />
           </div>
-
+          <div class="mb-3">
+            <label class="form-label">Nombre de personnes minimum</label>
+            <input type="number" class="form-control" [(ngModel)]="formData.participantMin" name="participantMin"
+              required />
+            <small *ngIf="submitted && formData.participantMin <= 0" class="text-danger">Indiquez un nombre
+              valide.</small>
+            <small *ngIf="formData.participantMax && formData.participantMin > formData.participantMax"
+              class="text-danger">Indiquez un nombre
+              inférieur à celui maximum.</small>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Nombre de personnes maximum</label>
+            <input type="number" class="form-control" [(ngModel)]="formData.participantMax" name="participantMax"
+              required />
+            <small *ngIf="submitted && formData.participantMax <= 0" class="text-danger">Indiquez un nombre
+              valide.</small>
+          </div>
           <div class="mb-3">
             <label class="form-label">Prix</label>
             <input type="number" class="form-control" [(ngModel)]="formData.prix" name="prix" required />
-            <small *ngIf="submitted && formData.prix <= 0" class="text-danger">Indiquez un prix valide.</small>
+            <small *ngIf="submitted && formData.prix < 0" class="text-danger">Indiquez un prix valide.</small>
           </div>
-
           <div class="mb-3">
             <label class="form-label">Description</label>
-            <textarea class="form-control" [(ngModel)]="formData.description" name="description" rows="4" required></textarea>
+            <textarea class="form-control" [(ngModel)]="formData.description" name="description" rows="4"
+              required></textarea>
             <small *ngIf="submitted && !formData.description" class="text-danger">La description est requise.</small>
           </div>
-
           <div class="mb-3">
-            <label for="image">Image :</label>
-            <input type="file" id="image" (change)="onFileSelected($event)" accept="image/*" />
+            <label for="image" class="btn btn-outline-primary custom-file-input">
+              Choisir une image
+            </label>
+            <input type="file" id="image" (change)="onFileSelected($event)" accept="image/*" class="d-none" />
+            <span class="ms-2" *ngIf="fileName">{{ fileName }}</span>
+            <button *ngIf="fileName" class="btn btn-outline-danger btn-sm ms-2" (click)="clearFile()">Effacer</button>
           </div>
-
           <div class="mb-3">
             <div class="dropdown">
               <a class="btn btn-outline-primary dropdown-toggle w-100 text-start" href="#" id="categoriesDropdown"
@@ -48,14 +62,11 @@
                 {{ selectedCategoriesLabel || 'Sélectionner des catégories' }}
               </a>
               <ul class="dropdown-menu w-100" aria-labelledby="categoriesDropdown">
-                <li *ngFor="let category of categoriesOptions" (click)="$event.stopPropagation()">
+                <li *ngFor="let category of categories" (click)="$event.stopPropagation()">
                   <label class="dropdown-item m-0 d-flex align-items-center">
-                    <input type="checkbox"
-                           [(ngModel)]="category.selected"
-                           name="category-{{category.name}}"
-                           (change)="updateSelectedCategories()"
-                           class="me-2" />
-                    {{ category.name }}
+                    <input type="checkbox" [(ngModel)]="category.selected" name="category-{{category.idCategorie}}"
+                      (change)="updateSelectedCategories()" class="me-2" />
+                    {{ category.nom }}
                   </label>
                 </li>
               </ul>
@@ -65,39 +76,95 @@
             </small>
           </div>
         </ng-container>
+        <ng-container *ngIf="step === 2" style="min-height: 600px;">
+          <div style="min-height: 700px !important;">
+            <h2 class="text-center mb-4">Informations sur le lieu</h2>
 
-        <ng-container *ngIf="step === 2">
-          <h2 class="text-center mb-4">Informations sur le lieu</h2>
+            <div class="autocomplete-container" style="padding-bottom: 0; margin-bottom: 20px;"
+              (click)="onContainerClick($event)">
+              <label for="ville">Ville</label>
+              <input id="ville" type="text" pInputText [(ngModel)]="formData.ville" name="ville"
+                (input)="onCityInput($event)" placeholder="Entrez une ville"
+                class="p-inputtext p-component form-control" #inputVille />
+              <ul *ngIf="suggestedCities.length > 0" class="autocomplete-suggestions">
+                <li *ngFor="let city of suggestedCities" (click)="onCitySelect(city)">
+                  {{ city.properties.city || city.properties.name }}
+                </li>
+              </ul>
+              <button class="clear-btn" (click)="clearInput($event)">
+                &#10005;
+              </button>
+            </div>
 
-          <div class="mb-3">
-            <label class="form-label">Lieu</label>
-            <input type="text" class="form-control" [(ngModel)]="formData.lieu" name="lieu" required />
-          </div>
 
-          <div class="mb-3">
-            <label class="form-label">Ville</label>
-            <input type="text" class="form-control" [(ngModel)]="formData.ville" name="ville" required />
+            <div class="autocomplete-container" style="padding-bottom: 0; margin-bottom: 20px;"
+              (click)="onContainerClick($event)">
+              <label for="rue">Rue</label>
+              <input id="rue" type="text" pInputText [(ngModel)]="formData.rue" name="rue"
+                (input)="onStreetInput($event)" placeholder="Entrez une rue"
+                class="p-inputtext p-component form-control" #inputRue />
+              <ul *ngIf="suggestedStreets.length > 0" class="autocomplete-suggestions">
+                <li *ngFor="let street of suggestedStreets" (click)="onStreetSelect(street)">
+                  {{ street.properties.street || street.properties.name }}
+                  <span *ngIf="street.properties.house_number">, {{ street.properties.house_number }}</span>
+                  - {{ street.properties.city || street.properties.city_name }}
+                  ({{ street.properties.postcode || 'Code Postal Inconnu' }})
+                </li>
+              </ul>
+              <button class="clear-btn" (click)="clearStreetInput($event)">
+                &#10005;
+              </button>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Code Postal</label>
+              <input type="text" class="form-control" [(ngModel)]="formData.codePostal" name="codePostal" required
+                autocomplete="on" />
+            </div>
           </div>
         </ng-container>
-
-        <ng-container *ngIf="step === 3">
-          <h2 class="text-center mb-4">Accessibilité Handicap</h2>
-
-          <div class="form-check mb-3">
-            <p-checkbox [(ngModel)]="formData.placeHandicapee" name="placeHandicapee" inputId="placeHandicapee1"></p-checkbox>
-            <label for="placeHandicapee1" class="form-check-label ms-2">Places handicapées disponibles</label>
-          </div>
-
-          <div class="form-check mb-3">
-            <p-checkbox [(ngModel)]="formData.autresFacilites" name="autresFacilites" inputId="placeHandicapee2"></p-checkbox>
-            <label for="placeHandicapee2" class="form-check-label ms-2">Autres facilités handicapées</label>
+        <ng-container *ngIf="step === 3" style="min-height: 600px;">
+          <div style="min-height: 700px !important;">
+            <h2 class="text-center mb-4">Accessibilité Handicap</h2>
+            <div class="form-check mb-3">
+              <input type="checkbox" [(ngModel)]="formData.placeHandicape" id="placeHandicape" name="placeHandicape"/>
+              <label for="placeHandicape" class="form-check-label ms-2">Places handicapées disponibles</label>
+            </div>
+            <div class="form-check mb-3">
+              <input type="checkbox" [(ngModel)]="formData.ascenseur" id="ascenseur" name="ascenseur" />
+              <label for="ascenseur" class="form-check-label ms-2">Ascenseur(s) disponible(s) ?</label>
+            </div>
+            <div class="form-check mb-3">
+              <input type="checkbox" [(ngModel)]="formData.rampe" id="rampe" name="rampe" />
+              <label for="rampe" class="form-check-label ms-2">Rampe(s) disponible(s) ?</label>
+            </div>
           </div>
         </ng-container>
-
+        <ng-container *ngIf="step === 4">
+          <div style="min-height: 700px;">
+            <h2 class="text-center mb-4">Vérifiez vos informations</h2>
+            <div class="mb-3">
+              <p><strong>Titre : </strong>{{ formData.titre }}</p>
+              <p><strong>Lien : </strong>{{ formData.lien }}</p>
+              <p><strong>Date et Heure : </strong>{{ formData.dateEvenement | date:'short' }}</p>
+              <p><strong>Nombre de participants : </strong>{{ formData.participantMin }} à {{ formData.participantMax }}
+              </p>
+              <p><strong>Prix : </strong>{{ formData.prix | currency }}</p>
+              <p><strong>Description : </strong>{{ formData.description }}</p>
+              <p><strong>Ville : </strong>{{ formData.ville }}</p>
+              <p><strong>Rue : </strong>{{ formData.rue }}</p>
+              <p><strong>Code Postal : </strong>{{ formData.codePostal }}</p>
+              <p><strong>Accessibilité Handicap : </strong>{{ formData.placeHandicape ? 'Oui' : 'Non' }}</p>
+              <p><strong>Catégories : </strong>{{ selectedCategoriesLabel }}</p>
+            </div>
+          </div>
+        </ng-container>
         <div class="d-flex justify-content-between mt-4">
-          <button *ngIf="step > 1" class="btn btn-secondary" type="button" (click)="previousStep()">Précédent</button>
-          <button *ngIf="step < 3" class="btn btn-primary ms-auto" type="button" (click)="nextStep()">Suivant</button>
-          <button *ngIf="step === 3" class="btn btn-success ms-auto" type="submit">Valider</button>
+          <button class="btn btn-secondary" type="button" (click)="previousStep()">Précédent</button>
+          <div class="text-center mx-auto align-self-center">
+            {{ step }} / 4
+          </div>
+          <button *ngIf="step < 4" class="btn btn-primary" type="button" (click)="nextStep()">Suivant</button>
+          <button *ngIf="step === 4" class="btn btn-success" type="submit">Valider</button>
         </div>
       </form>
     </div>

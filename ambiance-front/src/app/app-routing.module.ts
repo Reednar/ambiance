@@ -10,6 +10,7 @@ import { DashboardComponent } from './pages/dashboards/dashboard.component';
 import { ModerationComponent } from './pages/moderation/moderation.component';
 import { PublicationsCreateFormComponent } from './pages/publications-create-form/publications-create-form.component';
 import { ProfileComponent } from './pages/user/profile/profile.component';
+import { PublicationShowComponent } from './pages/publication-show/publication-show.component';
 
 
 const routes: Routes = [
@@ -23,7 +24,7 @@ const routes: Routes = [
   { path: 'dashboards', component: DashboardComponent },
   { path: 'moderation', component: ModerationComponent },
   { path: 'profile', component: ProfileComponent },
-
+  { path: 'publication-show/:id', component: PublicationShowComponent }
 ];
 
 @NgModule({

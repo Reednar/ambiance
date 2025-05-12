@@ -1,0 +1,20 @@
+@media (max-width: 991.98px) {
+    .navbar-nav .dropdown-menu {
+        position: static;
+        float: none;
+        width: 100%;
+        box-shadow: none;
+        padding: 0;
+        margin-top: 0;
+        margin-bottom: 5px;
+        text-align: center;
+        border: 1px solid #fff;
+        border-bottom: 0;
+                border-top: 0;
+
+        /* Contour ajouté */
+        border-radius: 5px;
+        /* Arrondir légèrement les coins */
+        background-color:#212529 !important;
+    }
+}

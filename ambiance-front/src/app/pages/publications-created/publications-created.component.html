@@ -1,116 +1,138 @@
 <section>
-    <div class="container">
-        <h1 class="display-5 fw-bold text-white mb-4 border-start ps-3 border-secondary" style="padding-top: 100px;">
-            Les événements que vous avez créés
-        </h1>
+  <div class="container">
+    <h1 class="display-5 fw-bold text-white mb-4 border-start ps-3 border-secondary" style="padding-top: 100px;">
+      Les événements que vous avez créés
+    </h1>
 
-        <div class="row gy-2 gx-3 align-items-end mb-4">
-            <!-- Champ de recherche -->
-            <div class="col-md-4 col-sm-6">
-                <label for="search" class="form-label small fw-semibold">Recherche</label>
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                    <input id="search" type="text" [(ngModel)]="searchQuery" (ngModelChange)="filterPublications()"
-                        class="form-control" placeholder="Mot-clé..." />
-                </div>
-            </div>
-
-              <div class="col-md-4 col-sm-6">
-                <div class="dropdown">
-                  <a class="btn btn-outline-primary dropdown-toggle w-100 text-start" 
-                     href="#" id="categoriesDropdown"
-                     role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    {{ selectedCategoriesLabel || 'Sélectionner des catégories' }}
-                  </a>
-                  <ul class="dropdown-menu w-100" aria-labelledby="categoriesDropdown">
-                    <li *ngFor="let category of categoriesOptions" (click)="$event.stopPropagation()">
-                      <label class="dropdown-item m-0 d-flex align-items-center">
-                        <input
-                          type="checkbox"
-                          [(ngModel)]="category.selected"
-                          (change)="updateSelectedCategories()"
-                          class="me-2"
-                        />
-                        {{ category.name }}
-                      </label>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              
-              
-
-            <!-- Filtre date -->
-            <div class="col-md-4 col-sm-6">
-                <label for="dateFilter" class="form-label small fw-semibold">Date</label>
-                <input id="dateFilter" type="date" class="form-control form-control-sm" [(ngModel)]="selectedDate"
-                    (ngModelChange)="filterPublications()" />
-            </div>
+    <div class="row gy-2 gx-3 align-items-end mb-4">
+      <div class="col-md-4 col-sm-6">
+        <label class="form-label small fw-semibold text-white">Catégories</label>
+        <div class="dropdown">
+          <button class="btn btn-outline-light dropdown-toggle w-100 text-start" type="button"
+            (click)="toggleDropdown()">
+            {{ selectedCategoriesLabel }}
+          </button>
+          <ul *ngIf="dropdownOpen" class="dropdown-menu show w-100">
+            <li *ngFor="let cat of categories" (click)="$event.stopPropagation()">
+              <label class="dropdown-item m-0 d-flex align-items-center">
+                <input type="checkbox" class="me-2" [checked]="selectedCategories.has(cat.idCategorie)"
+                  (change)="toggleCategoryFilter(cat.idCategorie)" />
+                {{ cat.nom }}
+              </label>
+            </li>
+          </ul>
         </div>
+      </div>
 
+      <div class="col-md-4 col-sm-6 date-filter">
+        <label class="form-label small fw-semibold text-white mb-1">Filtrer par date</label>
+        <p-calendar [(ngModel)]="rangeDates" selectionMode="range" dateFormat="dd/mm/yy"
+          placeholder="Sélectionner une période" (onSelect)="applyFilters()" inputStyleClass="custom-date-input"
+          class="w-100"></p-calendar>
+      </div>
 
-
-        <p class="text-muted mb-3">Nombre total de publications : {{ publications.length }}.</p>
-
-        <!-- Tableau Bootstrap -->
-        <div class="table-responsive">
-            <table class="table table-bordered align-middle text-center shadow-sm">
-                <thead class="table-light">
-                    <tr>
-                        <th>Image</th>
-                        <th>Titre</th>
-                        <th>Catégories</th>
-                        <th>Prix</th>
-                        <th>Vues</th>
-                        <th>Ville</th>
-                        <th>Code Postal</th>
-                        <th>Date</th>
-                        <th colspan="3">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let publication of publications">
-                        <td>
-                            <img [src]="publication.image" alt="Image" class="img-thumbnail"
-                                style="width: 64px; height: 64px;">
-                        </td>
-                        <td>{{ publication.titre }}</td>
-                        <td>
-                            <span *ngFor="let cat of publication.categories" class="badge bg-secondary me-1">{{ cat
-                                }}</span>
-                        </td>
-                        <td>{{ publication.prix | currency: 'EUR' }}</td>
-                        <td>{{ publication.vus | number }}</td>
-                        <td>{{ publication.ville }}</td>
-                        <td>{{ publication.codePostal }}</td>
-                        <td>{{ publication.date | date: 'dd/MM/yyyy' }}</td>
-                        <td>
-                            <button class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                        </td>
-                        <td class="text-center">
-                            <button class="btn btn-outline-warning btn-sm">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                        </td>
-                        <td class="text-center">
-                            <button class="btn btn-outline-danger btn-sm">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Bouton Refresh en haut de tableau si besoin -->
-        <div class="d-flex justify-content-end my-2" style="padding-bottom: 20px;">
-            <button class="btn btn-outline-secondary btn-sm">
-                <i class="pi pi-refresh"></i> Rafraîchir
-            </button>
-        </div>
-
+      <div class="col-md-4 col-sm-6 d-flex align-items-end">
+        <button class="btn btn-outline-secondary w-100" (click)="resetFilters()">
+          Réinitialiser les filtres
+        </button>
+      </div>
     </div>
 
+    <p class="text-muted mb-3">Nombre total de publications affichées : {{ filteredPublications.length }}.</p>
+
+    <div class="gradient-custom-2 h-100 py-4">
+      <div class="mask d-flex align-items-start h-100">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-12">
+              <div class="table-responsive" style="overflow-x: auto;">
+                <table class="table table-dark table-bordered mb-0 text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>Image</th>
+                      <th>Titre</th>
+                      <th>Catégories</th>
+                      <th>Prix</th>
+                      <th>Min</th>
+                      <th>Max</th>
+                      <th>Ville</th>
+                      <th>Description</th>
+                      <th>Code Postal</th>
+                      <th>Date</th>
+                      <th colspan="3">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let publication of paginatedPublications">
+                      <td>
+                        <img [src]="publication.image" alt="Image" class="img-thumbnail rounded"
+                          style="width: 64px; height: 64px;">
+                      </td>
+                      <td>{{ publication.titre }}</td>
+                      <td>
+                        <span *ngFor="let cat of publication.categories" class="badge bg-secondary me-1">
+                          {{ cat.nom }}
+                        </span>
+                      </td>
+                      <td>{{ publication.prix | currency: 'EUR' }}</td>
+                      <td>{{ publication.participantMin }}</td>
+                      <td>{{ publication.participantMax }}</td>
+                      <td>{{ publication.ville }}</td>
+                      <td>{{ publication.description }}</td>
+                      <td>{{ publication.codePostal }}</td>
+                      <td>{{ publication.dateEvenement | date: 'dd/MM/yyyy' }}</td>
+                      <td>
+                        <button class="btn btn-outline-info btn-sm">
+                          <a [routerLink]="['/publication-show', publication.idPublication]"><i
+                              class="bi bi-eye"></i></a>
+                        </button>
+                      </td>
+                      <td>
+                        <button class="btn btn-outline-warning btn-sm">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                      </td>
+                      <td>
+                        <button class="btn btn-outline-danger btn-sm">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div *ngIf="isLoading" class="text-center py-4">
+                <div class="spinner-border text-light" role="status"></div>
+                <p class="mt-2 mb-0 text-light">Chargement des publications...</p>
+              </div>
+
+              <div *ngIf="!isLoading && filteredPublications.length === 0" class="text-center py-4 text-light">
+                Aucune publication créée.
+              </div>
+
+              <div *ngIf="!isLoading" class="pagination-container bg-dark text-light py-2 rounded-bottom"
+                style="overflow-x: auto; white-space: nowrap;">
+
+                <nav *ngIf="totalPages > 1" aria-label="Pagination">
+                  <ul class="pagination justify-content-center mb-0 pagination-sm">
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                      <a class="page-link" href="javascript:void(0)" (click)="goToPage(currentPage - 1)">Précédent</a>
+                    </li>
+                    <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+                      [class.active]="i + 1 === currentPage">
+                      <a class="page-link" href="javascript:void(0)" (click)="goToPage(i + 1)">{{ i + 1 }}</a>
+                    </li>
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                      <a class="page-link" href="javascript:void(0)" (click)="goToPage(currentPage + 1)">Suivant</a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

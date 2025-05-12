@@ -2059,7 +2059,7 @@ header [data-cart-items]:before {
     content: "";
     font-family: bootstrap-icons;
     color: currentColor;
-    margin-left: 8px;
+    margin-left: 0px;
     display: inline-block;
     font-size: .55rem;
     border: none;
@@ -2651,6 +2651,7 @@ img {
     margin: 0 0 6px;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: white;
   }
   
   .product-card-2 .product-price {
@@ -2663,13 +2664,15 @@ img {
     font-size: 14px;
   }
   
-  .product-card-2 .rating-star {
-    font-size: 18px;
-    margin-bottom: 5px;
-    display: flex;
-    gap: 8px; 
-    justify-content: center;
-  }
+.product-card-2 .rating-star {
+  font-size: 18px;
+  margin-bottom: 1px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  justify-content: center;
+}
+
   
   .product-card-2 .product-action {
     position: absolute;
@@ -2814,43 +2817,6 @@ color: white; /* Les barres du burger en blanc */
 font-size: 30px; /* Ajuste la taille de l'icône burger */
 }
 
-
-
-/* Navbar par défaut en transparent */
-.header-main {
-/*background-color: transparent; /* Navbar transparente en haut */
-background-color: rgba(20, 20, 20, 0.98);
-
-transition: background-color 0.3s ease; /* Transition douce */
-}
-
-/* Lorsque la page est scrollée, la navbar devient noire */
-.header-main.navbar-scrolled {
-background-color: #000; /* Navbar devient noire lorsqu'on scroll */
-}
-
-/* Menu déroulé transparent par défaut */
-.navbar-collapse {
-background-color: transparent !important; /* Menu déroulé transparent en haut */
-transition: background-color 0.3s ease; /* Transition douce */
-}
-
-/* Menu déroulé noir/gris lorsqu'on scroll */
-.header-main.navbar-scrolled .navbar-collapse {
-background-color: rgba(0, 0, 0, 0.904) !important; /* Menu déroulé noir/gris avec transparence */
-}
-
-/* Optionnel: changement de couleur pour les icônes et liens dans la navbar */
-/* .header-main.navbar-scrolled .navbar-dark .nav-link,
-.header-main.navbar-scrolled .navbar-dark .navbar-brand {
-color: rgb(175, 55, 55); 
-}
-
-.header-main.navbar-scrolled .navbar-dark .nav-link:hover {
-color: #a33030; 
-} */
-
-
 .bg-dark-theme {
     background-color: #212529 !important;
 }
@@ -2864,30 +2830,6 @@ body {
   .bg-gray-100[_ngcontent-ng-c1204591525] {
     background-color: #32393f !important;
 }
-
-
-
-  .header-main {
-    transition: background-color 0.3s, box-shadow 0.3s;
-  
-    &.header-scrolled {
-      background-color: rgba(0, 0, 0, 0.95) !important;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6) !important;
-    }
-  }
-  .navbar-collapse.navbar-scrolled-bg.show {
-    background-color: rgba(20, 20, 20, 0.98);
-    padding: 1rem;
-    transition: background-color 0.3s;
-  }
-  
-  @media (max-width: 991px) {
-    .navbar-collapse.navbar-scrolled-bg.show {
-      box-shadow: 0 0px 0px rgba(0, 0, 0, 0.4);
-      background-color: rgba(20, 20, 20, 0.98)!important;
-
-    }
-  }
 
 
   .navI:hover{

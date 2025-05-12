@@ -1,88 +1,9 @@
 .articles-container {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    padding: 20px;
-  
-    .article-card {
-      width: 350px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-  
-      .image-wrapper {
-        position: relative;
-        height: 200px;
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-        .read-time {
-          position: absolute;
-          bottom: 10px;
-          right: 10px;
-          background: rgba(0, 0, 0, 0.6);
-          color: #fff;
-          padding: 5px 10px;
-          border-radius: 20px;
-          font-size: 12px;
-        }
-      }
-  
-      .article-content {
-        padding: 15px;
-  
-        .author-info {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          margin-bottom: 10px;
-  
-          img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-          }
-  
-          .category {
-            background: #f0f0f0;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-          }
-        }
-  
-        .title {
-          font-size: 16px;
-          font-weight: bold;
-          margin-bottom: 10px;
-        }
-  
-        .article-meta {
-          display: flex;
-          justify-content: space-between;
-          font-size: 12px;
-          color: #888;
-            margin-top: auto; /* Colle la section en bas */
-  
-        }
-      }
-    }
-  }
-  
-  
-  .articles-container {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap; /* Permet d'aller à la ligne si nécessaire */
-    padding: 20px;
-  }
-  
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+
   .article-card {
     width: 350px;
     background: #fff;
@@ -91,95 +12,144 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+
+    .image-wrapper {
+      position: relative;
+      height: 200px;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .read-time {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+      }
+    }
+
+    .article-content {
+      padding: 15px;
+
+      .author-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+
+        img {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+        }
+
+        .category {
+          background: #f0f0f0;
+          padding: 2px 8px;
+          border-radius: 12px;
+          font-size: 12px;
+        }
+      }
+
+      .title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .article-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #888;
+        margin-top: auto;
+
+      }
+    }
   }
-  
-  /* Responsive pour tablette */
-  @media (max-width: 768px) {
-    .articles-container {
-      justify-content: space-around;
-    }
-  
-    .article-card {
-      width: 100%; /* Prend toute la largeur disponible */
-      max-width: 400px; /* Limite la largeur maximale */
-    }
-  }
-  
-  /* Responsive pour mobile */
-  @media (max-width: 480px) {
-    .articles-container {
-      gap: 10px;
-      padding: 10px;
-    }
-  
-    .article-card {
-      width: 100%;
-    }
-  }
-  
-  
-  
-  // .article-card {
-  //   border-radius: 12px;
-  //   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  //   overflow: hidden;
-  //   display: flex;
-  //   flex-direction: column;
-  //   justify-content: space-between; /* Ajoute un espacement entre le contenu et la meta */
-  // }
-  
-  // .article-content {
-  //   padding: 15px;
-  //   display: flex;
-  //   flex-direction: column;
-  //   flex-grow: 1; /* Permet de remplir l’espace disponible */
-  // }
-  
-  // .article-meta {
-  //   display: flex;
-  //   justify-content: space-between;
-  //   font-size: 12px;
-  //   color: #888;
-  //   margin-top: auto; /* Colle la section en bas */
-  // }
-  
-  body{
-    background-color: white !important;
+}
+
+.articles-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+.article-card {
+  width: 350px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive pour tablette */
+@media (max-width: 768px) {
+  .articles-container {
+    justify-content: space-around;
   }
 
-  button.btn.dropdown-toggle:hover {
-    background-color: #6c757d !important; /* Gris */
-    color: white;
+  .article-card {
+    width: 100%;
+    max-width: 400px;
   }
-  
-  /* Cache le div de texte qui apparaît en dessous après sélection d'une date */
+}
+
+@media (max-width: 480px) {
+  .articles-container {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .article-card {
+    width: 100%;
+  }
+}
+
+body {
+  background-color: white !important;
+}
+
+button.btn.dropdown-toggle:hover {
+  background-color: #6c757d !important;
+  color: white;
+}
+
 ::ng-deep .p-calendar .p-hidden-accessible {
   display: none !important;
 }
 
 
-/* Pour l'input à l'intérieur de la zone de texte */
 ::ng-deep .p-calendar input {
-  width: 100%; /* L'input prend toute la largeur */
-  border: none; /* Pas de bordure pour l'input */
-  padding: 8px 12px; /* Rendre l'input spacieux */
-  background-color: transparent; /* Fond transparent */
+  width: 100%;
+  border: none;
+  padding: 8px 12px;
+  background-color: transparent;
 }
 
-/* Changer le focus pour que l'input garde un look propre */
 ::ng-deep .p-calendar input:focus {
-  outline: none; /* Retirer le contour par défaut */
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Légère ombre au focus */
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
 }
 
-/* Utilisation de ::ng-deep pour forcer la personnalisation des composants PrimeNG */
 ::ng-deep .custom-calendar .p-datepicker-input {
-  background-color: transparent !important; 
+  background-color: transparent !important;
   border: 1px solid white !important;
   color: white !important;
-  padding: 0.375rem 1.25rem; /* Ajuste l'espacement à ton goût */
-  border-radius: 0.25rem; /* Optionnel : arrondir les coins */
-  font-size: 1rem; /* Ajuster la taille du texte */
+  padding: 0.375rem 1.25rem;
+  border-radius: 0.25rem;
+  font-size: 1rem;
 }
 
 ::ng-deep .custom-calendar .p-datepicker-trigger {
@@ -194,7 +164,7 @@
 }
 
 ::ng-deep .custom-calendar .p-datepicker {
-  background-color: #333 !important; /* Fond gris sombre pour le calendrier */
+  background-color: #333 !important;
   border-radius: 0.25rem;
 }
 
@@ -211,11 +181,6 @@
   color: white;
 }
 
-
-/* Personnalisation du calendrier avec ::ng-deep */
-/* Personnalisation du calendrier avec ::ng-deep */
-
-/* Input du calendrier */
 ::ng-deep .custom-calendar .p-datepicker-input {
   background-color: transparent !important;
   border: 1px solid white !important;
@@ -232,16 +197,14 @@
   font-size: 1rem;
 }
 
-/* Personnalisation de la fenêtre du calendrier */
 ::ng-deep .custom-calendar .p-calendar {
   background-color: #333 !important;
   border-radius: 0.25rem;
 }
 
-/* Boutons de navigation (mois, année, précédent, suivant) */
-::ng-deep .custom-calendar .p-datepicker-prev, 
+::ng-deep .custom-calendar .p-datepicker-prev,
 ::ng-deep .custom-calendar .p-datepicker-next,
-::ng-deep .custom-calendar .p-datepicker-month, 
+::ng-deep .custom-calendar .p-datepicker-month,
 ::ng-deep .custom-calendar .p-datepicker-year {
   background-color: #444;
   border: 1px solid white;
@@ -252,31 +215,28 @@
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Effet de survol pour les boutons de navigation */
-::ng-deep .custom-calendar .p-datepicker-prev:hover, 
+::ng-deep .custom-calendar .p-datepicker-prev:hover,
 ::ng-deep .custom-calendar .p-datepicker-next:hover,
-::ng-deep .custom-calendar .p-datepicker-month:hover, 
+::ng-deep .custom-calendar .p-datepicker-month:hover,
 ::ng-deep .custom-calendar .p-datepicker-year:hover {
   background-color: #555;
-  color: #ffd700; /* Jaune or */
+  color: #ffd700;
 }
 
-/* Personnalisation des jours du calendrier */
 ::ng-deep .custom-calendar .p-datepicker-calendar .p-datepicker-day {
   color: white;
   padding: 0.5rem;
   border-radius: 0.25rem;
   transition: background-color 0.3s ease, color 0.3s ease;
-  cursor: pointer; /* Changer le curseur pour indiquer que c'est interactif */
+  cursor: pointer;
 }
 
 /* Effet de survol pour les jours */
 ::ng-deep .custom-calendar .p-datepicker-calendar .p-datepicker-day:hover {
-  background-color: #555 !important; /* Couleur de fond au survol */
-  color: white !important;  /* Couleur du texte en survol */
+  background-color: #555 !important;
+  color: white !important;
 }
 
-/* Personnalisation du bouton de confirmation et du bouton du mois et année */
 ::ng-deep .custom-calendar .p-calendar-button {
   background-color: transparent;
   border: 1px solid white;
@@ -289,310 +249,28 @@
 
 /* Personnalisation des jours sélectionnés */
 ::ng-deep .custom-calendar .p-datepicker-day.p-highlight {
-  background-color: #ffd700 !important; /* Jaune or pour les jours sélectionnés */
+  background-color: #ffd700 !important;
   color: #333;
 }
 
-/* Survol sur les cellules de jours (td) dans le calendrier */
 ::ng-deep .custom-calendar .p-datepicker-calendar td.p-datepicker-day:hover {
-  background-color: #680d0d !important;  /* Couleur de fond au survol */
-  color: white !important;  /* Couleur du texte en survol */
-  cursor: pointer; /* Changer le curseur pour indiquer que c'est interactif */
+  background-color: #680d0d !important;
+  color: white !important;
+  cursor: pointer;
 }
 
-/* Cibler le survol sur les jours dans le calendrier */
 ::ng-deep .custom-calendar .p-datepicker-calendar td.p-datepicker-day:hover span {
-  background-color: #333 !important;  /* Changer la couleur du fond au survol */
-  color: #fff !important;  /* Couleur du texte en blanc */
-  cursor: pointer; /* Pour que le curseur devienne une main */
+  background-color: #333 !important;
+  color: #fff !important;
+  cursor: pointer;
 }
 
-::ng-deep .p-datepicker td > span:hover {
+::ng-deep .p-datepicker td>span:hover {
   background-color: #44ad29;
 }
 
-
-
-
-// .container{
-//   padding: 0 5px 0 5px !important;
-// }
-// .product-card-3 {
-//   display: flex;
-//   flex-direction: column;
-//   height: 100%;
-//   border: 1px solid grey;
-//   position: relative;
-//   background: var(--bs-body-bg);
-
-//   @media (max-width: 1200px) {
-//     height: 330px;
-//   }
-
-//   // Écran ≤ 992px
-//   @media (max-width: 992px) {
-//     height: 320px;
-//   }
-
-//   // Écran ≤ 768px (tablette)
-//   @media (max-width: 768px) {
-//     height: 310px;
-//   }
-
-//   @media (max-width: 576px) {
-//     height: 290px;
-//   }
-// }
-
-// .product-card-3 .product-media {
-//   overflow: hidden;
-//   position: relative;
-//   height: 350px;
-
-//   // Écran ≤ 1200px
-//   @media (max-width: 1200px) {
-//     height: 320px;
-//   }
-
-//   // Écran ≤ 992px
-//   @media (max-width: 992px) {
-//     height: 300px;
-//   }
-
-//   // Écran ≤ 768px (tablette)
-//   @media (max-width: 768px) {
-//     height: 290px;
-//   }
-
-//   // Écran ≤ 576px (mobile)
-//   @media (max-width: 576px) {
-//     height: 250px;
-//   }
-// }
-
-
-
-// .product-card-3 .product-media img {
-//   width: 100%;
-//   height: 100%;
-//   object-fit: cover;
-//   transform: scale(1);
-//   transition: ease all 0.35s;
-
-//   // Écran ≤ 1200px
-//   @media (max-width: 1200px) {
-//     height: 320px;
-//   }
-
-//   // Écran ≤ 992px
-//   @media (max-width: 992px) {
-//     height: 300px;
-//   }
-
-//   // Écran ≤ 768px (tablette)
-//   @media (max-width: 768px) {
-//     height: 290px;
-//   }
-
-//   // Écran ≤ 576px (mobile)
-//   @media (max-width: 576px) {
-//     height: 188px;
-//   }
-// }
-
-
-// .product-card-3 .btn {
-//   padding: 0;
-//   width: 35px;
-//   height: 35px;
-//   border-radius: 50%;
-//   display: inline-flex;
-//   align-items: center;
-//   justify-content: center
-// }
-
-// .product-card-3 .product-wishlist {
-//   position: absolute;
-//   top: 15px;
-//   right: 15px;
-//   z-index: 1
-// }
-
-// .product-card-3 .product-wishlist .btn:not(:hover) {
-//   background: var(--bs-white)
-// }
-
-// .product-card-3 .product-action {
-//   position: absolute;
-//   bottom: 0;
-//   left: 0;
-//   right: 0;
-//   transition: ease all .35s;
-//   padding: 10px
-// }
-
-// .product-card-3 .product-action .btn {
-//   margin: 0 3px;
-//   position: relative;
-//   transition: ease all .35s;
-//   opacity: 0;
-//   top: -15px
-// }
-
-// .product-card-3 .product-card-info {
-//   position: relative;
-//   padding: 10px 15px 15px;
-//   text-align: center
-// }
-
-// .product-card-3 .product-title {
-//   font-weight: 600;
-//   margin: 0 0 6px
-// }
-
-// .product-card-3 .product-title a {
-//   color: var(--bs-text-mode)
-// }
-
-// .product-card-3 .product-title a:hover {
-//   color: var(--bs-primary)
-// }
-
-// .product-card-3 .product-price span {
-//   font-size: 16px;
-//   font-weight: 600
-// }
-
-// .product-card-3 .product-price del {
-//   font-size: 14px
-// }
-
-// .product-card-3 .rating-star {
-//   font-size: 12px;
-//   margin-bottom: 5px
-// }
-
-// .product-card-3:hover {
-//   box-shadow: 0 .5rem 2rem -.25rem rgba(103, 111, 123, .1)
-// }
-
-// .product-card-3:hover .product-media img {
-//   transform: scale(1.1)
-// }
-
-// .product-card-3:hover .product-action {
-//   background: rgba(var(--bs-white-rgb), .6)
-// }
-
-// .product-card-3:hover .product-action .btn {
-//   opacity: 1;
-//   top: 0
-// }
-
-// .poste-card {
-//   height: 420px;
-//   border-radius: 1rem;
-//   overflow: hidden;
-//   background-color: #343a40;
-//   color: #fff;
-//   box-shadow: 0 8px 16px rgba(0,0,0,0.25);
-//   transition: transform 0.2s ease;
-// }
-
-// .poste-card:hover {
-//   transform: scale(1.02);
-// }
-
-// .poste-img {
-//   height: 60%;
-//   width: 100%;
-//   object-fit: cover;
-// }
-
-// .poste-body {
-//   padding: 1rem;
-//   height: 40%;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: space-between;
-// }
-
-// .poste-titre {
-//   font-size: 1.2rem;
-//   font-weight: 600;
-//   margin-bottom: 0.3rem;
-// }
-
-// .poste-prix {
-//   font-weight: 500;
-//   color: #ffc107;
-//   margin-bottom: 0.5rem;
-// }
-
-// .poste-categories span {
-//   background-color: #495057;
-//   color: #fff;
-//   padding: 0.25rem 0.6rem;
-//   margin-right: 0.4rem;
-//   border-radius: 0.4rem;
-//   font-size: 0.75rem;
-// }
-
-
-// .poste-card {
-//   height: 340px;
-//   border-radius: 1rem;
-//   overflow: hidden;
-//   background-color: #343a40;
-//   color: #fff;
-//   box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-//   transition: transform 0.2s ease;
-// }
-
-// .poste-card:hover {
-//   transform: scale(1.02);
-// }
-
-// .poste-img {
-//   height: 55%;
-//   width: 100%;
-//   object-fit: cover;
-// }
-
-// .poste-body {
-//   padding: 0.75rem;
-//   height: 45%;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: space-between;
-// }
-
-// .poste-titre {
-//   font-size: 1rem;
-//   font-weight: 600;
-//   margin-bottom: 0.25rem;
-// }
-
-// .poste-prix {
-//   font-weight: 500;
-//   color: #ffc107;
-//   margin-bottom: 0.4rem;
-//   font-size: 0.9rem;
-// }
-
-// .poste-categories span {
-//   background-color: #495057;
-//   color: #fff;
-//   padding: 0.2rem 0.5rem;
-//   margin-right: 0.3rem;
-//   border-radius: 0.3rem;
-//   font-size: 0.7rem;
-// }
-
-
-
 .poste-card {
-  position: relative; /* ← nécessaire pour positionner les éléments absolus */
+  position: relative;
   height: 340px;
   border-radius: 1rem;
   overflow: hidden;
@@ -642,23 +320,20 @@
   font-size: 0.7rem;
 }
 
-/* Nouveau : nom de l'école en haut à droite */
 .poste-ecole {
   position: absolute;
   top: 8px;
   right: 10px;
-  background-color: rgba(0, 0, 0, 0.65); /* plus foncé */
+  background-color: rgba(0, 0, 0, 0.65);
   color: #ffffff;
   padding: 0.25rem 0.6rem;
   border-radius: 0.4rem;
   font-size: 0.75rem;
   font-weight: 600;
-  backdrop-filter: blur(3px); /* flou derrière si dispo */
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8); /* ombre portée */
+  backdrop-filter: blur(3px);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
-
-/* Nouveau : participants en bas à droite */
 .poste-participants {
   position: absolute;
   bottom: 8px;
@@ -669,4 +344,170 @@
   border-radius: 0.3rem;
   font-size: 0.75rem;
   font-weight: 500;
+}
+
+.categories-list {
+  display: flex;
+  gap: 0px;
+  flex-wrap: wrap;
+  list-style-type: none;
+  margin-top: 20px;
+
+}
+
+.categories-list li {
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+
+.d-flex {
+  display: flex;
+  align-items: center;
+}
+
+.flex-wrap {
+  flex-wrap: nowrap;
+}
+
+.categories-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-left: 10px;
+  margin-bottom: 0;
+}
+
+.categories-list li {
+  margin-right: 10px;
+  align-self: center;
+}
+
+.card,
+.dropdown {
+  margin-left: 15px;
+}
+
+.d-flex.align-items-center {
+  align-items: center;
+}
+
+.categories-container {
+  font-size: 0.875rem;
+  color: #007bff;
+  padding-bottom: 10px;
+}
+
+.category-item {
+  background-color: rgba(0, 123, 255, 0.1);
+  padding: 2px 8px;
+  font-size: 0.875rem;
+  color: #007bff;
+}
+
+.categories-label {
+  font-weight: 500;
+  margin-right: 5px;
+}
+
+.poste-date {
+  color: white;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+.poste-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 370px;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.poste-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.poste-body {
+  flex-grow: 1;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.poste-date,
+.poste-ville {
+  color: white;
+  font-size: 0.85rem;
+  margin-top: 3px;
+}
+
+.poste-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.65);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.poste-card:hover .poste-hover {
+  opacity: 1;
+}
+
+.poste-participants {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.poste-hover {
+  max-height: 370px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+@media (max-width: 768px) {
+  .poste-card {
+    height: 350px;
+  }
+
+  .poste-img {
+    height: 150px;
+  }
+
+  .poste-hover {
+    max-height: 350px;
+  }
+}
+
+.poste-joined-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #28a745;
+  color: white;
+  padding: 0.25rem 0.6rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  backdrop-filter: blur(3px);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }

@@ -23,20 +23,12 @@ export class AuthInterceptor implements HttpInterceptor {
     const token = this.authService.getToken();
   
     const isPublic = this.publicUrls.some(url => req.url.includes(url));
-  
-    console.log("token : " + token);
-    if ((isPublic || !token) && req.url != '/publicationCreateForm') {
-      console.log(isPublic + " " + !token)
+    if ((isPublic || !token) && !req.url.includes('/publicationCreateForm') && !req.url.includes('/publications/create')) {
       return next.handle(req); // Laisser passer les routes publiques
     }
-  
-    console.log("1st")
     if (this.authService.isTokenExpired()) {
-      console.log("token expiré")
-
       return this.authService.refreshToken().pipe(
         switchMap((response: { access_token: string }) => {
-          console.log("new access token : " + response.access_token);
           const clonedReq = req.clone({
             setHeaders: { Authorization: `Bearer ${response.access_token}` },
           });
@@ -46,7 +38,6 @@ export class AuthInterceptor implements HttpInterceptor {
           alert('Votre session a expiré, veuillez vous reconnecter.');
           this.authService.removeToken();
           this.router.navigate(['/login']);
-          console.log(error);
           return throwError(() => new Error('Token expired or invalid'));
         })
       );

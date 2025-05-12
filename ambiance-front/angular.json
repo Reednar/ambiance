@@ -25,6 +25,7 @@
           "options": {
             "outputPath": "dist/ambiance-front-",
             "index": "src/index.html",
+            "baseHref": "/",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"

@@ -1,3 +1,4 @@
+//  Objet Publication
 export interface Publication {
   idPublication: number;
   codePostal: string;
@@ -15,21 +16,35 @@ export interface Publication {
   placeHandicape: boolean;
   rampe: boolean;
   ascenseur: boolean;
-  utilisateurId: number;
-  utilisateur?: any; // Optionnel : tu peux le typer plus précisément
-  categories: { id: number; nom: string }[]; // Id + nom pour affichage
+  idUtilisateur: string;
+  utilisateur?: any;
+  categories: { id: number; nom: string }[];
   publicationCategories?: PublicationCategorie[];
-  // image: Blob;
-  // ImageMimeType?: string;
   image: string | null;  // base64 image
   imageMimeType: string | null;
+  nombreParticipants: number;
+  idGroupe: number;
+  idParticipation : number;
+  paiementEffectue : boolean;
 }
 
+//  Objet Categorie
 export interface Categorie {
   idCategorie: number;
   nom: string;
+  nombrePublications: number;
+  publications: {
+    id: number;
+    nom: string;
+  }[];
+  publicationCategories?: {
+    IdPublication: number;
+    IdCategorie: number;
+  }[];
 }
 
+
+//  Objet PublicationCategorie
 export interface PublicationCategorie {
   IdPublication: number;
   IdCategorie: number;

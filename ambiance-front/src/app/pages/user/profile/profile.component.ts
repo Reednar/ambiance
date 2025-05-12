@@ -17,7 +17,5 @@ export class ProfileComponent {
   };
 
   saveProfile() {
-    console.log('Profil sauvegardé :', this.user);
-    // Ici tu pourrais appeler ton API pour sauvegarder les modifications
   }
 }

@@ -1,0 +1,94 @@
+.container {
+}
+
+// img {
+//   max-height: 300px;
+//   object-fit: cover;
+// }
+.container {
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+  min-height: 700px;
+}
+
+// .publication-img {
+//   max-height: 400px;
+//   object-fit: cover;
+//   border-radius: 1rem;
+// }
+
+h1 {
+  font-weight: bold;
+  color: #343a40;
+}
+
+.list-group-item {
+  font-size: 1rem;
+  border: none;
+}
+
+.badge {
+  font-size: 0.85rem;
+  padding: 0.5em 0.75em;
+}
+
+ul {
+  padding-left: 1rem;
+  margin-bottom: 0;
+  list-style: disc;
+}
+
+// .publication-img {
+//   height: 55%;
+//   width: 100%;
+//   object-fit: cover;
+//   object-position: center center; 
+//   transition: transform 0.3s ease-in-out, object-position 0.3s ease-in-out;
+// }
+
+.publication-img:hover {
+  transform: scale(1.02);
+  object-position: center;
+}
+
+::ng-deep .p-toast {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 9999;
+  min-width: 200px;
+  max-width: 400px;
+}
+
+/* Appliquer une hauteur à la colonne pour que l'image occupe toute la hauteur */
+.col-md-6 {
+  display: flex;
+  align-items: stretch; /* Assure que l'image prenne toute la hauteur de la colonne */
+}
+
+/* Faire en sorte que l'image occupe toute la hauteur de la div parent */
+.publication-img {
+  height: 100%; /* L'image prend toute la hauteur disponible */
+  width: 100%; /* L'image prend toute la largeur disponible */
+  object-fit: contain; /* L'image s'ajuste sans être coupée ni trop zoomée */
+  border-radius: 1rem; /* Arrondir les coins */
+  object-position: center center; /* Centrer l'image si elle est plus petite que le conteneur */
+  max-height: 500px; /* Limite la hauteur maximale à 400px */
+  max-width: 100%; /* Assure que l'image ne dépasse pas la largeur de son conteneur */
+}
+
+
+/* Ajouter un effet au survol de l'image */
+.publication-img:hover {
+  transform: scale(1.02);
+  object-position: center;
+}
+
+.publication-img:hover {
+  transform: scale(1.02); /* Agrandir l'image légèrement */
+  object-position: center; /* Assurer que l'image reste centrée */
+  filter: brightness(1.1) contrast(1.2); /* Augmenter la luminosité et le contraste pour un effet éclatant */
+  box-shadow: 0px 10px 30px rgba(255, 255, 255, 0.192); /* Ajouter une ombre douce autour de l'image */
+  animation: rotateIn 2s ease-out; /* Ajouter une rotation douce */
+}
+

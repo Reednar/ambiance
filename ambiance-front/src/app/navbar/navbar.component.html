@@ -1,80 +1,71 @@
-<header class="header-main header-dark fixed-top header-fluid header-transparent header-option-2" style="top:0px">
+<header class="header-main header-dark fixed-top header-fluid header-option-2 header-scrolled navbar-scrolled-bg"
+  style="top:0px; background-color: rgba(0, 0, 0, 0.95) !important">
   <nav class="navbar navbar-expand-lg navbar-dark">
-      <div class="container-fluid flex-nowrap">
-          <a class="navbar-brand" href="/">
-              <img alt="logo" class="logo-dark sf-hidden" src="data:," />
-              <img alt="logo" class="logo-light" src="/assets/AMBIANCE.png" />
-          </a>
+    <div class="container-fluid flex-nowrap">
+      <a class="navbar-brand" routerLink="/">
+        <img alt="logo" class="logo-dark sf-hidden" src="data:," />
+        <img alt="logo" class="logo-light" src="/assets/AMBIANCE.png" />
+      </a>
 
-          <!-- Burger menu Angular-friendly -->
-          <button class="navbar-toggler d-lg-none" type="button" (click)="toggleNavbar()">
-              <i class="bi bi-list" style="font-size: 30px; color: #fff;"></i>
-          </button>
+      <!-- Burger menu Angular-friendly -->
+      <button class="navbar-toggler d-lg-none" type="button" (click)="toggleNavbar()">
+        <i class="bi bi-list" style="font-size: 30px; color: #fff;"></i>
+      </button>
 
-          <!-- Menu de navigation -->
-          <div class="collapse navbar-collapse" [ngClass]="{ 'show': navbarOpen }" id="navbarNav">
-              <ul class="navbar-nav mx-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarPublicationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Publications
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarPublicationsDropdown">
-                      <li><a class="dropdown-item" href="/publications">Parcourir les publications</a></li>
-                      <li><a class="dropdown-item" href="/publicationsCreated">Mes publications</a></li>
-                      <li><a class="dropdown-item" href="/publicationsCreateForm">Créer une publication</a></li>
-                    </ul>
-                  </li>
-                  <li class="dropdown nav-item"><a class="nav-link" href="#">Messagerie</a></li>
-                  <li class="dropdown nav-item"><a class="nav-link" href="/calendar">Calendrier</a></li>
-                  <li class="dropdown nav-item"><a class="nav-link" href="#">Catégories</a></li>
-                  <li class="dropdown nav-item"><a class="nav-link" href="#">Avis</a></li>
-                  <li class="dropdown nav-item"><a class="nav-link" href="/moderation">Administration</a></li>
-              </ul>
-          </div>
+      <!-- Menu de navigation -->
+<div class="collapse navbar-collapse" [ngClass]="{ 'show': navbarOpen }" id="navbarNav">
+  <ul class="navbar-nav mx-auto">
+    <li class="nav-item dropdown" style="margin-left: 0px !important;">
+      <a class="nav-link dropdown-toggle" id="navbarPublicationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Publications
+      </a>
+      <ul class="dropdown-menu" aria-labelledby="navbarPublicationsDropdown">
+        <li><a class="dropdown-item" routerLink="/publications">Parcourir les publications</a></li>
+        <li><a class="dropdown-item" routerLink="/publicationsCreated">Mes publications</a></li>
+        <li><a class="dropdown-item" routerLink="/publicationsCreateForm">Créer une publication</a></li>
+      </ul>
+    </li>
+    
+    <li class="nav-item"><a class="nav-link" routerLink="#">Messagerie</a></li>
+    <li class="nav-item"><a class="nav-link" routerLink="/calendar">Calendrier</a></li>
+    <li class="nav-item"><a class="nav-link" routerLink="#">Écoles</a></li>
+    <li class="nav-item"><a class="nav-link" routerLink="#">Blogs</a></li>
+    
+    <li class="nav-item dropdown" style="margin-left: 0px !important;">
+      <a class="nav-link dropdown-toggle" id="navbarAdminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Administration
+      </a>
+      <ul class="dropdown-menu" aria-labelledby="navbarAdminDropdown">
+        <li><a class="dropdown-item" routerLink="/publications">Administrer l'école</a></li>
+        <li><a class="dropdown-item" routerLink="/publicationsCreated">Administrer les écoles</a></li>
+        <li><a class="dropdown-item" routerLink="/publicationsCreateForm">Administration</a></li>
+      </ul>
+    </li>
+  </ul>
+</div>
 
-          <!-- Icônes à droite -->
-          <div class="nav flex-nowrap align-items-center header-right">
-              <div class="nav-item">
-                  <a class="nav-link" href="#"><i class="bi bi-search navI"></i></a>
-              </div>
-              <div class="nav-item dropdown">
-                <!-- Bouton déclencheur pour ouvrir le menu -->
-                <!-- <a class="nav-link" href="#" (click)="menu.toggle($event)">
-                  <i class="bi bi-person navI"></i>
-                </a> -->
-              
-                <!-- Menu PrimeNG contextuel -->
-                <!-- <p-menu #menu [popup]="true" [model]="items"></p-menu> -->
-              
-<!--             
-                <div class="dropdown nav-item">
-                    <p-overlayPanel #menu>
-                      <p-menu [model]="items"></p-menu>
-                    </p-overlayPanel>
-                  
-                    <button class="nav-link" (click)="menu.toggle($event)">
-                    </button>
-                </div>
-                   -->
 
-                   <li class="nav-item dropdown">
-                    <a class="nav-link" href="#" id="navbarPublicationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person navI"></i>
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarPublicationsDropdown">
-                      <li *ngIf="isConnected"><a class="dropdown-item" (click)="logout($event)">Déconnexion</a></li>
-                      <li *ngIf="isConnected"><a class="dropdown-item" href="/profile">Voir son profil</a></li>
-                      <li *ngIf="!isConnected"><a class="dropdown-item" href="/login">Connexion</a></li>
-                      <li *ngIf="!isConnected"><a class="dropdown-item" href="/register">Inscription</a></li>
-                    </ul>
-                  </li>
-                </div>
-              
-              <div class="nav-item">
-                  <a class="nav-link" href="#"><i class="bi bi-bag navI"></i></a>
-              </div>
-          </div>
+      <!-- Icônes à droite -->
+      <div class="nav flex-nowrap align-items-center header-right">
+        <div class="nav-item">
+          <a class="nav-link" routerLink="#"><i class="bi bi-search navI"></i></a>
+        </div>
+        <div class="nav-item dropdown">
+          <li class="nav-item dropdown">
+            <a class="nav-link" routerLink="#" id="navbarPublicationsDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <i class="bi bi-person navI"></i>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarPublicationsDropdown">
+              <li *ngIf="isConnected"><a class="dropdown-item" (click)="logout($event)">Déconnexion</a></li>
+              <li *ngIf="isConnected"><a class="dropdown-item" routerLink="/profile">Voir son profil</a></li>
+              <li *ngIf="!isConnected"><a class="dropdown-item" routerLink="/login">Connexion</a></li>
+              <li *ngIf="!isConnected"><a class="dropdown-item" routerLink="/register">Inscription</a></li>
+            </ul>
+          </li>
+        </div>
       </div>
+    </div>
   </nav>
   <div class="mobile-header-01 d-lg-none sf-hidden"></div>
 </header>

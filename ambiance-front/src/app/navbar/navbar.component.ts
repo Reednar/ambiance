@@ -15,12 +15,12 @@ import 'swiper/css/pagination';
 import { AuthService } from '../service/authent.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Menu } from 'primeng/menu'; // Importer le composant Menu de PrimeNG
+import { Menu } from 'primeng/menu';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css'] // ✅ Corrigé ici
+  styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements AfterViewInit, OnInit, OnDestroy {
   navbarOpen = false;
@@ -30,8 +30,7 @@ export class NavbarComponent implements AfterViewInit, OnInit, OnDestroy {
 
   @ViewChild('menubutton') menuButton!: ElementRef;
   @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
-  //@ViewChild('topbarmenu') menu!: ElementRef;
-  @ViewChild('menu') menu!: Menu; // Référence à p-menu
+  @ViewChild('menu') menu!: Menu;
 
   constructor(
     private authService: AuthService,
@@ -63,29 +62,9 @@ export class NavbarComponent implements AfterViewInit, OnInit, OnDestroy {
     // ✅ Souscription propre
     this.authSubscription = this.authService.isConnected$.subscribe((value) => {
       this.isConnected = value;
-      console.log("value de isConnected : " + this.isConnected)
       this.updateMenuItems();
-      this.cdr.detectChanges(); // optionnel si le menu ne s'affiche pas directement
+      this.cdr.detectChanges();
     });
-
-    // Gestion du scroll
-    const header = document.querySelector('.header-main');
-    const navCollapse = document.querySelector('#navbarNav');
-
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 0;
-      header?.classList.toggle('header-scrolled', isScrolled);
-      navCollapse?.classList.toggle('navbar-scrolled-bg', isScrolled);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    const navbarToggler = document.querySelector('.navbar-toggler');
-    navbarToggler?.addEventListener('click', () => {
-      setTimeout(handleScroll, 300);
-    });
-
-    handleScroll();
   }
 
   ngOnDestroy(): void {
@@ -121,20 +100,13 @@ export class NavbarComponent implements AfterViewInit, OnInit, OnDestroy {
         ];
   }
 
-  // logout(): void {
-  //   this.authService.logout();
-  //   this.router.navigate(['/login']);
-  // }
-
   logout(event?: Event): void {
     if (event) {
-      event.preventDefault(); // empêche la navigation vers href
+      event.preventDefault();
     }
   
-    this.authService.logout(); // appel de ton service pour déconnecter
-    this.updateMenuItems();    // met à jour le menu
-    this.router.navigate(['/login']); // redirige vers la page de login
+    this.authService.logout();
+    this.updateMenuItems();
+    this.router.navigate(['/login']);
   }
-  
-  
 }

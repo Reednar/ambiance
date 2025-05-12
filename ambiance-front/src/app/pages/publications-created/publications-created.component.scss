@@ -26,13 +26,252 @@
   margin-right: 0.5rem;
 }
 
-/* S'assurer que la dropdown-menu prend la largeur du parent */
 .dropdown-menu {
-  width: auto !important; /* Permet à la dropdown-menu de s'ajuster à la taille du bouton */
-  min-width: 100%; /* Utilise la largeur du bouton comme base */
+  width: auto !important;
+  min-width: 100%;
 }
 
-/* Si tu veux que le bouton ait une largeur de 100% de son parent */
 #categoriesDropdown {
-  width: 100%; /* Le bouton prendra la largeur de son parent (colonne) */
+  width: 100%;
+}
+
+.black-thead {
+  background-color: black;
+}
+
+th {
+  background-color: #000;
+  color: #fff;
+}
+
+.date-filter {
+  .custom-date-input {
+    background-color: transparent;
+    border: 1px solid #fff;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    color: #fff;
+    font-size: 0.875rem;
+    width: 100%;
+    transition: border-color 0.2s ease-in-out;
+
+    &:focus {
+      border-color: #66afe9;
+      box-shadow: 0 0 0 0.2rem rgba(102, 175, 233, 0.25);
+    }
+  }
+
+  ::ng-deep .p-calendar {
+    width: 100%;
+  }
+
+  ::ng-deep .p-inputtext {
+    width: 100%;
+    height: 38px;
+    background-color: transparent;
+    color: #fff;
+    border: 1px solid #fff;
+    border-radius: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    box-shadow: none;
+  }
+
+  ::ng-deep .p-inputtext:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: #ccc;
+  }
+
+  ::ng-deep .p-calendar .p-button {
+    background: transparent;
+    border: none;
+    color: #fff;
+  }
+
+  ::ng-deep .p-calendar .p-button:enabled:hover {
+    background-color: rgba(255, 255, 255, 0.788);
+  }
+}
+
+::ng-deep .p-datepicker td {
+  background-color: rgba(255, 255, 255, 0.575);
+  border-radius: 4px;
+}
+
+::ng-deep .p-datepicker td:hover {
+  background-color: rgba(255, 255, 255, 0.74);
+}
+
+::ng-deep .p-datepicker {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  border-radius: 8px;
+  color: #fff;
+}
+
+::ng-deep .p-datepicker td {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #fff;
+}
+
+::ng-deep .p-datepicker td:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+::ng-deep .p-datepicker .p-highlight {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  color: #000 !important;
+  font-weight: bold;
+}
+
+::ng-deep .p-calendar .p-hidden-accessible {
+  display: none !important;
+}
+
+button {
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
+
+  &.btn-outline-info {
+    border-color: #17a2b8;
+    color: #17a2b8;
+
+    &:hover {
+      background-color: #17a2b8;
+      color: white;
+    }
+  }
+
+  &.btn-outline-warning {
+    border-color: #ffc107;
+    color: #ffc107;
+
+    &:hover {
+      background-color: #ffc107;
+      color: white;
+    }
+  }
+
+  &.btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+
+    &:hover {
+      background-color: #dc3545;
+      color: white;
+    }
+  }
+}
+
+.pagination {
+  .page-item {
+    border-radius: 50%;
+    margin: 0 5px;
+
+    .page-link {
+      border-radius: 50%;
+      padding: 8px 16px;
+      font-size: 14px;
+      color: #007bff;
+      border: 1px solid #ddd;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #007bff;
+        color: white;
+      }
+    }
+
+    &.disabled .page-link {
+      color: #6c757d;
+      cursor: not-allowed;
+    }
+
+    &.active .page-link {
+      background-color: #007bff;
+      color: white;
+    }
+  }
+}
+
+.table-responsive {
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+}
+
+.pagination-container {
+  background-color: #282c30;
+  padding: 10px 0;
+  border-radius: 0 0 12px 12px;
+  padding-bottom: 15px;
+}
+
+.pagination {
+  margin-bottom: 0;
+  border-radius: 10px;
+}
+
+.page-item {
+  border-radius: 5px;
+}
+
+.page-link {
+  color: #495057;
+  border: none;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.page-item.disabled .page-link {
+  color: #ced4da;
+}
+
+.page-item.active .page-link {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+}
+
+.page-item:hover .page-link {
+  background-color: #2d3136;
+  cursor: pointer;
+}
+
+html,
+body,
+.intro {
+  height: 100%;
+}
+
+.table th,
+.table td {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+thead th,
+tbody th {
+  color: #fff;
+}
+
+tbody td {
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 500;
+}
+
+.pagination-container {
+  background-color: #212529;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.pagination .page-link {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  min-width: 2rem;
 }
