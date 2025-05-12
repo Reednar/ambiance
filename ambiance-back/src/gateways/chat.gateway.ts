@@ -45,7 +45,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         client.join(`room-${discussion.idDiscussion}`);
       });
 
-      console.log(`Client connecté : ${client.id}, utilisateur : ${userId}`);
     } catch (error) {
       console.error('Erreur lors de la connexion :', error.message);
       client.disconnect();
@@ -53,7 +52,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: Socket): void {
-    console.log(`Client déconnecté : ${client.id}`);
   }
 
   @SubscribeMessage('sendMessage')
@@ -77,9 +75,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         idUtilisateur: payload.senderId,
         idDiscussion: payload.discussionId,
       });
-
-      console.log('Message sauvegardé :', savedMessage);
-
       // Diffuser le message aux membres de la room
       this.server.to(`room-${payload.discussionId}`).emit('receiveMessage', savedMessage);
     } catch (error) {

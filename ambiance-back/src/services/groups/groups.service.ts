@@ -143,4 +143,23 @@ export class GroupsService {
 
     return !!participation; // Retourne true si une participation avec le rôle d'organisateur est trouvée, sinon false
   }
+
+  // async getGroupeByPublicationId(publicationId: number) {
+  //   return this.groupeRepository.findOne({
+  //     where: {
+  //       publication: { idPublication: publicationId },
+  //     },
+  //     relations: ['participations', 'participations.idUtilisateur'],
+  //   });
+  // }
+  async getGroupeByPublicationId(publicationId: number) {
+    return this.groupeRepository
+      .createQueryBuilder('groupe')
+      .leftJoinAndSelect('groupe.participations', 'participation')
+      .leftJoinAndSelect('participation.idUtilisateur', 'user') // Assurez-vous que l'utilisateur est bien chargé
+      .where('groupe.idPublication = :publicationId', { publicationId })
+      .getOne();
+  }
+  
+  
 }
