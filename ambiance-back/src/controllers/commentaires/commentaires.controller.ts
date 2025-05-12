@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Param, UseGuards, NotFoundException, ForbiddenException,Logger } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { CommentairesService } from '../../services/commentaires/commentaires.service';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from '../../services/users/users.service'; 
@@ -91,4 +91,22 @@ export class CommentairesController {
 
     return await this.commentairesService.remove(body.id);
   }
+
+  /*@Post('getByPublication')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get all commentaires for a specific publication' })
+  @ApiResponse({ status: 200, description: 'Commentaires retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'Publication not found' })
+  async getCommentairesByPublication(@Body() body: { postId: number }) {
+    this.logger.log(`/commentaires/getByPublication called for post ID: ${body.postId}`);
+
+    // Vérifier si la publication existe
+    const publication = await this.publicationsService.findOne(body.postId);
+    if (!publication) {
+      throw new NotFoundException('Publication non trouvée');
+    }
+
+    // Récupérer les commentaires liés à la publication
+    return await this.commentairesService.findByPublication(body.postId);
+  }*/
 }

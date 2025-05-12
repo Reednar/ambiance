@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { User } from './users.entity';
 import { PublicationCategories } from './publication-categories.entity';
+import { School } from './schools.entity';
 
 @Entity('Publications')
 export class Publication {
@@ -80,8 +81,6 @@ export class Publication {
   @Column({ name: 'ImageMimeType', type: 'varchar', length: 100, nullable: true })
   imageMimeType: string;
 
-
-
   @ManyToOne(() => User, (utilisateur) => utilisateur.publications, {
     onDelete: 'CASCADE',
   })
@@ -94,7 +93,9 @@ export class Publication {
   @OneToMany(() => PublicationCategories, pc => pc.publication)
   publicationCategories: PublicationCategories[];
 
-  
   categories: any;
 
+  @ManyToOne(() => School, (ecole) => ecole.publications, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'id_ecole' }) // Colonne de la clé étrangère
+  ecole: School;
 }
