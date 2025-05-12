@@ -6,9 +6,9 @@ import { Participation } from '../../entities/participation.entity';
 import { Logger } from 'winston';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Participation])], // Définir l'entité publication ici
-  providers: [ParticipationService,Logger],
+  imports: [TypeOrmModule.forFeature([Participation])],
+  providers: [ParticipationService, Logger],
   controllers: [ParticipationController],
-  exports: [ParticipationService], // Mettre ça car si un module a besoin de ce service il pourra l'utiliser
+  exports: [ParticipationService], // C'est ici que le service est exporté
 })
 export class ParticipationModule {}

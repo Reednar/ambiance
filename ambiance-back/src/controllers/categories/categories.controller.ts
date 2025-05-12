@@ -17,6 +17,11 @@ export class CategoriesController {
     return this.categoriesService.findOne(+id);
   }
 
+  @Get('/dto/:id')
+  findOneDto(@Param('id') id: string) {
+    return this.categoriesService.findOneDto(+id);
+  }
+
   @Post()
   create(@Body() data: { nom: string }) {
     return this.categoriesService.create(data);

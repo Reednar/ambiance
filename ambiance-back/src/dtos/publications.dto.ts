@@ -17,12 +17,13 @@ export class PublicationDto {
   placeHandicape: boolean;
   rampe: boolean;
   ascenseur: boolean;
-
   image: string | null; // data:image/jpeg;base64,...
   imageMimeType: string | null;
-
-  utilisateurId: number;
-
+  idUtilisateur: number;
   categories: { id: number; nom: string }[];
   publicationCategories?: PublicationCategories[];
+  nombreParticipants: number;
+  idGroupe: number;
+  idParticipation : number;
+  paiementEffectue : boolean;
 }

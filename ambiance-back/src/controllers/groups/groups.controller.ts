@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Body, UseGuards, NotFoundException,Logger,Req } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, UseGuards, NotFoundException, Logger, Param, Req } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GroupsService } from '../../services/groups/groups.service';
 import { UsersService } from '../../services/users/users.service';

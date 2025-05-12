@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { forwardRef, Module, Logger } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GroupsService } from '../../services/groups/groups.service';
 import { GroupsController } from '../../controllers/groups/groups.controller';
@@ -15,7 +15,7 @@ import { Publication } from 'src/entities/publications.entity';
   imports: [
     TypeOrmModule.forFeature([Groupe, Participation, User,Publication]),
     UsersModule,
-    PublicationsModule,
+    forwardRef(() => PublicationsModule), // Utiliser forwardRef pour éviter la dépendance circulaire
   ],
   providers: [GroupsService,Logger,UsersService,PublicationsService],
   controllers: [GroupsController],

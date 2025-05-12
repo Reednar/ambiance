@@ -7,8 +7,6 @@ const socket = io("http://localhost:3008", {
 });
 
 socket.on("connect", () => {
-  console.log("🟢 Connecté au serveur :", socket.id);
-
   // Simule l'envoi d'un message à une discussion
   setTimeout(() => {
     socket.emit("sendMessage", {
@@ -29,13 +27,10 @@ socket.on("connect", () => {
 });
 
 socket.on("receiveMessage", (msg) => {
-  console.log("📩 Message reçu :", msg);
 });
 
 socket.on("disconnect", () => {
-  console.log("🔴 Déconnecté");
 });
 
 socket.on("errorMessage", (e) => {
-  console.log("❌ Erreur :", e);
 });

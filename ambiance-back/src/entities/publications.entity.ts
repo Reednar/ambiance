@@ -65,13 +65,13 @@ export class Publication {
   })
   typePost: 'Evenement' | 'activité';
 
-  @Column({ name: 'PlaceHandicape', type: 'boolean', nullable: true })
+  @Column({ name: 'PlaceHandicape', type: 'boolean', nullable: false })
   placeHandicape: boolean;
 
-  @Column({ name: 'Rampe', type: 'boolean', nullable: true })
+  @Column({ name: 'Rampe', type: 'boolean', nullable: false })
   rampe: boolean;
 
-  @Column({ name: 'Ascenseur', type: 'boolean', nullable: true })
+  @Column({ name: 'Ascenseur', type: 'boolean', nullable: false })
   ascenseur: boolean;
 
   @Column({ type: 'longblob', nullable: true })

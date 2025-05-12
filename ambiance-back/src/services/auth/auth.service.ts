@@ -43,7 +43,7 @@ export class AuthService {
   async refreshToken(token: string) {
     try {
       const payload = this.jwtService.verify(token);
-      const newAccessToken = this.jwtService.sign({ userId: payload.sub }, { expiresIn: '1m' });
+      const newAccessToken = this.jwtService.sign({ userId: payload.sub }, { expiresIn: '15m' });
       return { access_token: newAccessToken };
     } catch (error) {
       throw new UnauthorizedException('Refresh token invalide');
