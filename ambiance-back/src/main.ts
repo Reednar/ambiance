@@ -9,7 +9,14 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger(winstonLoggerOptions),
   });
-  app.enableCors();
+  app.enableCors({
+    origin: [
+      'https://ambiance-ensitech.me',
+      'http://localhost:4200',
+    ],
+    credentials: true, // Autorise les cookies
+  });
+
   app.setGlobalPrefix('api');
   const config = new DocumentBuilder()
     .setTitle('My API')
