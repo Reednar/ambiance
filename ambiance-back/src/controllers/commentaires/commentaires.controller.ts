@@ -92,8 +92,8 @@ export class CommentairesController {
     return await this.commentairesService.remove(body.id);
   }
 
-  /*@Post('getByPublication')
-  @UseGuards(AuthGuard('jwt'))
+  @Post('getByPublication')
+  //@UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Get all commentaires for a specific publication' })
   @ApiResponse({ status: 200, description: 'Commentaires retrieved successfully' })
   @ApiResponse({ status: 404, description: 'Publication not found' })
@@ -108,5 +108,5 @@ export class CommentairesController {
 
     // Récupérer les commentaires liés à la publication
     return await this.commentairesService.findByPublication(body.postId);
-  }*/
+  }
 }
