@@ -25,4 +25,5 @@ export class PublicationDto {
 
   categories: { id: number; nom: string }[];
   publicationCategories?: PublicationCategories[];
+  dateFin: Date;
 }

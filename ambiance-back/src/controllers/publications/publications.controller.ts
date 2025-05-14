@@ -76,6 +76,7 @@ export class PublicationsController {
       ville: string;
       titre: string;
       dateEvenement: Date;
+      dateFin?: Date;
       description: string;
       prix: number;
       lien: string;
@@ -127,6 +128,7 @@ export class PublicationsController {
       dto.ville = pub.ville;
       dto.titre = pub.titre;
       dto.dateEvenement = pub.dateEvenement;
+      dto.dateFin = pub.dateFin;
       dto.description = pub.description;
       dto.prix = pub.prix;
       dto.lien = pub.lien;
@@ -246,6 +248,7 @@ export class PublicationsController {
       titre: string;
       dateEvenement: Date;
       description: string;
+      dateFin?: Date;
       prix: number;
       lien: string;
       participantMax: number;

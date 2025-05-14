@@ -78,6 +78,9 @@ export class Publication {
   @Column({ type: 'longblob', nullable: true })
   image: Buffer;
 
+  @Column({ name: 'DateFinEvenement', type: 'datetime', nullable: true }) 
+  dateFin: Date;
+
   @Column({ name: 'ImageMimeType', type: 'varchar', length: 100, nullable: true })
   imageMimeType: string;
 

@@ -60,6 +60,7 @@ export class PublicationsService {
         'publication.prix',
         'publication.lien',
         'publication.dateCreation',
+        'publication.DateFinEvenement',
         'publication.participantMax',
         'publication.participantMin',
         'publication.typePost',
