@@ -47,4 +47,8 @@ export class School {
   // Relation avec les publications
   @OneToMany(() => Publication, (publication) => publication.ecole)
   publications: Publication[];
+
+  // Nouveau champ : date de création
+  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  date_creation: Date;
 }
