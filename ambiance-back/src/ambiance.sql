@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `Commentaires` (
   KEY `IdUtilisateur` (`IdUtilisateur`),
   CONSTRAINT `Commentaires_ibfk_1` FOREIGN KEY (`IdPublication`) REFERENCES `Publications` (`IdPublication`),
   CONSTRAINT `Commentaires_ibfk_2` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
@@ -69,6 +69,7 @@ CREATE TABLE IF NOT EXISTS `Ecoles` (
   `ville` varchar(100) NOT NULL,
   `code_postal` varchar(20) NOT NULL,
   `id_createur` int(11) NOT NULL,
+  `date_creation` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id_ecole`),
   KEY `Ecole_ibfk_1` (`id_createur`),
   CONSTRAINT `Ecole_ibfk_1` FOREIGN KEY (`id_createur`) REFERENCES `Utilisateurs` (`IdUtilisateur`)
@@ -209,7 +210,7 @@ CREATE TABLE IF NOT EXISTS `Publications` (
   KEY `Publications_ibfk_2` (`id_ecole`),
   CONSTRAINT `Publications_ibfk_1` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE,
   CONSTRAINT `Publications_ibfk_2` FOREIGN KEY (`id_ecole`) REFERENCES `Ecoles` (`id_ecole`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
