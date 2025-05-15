@@ -39,4 +39,17 @@ export class SchoolsService {
   async remove(id: number): Promise<void> {
     await this.schoolsRepository.delete(id);
   }
+
+  /**
+   * Prend le champ allowed_domain (string séparé par des ";") et retourne un tableau de domaines.
+   * @param allowedDomain Le champ allowed_domain de l'école (ex: "gmail.com;etu.univ.fr")
+   * @returns string[]
+   */
+  splitAllowedDomain(allowedDomain: string): string[] {
+    if (!allowedDomain) return [];
+    return allowedDomain
+      .split(';')
+      .map(domain => domain.trim())
+      .filter(domain => domain.length > 0);
+  }
 }
