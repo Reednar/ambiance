@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import bcrypt from 'bcrypt';
 const bcrypt = require('bcrypt');
+import * as jwt from 'jsonwebtoken';  // Pour manipuler les JWT
 
 @Injectable()
 export class AuthService {
@@ -64,5 +65,17 @@ export class AuthService {
       return true;
     }
     return false;
+  }
+
+  // Méthode pour vérifier la validité du token
+  async verifyToken(token: string): Promise<any> {
+    try {
+      // Vérifie la signature et l'expiration du token avec la clé secrète
+      const decoded = await this.jwtService.verifyAsync(token);  // Utilisation de verifyAsync pour les tokens JWT
+      return decoded;  // Retourne le payload du token si valide
+    } catch (error) {
+      // Si le token est invalide ou expiré, lance une exception
+      throw new UnauthorizedException('Token invalide ou expiré');
+    }
   }
 }

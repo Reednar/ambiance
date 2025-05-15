@@ -9,15 +9,13 @@ import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
-    // Configure Passport pour utiliser la stratégie JWT par défaut
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    // Configure le module JWT avec une clé secrète et une durée d'expiration
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'secretKey', // Idéalement stockée dans une variable d'environnement
-      signOptions: { expiresIn: '1h' }, // Le token expirera dans 1 heure
+      secret: 'secret', // La clé secrète utilisée pour signer les tokens
+      signOptions: { expiresIn: '15m' }, // Délai d'expiration par défaut pour l'access token
     }),UsersModule 
   ],
-  providers: [AuthService, JwtStrategy,Logger],
+  providers: [AuthService, JwtStrategy,Logger, JwtStrategy],
   controllers: [AuthController],
   exports: [AuthService, PassportModule],
 })
