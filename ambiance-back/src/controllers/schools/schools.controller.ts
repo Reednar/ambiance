@@ -318,4 +318,33 @@ export class SchoolsController {
     const members = await this.membresBDEService.findMembersBySchool(idEcole);
     return members;
   }
+
+  @Post('changeCreator')
+  @ApiOperation({ summary: 'Change the creator of a school' })
+  @ApiResponse({ status: 200, description: 'School creator changed successfully' })
+  @ApiResponse({ status: 404, description: 'School or user not found' })
+  async changeSchoolCreator(
+    @Body() body: { idEcole: number; newCreatorId: number },
+    @Req() req: Request,
+  ): Promise<School> {
+    const { idEcole, newCreatorId } = body;
+
+    this.logger.log(`[${req.method} ${req.url}] Changing creator for school ID: ${idEcole} to user ID: ${newCreatorId}`);
+
+    // Vérifier si l'école existe
+    const school = await this.schoolsService.findOne(idEcole);
+    if (!school) {
+      throw new NotFoundException('School not found');
+    }
+
+    // Vérifier si le nouvel utilisateur existe
+    const newCreator = await this.usersService.findOne(newCreatorId);
+    if (!newCreator) {
+      throw new NotFoundException('New creator user not found');
+    }
+
+    // Mettre à jour le créateur de l'école
+    const updatedSchool = await this.schoolsService.update(idEcole, { createur: newCreator });
+    return updatedSchool;
+  }
 }
