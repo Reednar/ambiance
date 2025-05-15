@@ -70,10 +70,11 @@ CREATE TABLE IF NOT EXISTS `Ecoles` (
   `code_postal` varchar(20) NOT NULL,
   `id_createur` int(11) NOT NULL,
   `date_creation` datetime DEFAULT current_timestamp(),
+  `allowed_domain` text DEFAULT NULL,
   PRIMARY KEY (`id_ecole`),
   KEY `Ecole_ibfk_1` (`id_createur`),
   CONSTRAINT `Ecole_ibfk_1` FOREIGN KEY (`id_createur`) REFERENCES `Utilisateurs` (`IdUtilisateur`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
@@ -205,12 +206,13 @@ CREATE TABLE IF NOT EXISTS `Publications` (
   `Image` longblob DEFAULT NULL,
   `ImageMimeType` varchar(100) DEFAULT NULL,
   `id_ecole` int(11) DEFAULT NULL,
+  `DateFinEvenement` datetime DEFAULT NULL,
   PRIMARY KEY (`IdPublication`),
   KEY `IdUtilisateur` (`IdUtilisateur`),
   KEY `Publications_ibfk_2` (`id_ecole`),
   CONSTRAINT `Publications_ibfk_1` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE,
   CONSTRAINT `Publications_ibfk_2` FOREIGN KEY (`id_ecole`) REFERENCES `Ecoles` (`id_ecole`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 

@@ -51,4 +51,8 @@ export class School {
   // Nouveau champ : date de création
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   date_creation: Date;
+
+  @Column({ type: 'text', nullable: true })
+  allowed_domain: string;
+
 }

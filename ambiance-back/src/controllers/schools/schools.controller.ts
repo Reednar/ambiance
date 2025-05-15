@@ -18,25 +18,27 @@ export class SchoolsController {
     private readonly logger: Logger,
   ) {}
 
-  /*@Post('create')
-  @ApiOperation({ summary: 'Create a new school' })
-  @ApiResponse({ status: 201, description: 'School created successfully' })
-  async createSchool(@Body() body: Partial<School>, @Req() req: Request): Promise<School> {
-    this.logger.log(`[${req.method} ${req.url}] Creating a new school`, body);
-    return await this.schoolsService.create(body);
-  }*/
-
   @Post('update')
   @ApiOperation({ summary: 'Update an existing school' })
   @ApiResponse({ status: 200, description: 'School updated successfully' })
-  async updateSchool(@Body() body: { id: number; data: Partial<School> }, @Req() req: Request): Promise<School> {
+  async updateSchool(
+    @Body() body: { id: number; data: Partial<School> & { allowed_domain?: string[] } },
+    @Req() req: Request
+  ): Promise<School> {
     const { id, data } = body;
     this.logger.log(`[${req.method} ${req.url}] Updating school with ID: ${id}`, data);
     const school = await this.schoolsService.findOne(id);
     if (!school) {
       throw new NotFoundException('School not found');
     }
-    return await this.schoolsService.update(id, data);
+
+    // Si allowed_domain est un tableau, le convertir en string
+    let updateData: Partial<School> = { ...data };
+    if (Array.isArray(data.allowed_domain)) {
+      updateData.allowed_domain = data.allowed_domain.join(';');
+    }
+
+    return await this.schoolsService.update(id, updateData);
   }
 
   @Post('delete')
@@ -55,14 +57,19 @@ export class SchoolsController {
   @Post('find')
   @ApiOperation({ summary: 'Find a school by ID' })
   @ApiResponse({ status: 200, description: 'School found successfully' })
-  async findSchool(@Body() body: { id: number }, @Req() req: Request): Promise<School> {
+  async findSchool(@Body() body: { id: number }, @Req() req: Request): Promise<any> {
     const { id } = body;
     this.logger.log(`[${req.method} ${req.url}] Finding school with ID: ${id}`);
     const school = await this.schoolsService.findOne(id);
     if (!school) {
       throw new NotFoundException('School not found');
     }
-    return school;
+    // Utiliser la fonction du service pour transformer allowed_domain en tableau
+    const allowed_domains = this.schoolsService.splitAllowedDomain((school as any).allowed_domain);
+    return {
+      ...school,
+      allowed_domains,
+    };
   }
 
   @Post('findAll')
@@ -98,10 +105,10 @@ export class SchoolsController {
     }
   })
   async createSchoolProtected(
-    @Body() body: { idUtilisateur: number; nom: string; site_web?: string; telephone?: string; description?: string; ville: string; codePostal: string; rue: string,contact_email: string; type_ecole: string },
+    @Body() body: { idUtilisateur: number; nom: string; site_web?: string; telephone?: string; description?: string; ville: string; codePostal: string; rue: string; contact_email: string; type_ecole: string; allowed_domain?: string[] },
     @Req() req: Request,
   ): Promise<School> {
-    const { idUtilisateur, ...schoolData } = body;
+    const { idUtilisateur, allowed_domain, ...schoolData } = body;
 
     this.logger.log(`[${req.method} ${req.url}] Creating a new school for user ID: ${idUtilisateur}`, schoolData);
 
@@ -111,9 +118,16 @@ export class SchoolsController {
       throw new NotFoundException('User not found');
     }
 
+    // Concaténer le tableau allowed_domain en string séparé par ";"
+    let allowedDomainString: string | undefined = undefined;
+    if (Array.isArray(allowed_domain)) {
+      allowedDomainString = allowed_domain.join(';');
+    }
+
     // Ajouter l'utilisateur comme créateur de l'école
     const newSchool = {
       ...schoolData,
+      allowed_domain: allowedDomainString,
       createur: utilisateur,
     } as Partial<School>;
 
@@ -347,4 +361,5 @@ export class SchoolsController {
     const updatedSchool = await this.schoolsService.update(idEcole, { createur: newCreator });
     return updatedSchool;
   }
+  
 }
