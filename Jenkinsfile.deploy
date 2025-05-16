@@ -15,7 +15,9 @@ node {
         string(credentialsId: 'DATABASE_USER', variable: 'DATABASE_USER'),
         string(credentialsId: 'DATABASE_PASSWORD', variable: 'DATABASE_PASSWORD'),
         string(credentialsId: 'DATABASE_NAME', variable: 'DATABASE_NAME'),
-        string(credentialsId: 'PORT', variable: 'PORT')
+        string(credentialsId: 'PORT', variable: 'PORT'),
+        string(credentialsId: 'JWT_SECRET', variable: 'JWT_SECRET'),
+        string(credentialsId: 'FRONTEND_URL', variable: 'FRONTEND_URL')
     ]) {
 
         stage('Checkout') {
@@ -89,6 +91,8 @@ DATABASE_PORT=${DATABASE_PORT}
 DATABASE_USER=${DATABASE_USER}
 DATABASE_PASSWORD=${DATABASE_PASSWORD}
 DATABASE_NAME=${DATABASE_NAME}
+JWT_SECRET=${JWT_SECRET}
+FRONTEND_URL=${FRONTEND_URL}
 EOF
             """
         }
