@@ -10,15 +10,17 @@ import { GroupsModule } from '../groups/groups.module';
 import { ParticipationModule } from '../participation/participation.module';
 import { Groupe } from 'src/entities/groups.entity';
 import { Participation } from 'src/entities/participation.entity';
+import { AuthModule } from '../auth/auth.module';  // <-- importer AuthModule
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Publication, Participation, Groupe, User, Participation]), // Assure-toi d'ajouter toutes les entités nécessaires
+    TypeOrmModule.forFeature([Publication, Participation, Groupe, User]),
     PublicationCategoriesModule,
     ParticipationModule,
-    forwardRef(() => GroupsModule), // Pour éviter la dépendance circulaire
+    forwardRef(() => GroupsModule),
+    AuthModule,  // <-- ajouter ici
   ],
-  providers: [PublicationsService, UsersService,Logger], // Mettre les services ici
+  providers: [PublicationsService, UsersService, Logger],
   controllers: [PublicationsController],
   exports: [PublicationsService, UsersService],
 })

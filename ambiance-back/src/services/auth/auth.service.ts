@@ -2,8 +2,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import bcrypt from 'bcrypt';
-const bcrypt = require('bcrypt');
+import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';  // Pour manipuler les JWT
 
 @Injectable()
@@ -35,8 +34,8 @@ export class AuthService {
     this.refreshTokens.add(refreshToken);
 
     return {
-      access_token: this.jwtService.sign(payload, { expiresIn: '15m' }),
-      refresh_token: this.jwtService.sign(payload, { expiresIn: '7d' }),
+      access_token: accessToken,
+      refresh_token: refreshToken,
       idUtilisateur: Visitor.idUtilisateur,
     };
   }

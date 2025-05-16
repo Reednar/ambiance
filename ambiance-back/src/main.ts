@@ -4,6 +4,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { WinstonModule } from 'nest-winston';
 import { winstonLoggerOptions } from './logger/logger';
 import * as cookieParser from 'cookie-parser';
+import * as dotenv from 'dotenv';
+dotenv.config(); // en tout début
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

@@ -145,15 +145,22 @@ async ngOnInit() {
         ];
   }
 
-  logout(event?: Event): void {
-    if (event) {
-      event.preventDefault();
-    }
-  
-    this.authService.logout();
-    this.updateMenuItems();
-    this.router.navigate(['/login']);
+logout(event?: Event): void {
+  if (event) {
+    event.preventDefault();
   }
+
+  this.authService.logout().subscribe({
+    next: () => {
+      this.updateMenuItems();
+      this.router.navigate(['/login']);
+    },
+    error: (err) => {
+      console.error('Erreur lors de la déconnexion:', err);
+    }
+  });
+}
+
 
   // loadPublications(): void {
   //   this.publicationsService.getAll().subscribe({

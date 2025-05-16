@@ -106,8 +106,6 @@ async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
 
 @Get('is-authenticated')
 async isAuthenticated(@Req() req: Request, @Res() res: Response) {
-          console.error('Erreur lors du rafraîchissement du token:');
-
   const accessToken = req.cookies['access_token'];
   const refreshToken = req.cookies['refresh_token'];
   const userId = req.cookies['user_id'];

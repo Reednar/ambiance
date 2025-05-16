@@ -87,7 +87,6 @@ import { DiscussionModule } from './modules/discussions/discussions.module';
     DiscussionModule,
     MessagesModule,
     ChatModule,
-    // Mettre les autres modules ici
   ],
   providers: [AppService,Logger],
 })

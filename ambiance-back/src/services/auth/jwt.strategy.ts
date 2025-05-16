@@ -1,25 +1,33 @@
-// src/auth/jwt.strategy.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Request } from 'express';
 
+function cookieExtractor(req) {
+  let token = null;
+  console.log("est")
+  if (req && req.cookies) {
+    token = req.cookies['access_token'];  // 'jwt' : le nom de ton cookie contenant le token
+  }
+  return token;
+}
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class JwtStrategy extends PassportStrategy(Strategy, 'access_token') {
+  private readonly logger = new Logger("JwtStrategy");
+
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (req: Request) => {
-          return req?.cookies?.access_token;
-        },
-      ]),
+      jwtFromRequest: cookieExtractor,
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || 'changeme', // Assure-toi qu’il correspond à ce que tu utilises dans JwtModule
+      secretOrKey: process.env.JWT_SECRET || 'testsecret',
     });
+    this.logger.log('JwtStrategy initialized');
   }
 
   async validate(payload: any) {
-    return { userId: payload.sub, email: payload.mail };
+      console.log("est")
+
+    this.logger.log(`Validating JWT payload: ${JSON.stringify(payload)}`);
+    return { userId: payload.sub, username: payload.username };
   }
 }

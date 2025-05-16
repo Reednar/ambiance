@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
@@ -12,93 +12,154 @@ export class AuthService {
   private apiUrl = `${environment.baseUrl}/auth`; // URL de ton backend
   private isConnected = new BehaviorSubject<boolean>(this.isLoggedIn());
   isConnected$ = this.isConnected.asObservable();
-  constructor(private http: HttpClient, private router: Router) { }
+
+  constructor(private http: HttpClient, private router: Router) { 
+    this.isAuthenticated();
+  }
 
   isLoggedIn(): boolean {
-    // const token = localStorage.getItem('access_token');
-    const token = sessionStorage.getItem('access_token');
+    const token = this.getToken();
     if (token) {
-      const parts = token.split('.'); // Diviser le token par des points
+      const parts = token.split('.');
       if (parts.length !== 3) {
-        return false; // Si le token n'a pas 3 parties, il est invalide
+        return false;  // Token invalide
       }
 
       try {
         const decodedToken: any = jwtDecode(token);
         const expirationDate = decodedToken.exp * 1000; // Convertir en millisecondes
-        return expirationDate > Date.now();
+        return expirationDate > Date.now();  // Vérifie si le token est expiré
       } catch (error) {
-        return false; // Si le décodage échoue, le token est invalide
+        return false;  // Token invalide
       }
     }
-
     return false;
   }
 
+login(credentials: { mail: string; password: string }): Observable<{ success: boolean; userId: string }> {
+  const { mail, password } = credentials;
+  const user = { mail, password };
 
-  login(credentials: { mail: string; password: string }): Observable<any> {
-    const { mail, password } = credentials;
-    const user = { mail: mail, password };
+  return this.http.post<{ success: boolean; userId: string }>(
+    `${this.apiUrl}/login`,
+    user,
+    { withCredentials: true }  // Assurez-vous que cette option est active pour envoyer les cookies
+  ).pipe(
+    tap(response => {
+      // Si la connexion est réussie
+      if (response.success) {
+        // Stocker l'ID utilisateur dans le sessionStorage
+        sessionStorage.setItem('id_utilisateur', response.userId);
 
-    return this.http.post<{ access_token: string; refresh_token: string; idUtilisateur: string }>(`${this.apiUrl}/login`, user).pipe(
-      tap(response => {
-        this.saveToken(response.access_token, response.refresh_token);
-        sessionStorage.setItem('id_utilisateur', response.idUtilisateur);
+        // Mettre à jour l'état de la connexion
         this.isConnected.next(true);
-      })
-    );
-  }
+      }
+    }),
+    catchError(error => {
+      console.error('Erreur de connexion:', error);
+      return throwError(() => new Error('Erreur de connexion'));
+    })
+  );
+}
 
-  saveToken(accessToken: string, refreshToken: string): void {
-    sessionStorage.setItem('access_token', accessToken);
-    sessionStorage.setItem('refresh_token', refreshToken);
-  }
+
+
 
   getToken(): string | null {
-    const token = sessionStorage.getItem('access_token');
-    return token;
+    // Récupère le token depuis les cookies (géré par le backend)
+    const token = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('access_token='))
+      ?.split('=')[1];
+    return token || null;
   }
 
-  logout(): void {
-    this.removeToken();
-    sessionStorage.removeItem('id_utilisateur');
-    this.isConnected.next(false);
-    this.router.navigate(['/login']);
-  }
+  // logout(): void {
+  //   this.removeToken();
+  //   document.cookie = 'access_token=; Max-Age=0; Path=/';
+  //   document.cookie = 'refresh_token=; Max-Age=0; Path=/';
+  //   this.isConnected.next(false);
+  //   this.router.navigate(['/login']);
+  // }
 
-  getRefreshToken(): string | null {
-    return sessionStorage.getItem('refresh_token');
-  }
+  logout(): Observable<void> {
+  return this.http.post<void>(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
+    tap(() => {
+      this.isConnected.next(false);
+      this.router.navigate(['/login']);
+    }),
+    catchError(error => {
+      console.error('Erreur lors de la déconnexion:', error);
+      return throwError(() => new Error('Erreur de déconnexion'));
+    })
+  );
+}
 
 
   removeToken(): void {
-    sessionStorage.removeItem('access_token');
-    sessionStorage.removeItem('refresh_token');
+    document.cookie = 'access_token=; Max-Age=0; path=/'; // Effacer le cookie
+    document.cookie = 'refresh_token=; Max-Age=0; path=/'; // Effacer le cookie
   }
 
-  isTokenExpired(): boolean {
-    const token = this.getToken();
-    if (!token) return true;
+refreshToken(): Observable<{ access_token: string }> {
+  const refreshToken = this.getRefreshToken();
 
-    const decodedToken: any = jwtDecode(token);
-    const currentTime = Math.floor(Date.now() / 1000); // Temps actuel en secondes
-    return decodedToken.exp < currentTime; // True si le token est expiré
+  // Vérifie si le refresh token existe avant d'envoyer la requête
+  if (!refreshToken) {
+    return throwError(() => new Error('No refresh token available'));
   }
 
-  refreshToken(): Observable<{ access_token: string }> {
-    const refreshToken = this.getRefreshToken();
-    return this.http.post<{ access_token: string }>(`${environment.baseUrl}/auth/refresh`, { refreshToken })
+  return this.http.post<{ access_token: string }>(`${environment.baseUrl}/auth/refresh`, { refreshToken }).pipe(
+    tap(response => {
+      const newAccessToken = response.access_token;
+      sessionStorage.setItem('access_token', newAccessToken);
+    }),
+    catchError(error => {
+      console.error('Error during refresh token request', error);
+      return throwError(() => new Error('Error during refresh token request'));
+    })
+  );
+}
+
+
+  getRefreshToken(): string | null {
+    const token = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('refresh_token='))
+      ?.split('=')[1];
+    return token || null;
+  }
+  
+  // isAuthenticated(): Observable<boolean> {
+  //     return this.http.get<boolean>(`${this.apiUrl}/is-authenticated`, { withCredentials: true });
+  //   }
+
+isAuthenticated(): Observable<boolean> {
+    return this.http.get<{ authenticated: boolean; userId: string }>(`${this.apiUrl}/is-authenticated`, { withCredentials: true })
       .pipe(
-        tap(response => {
-          const newAccessToken = response.access_token;
-          sessionStorage.setItem('access_token', newAccessToken);
+        map((response) => {
+          
+          if (response.authenticated) {
+            // L'utilisateur est connecté, on sauvegarde son ID dans sessionStorage
+            sessionStorage.setItem('id_utilisateur', response.userId);
+            this.isConnected.next(true);
+          } else {
+            // L'utilisateur n'est pas connecté, on nettoie sessionStorage
+            sessionStorage.removeItem('id_utilisateur');
+            this.isConnected.next(false);
+          }
+
+          // Ne retourner que la valeur de 'authenticated' (boolean)
+          return response.authenticated;
         }),
-        catchError(error => {
-          console.error('Erreur lors du rafraîchissement du token', error);
-          return throwError(() => new Error('Erreur lors du rafraîchissement du token'));
+        catchError((error) => {
+          console.error('Erreur lors de la vérification de l\'authentification:', error);
+
+          // En cas d'erreur, on considère l'utilisateur comme non connecté
+          sessionStorage.removeItem('id_utilisateur');
+          this.isConnected.next(false);
+          return of(false); // Retourne false en cas d'erreur
         })
       );
-
   }
-
 }

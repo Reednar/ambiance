@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit {
         },
         (error) => {
           // Gère les erreurs ici
+          console.error('Erreur de connexion:', error);
         }
       );
     }

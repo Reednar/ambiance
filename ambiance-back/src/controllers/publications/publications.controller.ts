@@ -7,6 +7,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { PublicationDto } from 'src/dtos/publications.dto';
 import { PublicationCategoriesService } from 'src/services/publication-categories/publication-categories.service';
 import { GroupsService } from 'src/services/groups/groups.service';
+import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
 
 @ApiTags('publications')
 @Controller('publications')
@@ -228,9 +229,8 @@ async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
     return dto;
 }
 
-
+@UseGuards(JwtAuthGuard)
 @Post("create")
-@UseGuards(AuthGuard('jwt'))
 @ApiOperation({ summary: 'Create a publication' })
 @ApiResponse({
   status: 201,
