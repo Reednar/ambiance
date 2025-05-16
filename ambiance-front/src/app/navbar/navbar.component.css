@@ -27,3 +27,66 @@
   right: 0;
   left: auto;
 }
+
+
+
+
+
+
+
+
+
+/* Conteneur de la barre de recherche */
+.search-bar-container {
+  position: relative; /* Pour positionner le dropdown en dessous */
+  width: 100%; /* Prendre toute la largeur disponible */
+}
+
+/* Style pour le champ de recherche */
+.search-bar-container input.form-control {
+  width: 100%; /* L'input prendra toute la largeur de son parent */
+}
+
+/* Conteneur des résultats de recherche */
+.search-results {
+  position: absolute;
+  top: 100%; /* Positionné juste en dessous de l'input */
+  left: 0;
+  width: 100%; /* Même largeur que l'input */
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère pour donner du relief */
+  max-height: 300px;
+  overflow-y: auto; /* Permet de défiler si trop de résultats */
+  margin-top: 5px; /* Un petit espace entre l'input et les résultats */
+  z-index: 1000; /* Pour s'assurer que le dropdown est au-dessus des autres éléments */
+  border-radius: 4px; /* Coins légèrement arrondis */
+}
+
+/* Liste des résultats de recherche */
+.search-results ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Style pour chaque élément de la liste */
+.search-result-item {
+  padding: 10px;
+  cursor: pointer;
+  background-color: rgb(0, 0, 0);
+  border-bottom: 1px solid #f0f0f0; /* Ligne de séparation entre les éléments */
+  color: #f0f0f0;
+}
+
+.search-result-item:hover {
+  background-color: #131111c5; /* Change le fond quand on survole un élément */
+}
+
+.search-result-item a {
+  text-decoration: none;
+  color: #ffffff; /* Couleur du texte */
+}
+
+.search-result-item strong {
+  font-weight: bold;
+}

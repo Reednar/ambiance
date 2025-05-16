@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { Table } from 'primeng/table';
 import { Categorie, Publication } from '../../entity/publications';
 import { PublicationsService } from '../../service/publications.service';
@@ -13,7 +13,7 @@ import { MessageService } from 'primeng/api';
   providers: [MessageService]
 })
 
-export class PublicationShowComponent implements OnInit {
+export class PublicationShowComponent implements OnInit, OnDestroy {
   @ViewChild('dt1', { static: false }) dt1: any;
   isUserRegistered: boolean = false;
   publications: Publication[] = [];
@@ -27,6 +27,7 @@ export class PublicationShowComponent implements OnInit {
   filteredPublications: any[] = [];
   isLoading = true;
   fr: any;
+  routeSub: any;
 
   constructor(
     private messageService: MessageService,
@@ -35,12 +36,14 @@ export class PublicationShowComponent implements OnInit {
     private route: ActivatedRoute,
   ) { }
 
-  ngOnInit(): void {
-    this.loadCategories();
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (id) {
-      this.loadOnePublication(id);
-    }
+   ngOnInit() {
+    // Abonne-toi aux changements de l'ID de la route pour chaque navigation
+    this.routeSub = this.route.paramMap.subscribe(params => {
+      const id = Number(params.get('id'));
+      if (id) {
+        this.loadOnePublication(id);
+      }
+    });
 
     this.route.queryParams.subscribe(params => {
       if (params['messageShown'] === 'true') {
@@ -56,6 +59,12 @@ export class PublicationShowComponent implements OnInit {
     });
   }
 
+   ngOnDestroy() {
+    // Libère l'abonnement pour éviter les fuites de mémoire
+    if (this.routeSub) {
+      this.routeSub.unsubscribe();
+    }
+  }
 
   joinEvent() {
     // Logique pour inscrire l'utilisateur à l'événement

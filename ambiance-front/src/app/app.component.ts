@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
-
+import { AuthService } from './service/authent.service';
+import { catchError, map } from 'rxjs';
 interface Claim {
   claim: string;
   value: unknown;
@@ -18,10 +19,16 @@ export class AppComponent {
   role: string | undefined;
   roles: any;
   perimeter : any;
-  constructor(private primengConfig: PrimeNGConfig) {}
+  constructor(private primengConfig: PrimeNGConfig, private authService: AuthService) {}
 
-  ngOnInit() {
-    this.primengConfig.setTranslation({
+ngOnInit() {
+  this.authService.isAuthenticated().subscribe(authenticated => {
+    if (authenticated) {
+    } else {
+    }
+  });
+
+      this.primengConfig.setTranslation({
       dayNames: ["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"],
       dayNamesShort: ["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"],
       dayNamesMin: ["Di","Lu","Ma","Me","Je","Ve","Sa"],

@@ -19,9 +19,12 @@ export class PublicationsService {
     return this.http.get(`${this.url}/${id}`);
   }
 
-  create(data: any): Observable<any> {
-    return this.http.post(`${this.url}/create`, data);
-  }
+create(data: any): Observable<any> {
+  return this.http.post(`${this.url}/create`, data, {
+    withCredentials: true,
+  });
+}
+
 
   update(data: any): Observable<any> {
     return this.http.post(`${this.url}/update`, data);

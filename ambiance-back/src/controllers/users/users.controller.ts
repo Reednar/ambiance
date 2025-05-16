@@ -28,7 +28,7 @@ export class UsersController {
   ) {}
 
 
-  @Post('findAll')
+  @Post("findAll")
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Return all Users if the requester is an admin' })
   @ApiResponse({

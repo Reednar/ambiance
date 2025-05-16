@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../service/authent.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -10,35 +10,40 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
+  redirectTo: string = '/dashboard'; // Valeur par défaut si aucun redirect précisé
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService, // Injecte AuthService
+    private authService: AuthService,
     private router: Router,
+    private route: ActivatedRoute // pour lire les query params
   ) {}
 
   ngOnInit(): void {
+    // Récupère l'URL où l'utilisateur voulait aller
+    this.redirectTo = this.route.snapshot.queryParamMap.get('redirectTo') || '/';
+
     this.loginForm = this.fb.group({
       mail: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
 
-    // Vérifie si l'utilisateur est déjà connecté au rafraîchissement de la page
     if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/']); // Redirige l'utilisateur vers le tableau de bord s'il est déjà connecté
+      this.router.navigate([this.redirectTo]);
     }
   }
 
   onLoginSubmit(): void {
     if (this.loginForm.valid) {
       const { mail, password } = this.loginForm.value;
-      // Appel au service d'authentification pour se connecter
+
       this.authService.login({ mail, password }).subscribe(
         (response) => {
-          this.router.navigate(['/']); 
-          //window.location.reload();
+          this.router.navigate([this.redirectTo]);
         },
         (error) => {
+          // Gère les erreurs ici
+          console.error('Erreur de connexion:', error);
         }
       );
     }

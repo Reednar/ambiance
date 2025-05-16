@@ -10,12 +10,13 @@ import { environment } from '../../environments/environment';
 
 export class UsersService {
     private url = `${environment.baseUrl}/users`;
+    private userId = sessionStorage.getItem('id_utilisateur');
 
     constructor(private http: HttpClient) {}
   
     // Récupérer tous les utilisateurs
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.url);
+    return this.http.post<User[]>(this.url + "/findAll", this.userId);
   }
 
   // Récupérer un utilisateur par ID

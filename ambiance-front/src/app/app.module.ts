@@ -6,7 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './pages/home/home.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { AuthInterceptor } from '../app/service/auth.interceptor';
+// import { AuthInterceptor } from '../app/service/auth.interceptor';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -96,11 +96,11 @@ registerLocaleData(localeFr);
   ],
   bootstrap: [AppComponent],
   providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true,
-    },
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   // useClass: AuthInterceptor,
+    //   multi: true,
+    // },
     {
       provide: LOCALE_ID,
       useValue: 'fr-FR',

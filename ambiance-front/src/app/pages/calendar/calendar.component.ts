@@ -50,12 +50,10 @@ export class CalendarComponent implements OnInit {
 
   chargerPublications(): void {
     const maintenant = new Date();
-    console.log('Maintenant:', maintenant);
   
     // Convertir les dates en Date
     this.publicationsPassees = this.publications.filter(pub => {
       const pubDate = new Date(pub.dateEvenement);
-      console.log('Comparaison avec :', pubDate);
       return pubDate < maintenant;
     });
   
@@ -63,9 +61,6 @@ export class CalendarComponent implements OnInit {
       const pubDate = new Date(pub.dateEvenement);
       return pubDate >= maintenant;
     });
-  
-    console.log('Publications passées:', this.publicationsPassees.length);
-    console.log('Publications à venir:', this.publicationsAVenir.length);
   }
   
   mapPublicationsToEvents() {
