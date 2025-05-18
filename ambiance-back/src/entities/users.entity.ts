@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColum
 import { School } from './schools.entity';
 import { Publication } from './publications.entity';
 import { MembresBDE } from './membresBDE.entity';
+import { Article } from './articles.entity';
 
 @Entity('Utilisateurs')
 export class User {
@@ -60,4 +61,7 @@ export class User {
   // Relation avec MembresBDE
   @OneToMany(() => MembresBDE, (membreBDE) => membreBDE.utilisateur)
   membresBDE: MembresBDE[];
+
+  @OneToMany(() => Article, article => article.utilisateur)
+  articles: Article[];
 }
