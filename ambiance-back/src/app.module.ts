@@ -42,6 +42,12 @@ import { SchoolsController } from './controllers/schools/schools.controller';
 import { School } from './entities/schools.entity';
 import { MembresBDE } from './entities/membresBDE.entity';
 import { MembresBDEService } from './services/membresBDE/membresBDE.service';
+import { Tag } from './entities/tag.entity';
+import { Article } from './entities/articles.entity'; 
+import { ArticlesModule } from './modules/articles/articles.modules';
+import { ArticlesController } from './controllers/articles/articles.controllers';
+import { ArticleService } from './services/articles/articles.services';
+
 
 @Module({
   controllers: [
@@ -79,7 +85,9 @@ import { MembresBDEService } from './services/membresBDE/membresBDE.service';
         Discussion,
         Message,
         School,
-        MembresBDE,      
+        MembresBDE,
+        Tag,
+        Article,      
       ], // Ajouter les entités ici
       synchronize: false, // Permet de manipuler les entités de la base de données avec les fichiers entity.ts en temps réel
     }),
@@ -96,8 +104,9 @@ import { MembresBDEService } from './services/membresBDE/membresBDE.service';
     MessagesModule,
     ChatModule,
     SchoolsModule,
+    ArticlesModule,
     // Mettre les autres modules ici
   ],
-  providers: [AppService,Logger],
+  providers: [AppService, Logger],
 })
 export class AppModule {}
