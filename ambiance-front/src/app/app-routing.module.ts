@@ -12,6 +12,7 @@ import { PublicationsCreateFormComponent } from './pages/publications-create-for
 import { ProfileComponent } from './pages/user/profile/profile.component';
 import { PublicationShowComponent } from './pages/publication-show/publication-show.component';
 import { AuthGuard } from './service/auth.guard';
+import { EcoleComponent } from './pages/ecole/ecole.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -24,7 +25,9 @@ const routes: Routes = [
   { path: 'dashboards', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'moderation', component: ModerationComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
-  { path: 'publication-show/:id', component: PublicationShowComponent }
+  { path: 'publication-show/:id', component: PublicationShowComponent },
+  { path: 'ecole', component: EcoleComponent }
+
 ];
 
 @NgModule({

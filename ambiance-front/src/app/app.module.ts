@@ -45,6 +45,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 
 // Import de la locale française
 import localeFr from '@angular/common/locales/fr';
+import { EcoleComponent } from './pages/ecole/ecole.component';
 
 // Enregistrer la locale française
 registerLocaleData(localeFr);
@@ -64,7 +65,8 @@ registerLocaleData(localeFr);
     PublicationsComponent,
     PublicationsCreateFormComponent,
     ProfileComponent,
-    PublicationShowComponent
+    PublicationShowComponent,
+    EcoleComponent
   ],
   imports: [
     BrowserModule,
