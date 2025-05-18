@@ -248,6 +248,49 @@ CREATE TABLE IF NOT EXISTS `Utilisateurs` (
   CONSTRAINT `Utilisateurs_ibfk_1` FOREIGN KEY (`id_ecole`) REFERENCES `Ecoles` (`id_ecole`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE IF NOT EXISTS `Articles` (
+  `IdArticle` INT(11) NOT NULL AUTO_INCREMENT,
+  `Titre` VARCHAR(255) NOT NULL,
+  `Contenu` TEXT NOT NULL,
+  `DateCreation` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `IdAuteur` INT(11) NOT NULL,
+  `id_ecole` INT(11) DEFAULT NULL,
+  PRIMARY KEY (`IdArticle`),
+  KEY `IdAuteur` (`IdAuteur`),
+  KEY `id_ecole` (`id_ecole`),
+  CONSTRAINT `Articles_fk_utilisateur` FOREIGN KEY (`IdAuteur`) REFERENCES `Utilisateurs`(`IdUtilisateur`) ON DELETE CASCADE,
+  CONSTRAINT `Articles_fk_ecole` FOREIGN KEY (`id_ecole`) REFERENCES `Ecoles`(`id_ecole`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `Commentaires_Blog` (
+  `IdCommentaireBlog` INT(11) NOT NULL AUTO_INCREMENT,
+  `Contenu` TEXT NOT NULL,
+  `DateCommentaire` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `IdArticle` INT(11) NOT NULL,
+  `IdUtilisateur` INT(11) NOT NULL,
+  PRIMARY KEY (`IdCommentaireBlog`),
+  KEY `IdArticle` (`IdArticle`),
+  KEY `IdUtilisateur` (`IdUtilisateur`),
+  CONSTRAINT `CommentairesBlog_fk_article` FOREIGN KEY (`IdArticle`) REFERENCES `Articles`(`IdArticle`) ON DELETE CASCADE,
+  CONSTRAINT `CommentairesBlog_fk_utilisateur` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs`(`IdUtilisateur`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `Tags` (
+  `IdTag` INT NOT NULL AUTO_INCREMENT,
+  `Nom` VARCHAR(100) NOT NULL UNIQUE,
+  PRIMARY KEY (`IdTag`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE IF NOT EXISTS `Article_Tags` (
+  `IdArticle` INT NOT NULL,
+  `IdTag` INT NOT NULL,
+  PRIMARY KEY (`IdArticle`, `IdTag`),
+  FOREIGN KEY (`IdArticle`) REFERENCES `Articles` (`IdArticle`) ON DELETE CASCADE,
+  FOREIGN KEY (`IdTag`) REFERENCES `Tags` (`IdTag`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 -- Les données exportées n'étaient pas sélectionnées.
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
