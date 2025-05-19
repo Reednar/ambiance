@@ -98,11 +98,6 @@ registerLocaleData(localeFr);
   ],
   bootstrap: [AppComponent],
   providers: [
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   // useClass: AuthInterceptor,
-    //   multi: true,
-    // },
     {
       provide: LOCALE_ID,
       useValue: 'fr-FR',

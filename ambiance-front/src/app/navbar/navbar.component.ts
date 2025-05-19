@@ -23,6 +23,7 @@ import { User } from '../entity/users';
 import { Ecole } from '../entity/ecole';
 import { UsersService } from '../service/users.service';
 import { SearchEntry, SearchService } from '../service/search.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-navbar',
@@ -52,7 +53,8 @@ export class NavbarComponent implements AfterViewInit, OnInit, OnDestroy {
     private publicationsService: PublicationsService,
     private usersService: UsersService,
     private searchService: SearchService,
-    private eRef: ElementRef
+    private eRef: ElementRef,
+    private messageService: MessageService
 
   ) {}
 
@@ -145,21 +147,33 @@ async ngOnInit() {
         ];
   }
 
-logout(event?: Event): void {
-  if (event) {
-    event.preventDefault();
-  }
-
-  this.authService.logout().subscribe({
-    next: () => {
-      this.updateMenuItems();
-      this.router.navigate(['/login']);
-    },
-    error: (err) => {
-      console.error('Erreur lors de la déconnexion:', err);
+  logout(event?: Event): void {
+    if (event) {
+      event.preventDefault();
     }
-  });
-}
+  
+    this.authService.logout().subscribe({
+      next: () => {
+        this.updateMenuItems();
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: 'Succès', 
+          detail: 'Déconnexion réussie !', 
+          life: 3000 
+        });
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        console.error('Erreur lors de la déconnexion:', err);
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Erreur', 
+          detail: 'La déconnexion a échoué.', 
+          life: 3000 
+        });
+      }
+    });
+  }
 
 
   // loadPublications(): void {

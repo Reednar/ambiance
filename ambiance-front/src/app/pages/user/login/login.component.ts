@@ -2,21 +2,24 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../service/authent.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
-  redirectTo: string = '/dashboard'; // Valeur par défaut si aucun redirect précisé
+  redirectTo: string = '/';
+  loginFailed: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute // pour lire les query params
+    private route: ActivatedRoute,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -39,11 +42,13 @@ export class LoginComponent implements OnInit {
 
       this.authService.login({ mail, password }).subscribe(
         (response) => {
+          this.loginFailed = false;
+          this.messageService.add({ severity: 'success', summary: 'Connexion réussie', detail: 'Bienvenue !' });
           this.router.navigate([this.redirectTo]);
         },
         (error) => {
-          // Gère les erreurs ici
-          console.error('Erreur de connexion:', error);
+          this.loginFailed = true;
+          this.messageService.add({ severity: 'error', summary: 'Échec de la connexion', detail: 'Email ou mot de passe incorrect.' });
         }
       );
     }
