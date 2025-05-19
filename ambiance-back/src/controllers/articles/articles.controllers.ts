@@ -121,6 +121,7 @@ export class ArticlesController {
       contenu: string;
       idAuteur: number;
       id_ecole?: number;
+      Image?: string; // Ajout du champ `Image`
     }
   ): Promise<Article> {
     this.logger.log(`Creating article with title: ${body.Titre} by author: ${body.idAuteur}`);
@@ -130,11 +131,16 @@ export class ArticlesController {
       throw new Error('Auteur not found');
     }
 
+    if (body.Image && !body.Image.startsWith('http')) {
+      throw new Error('Invalid image URL');
+    }
+
     const articleData: Partial<Article> = {
       Titre: body.Titre,
       Contenu: body.contenu,
       utilisateur: utilisateur,
       DateCreation: new Date(),
+      Image: body.Image, // Ajout de l'image
       ...(body.id_ecole ? { ecole: { id: body.id_ecole } } : {}),
     };
 
@@ -159,5 +165,22 @@ export class ArticlesController {
       utilisateur: article.utilisateur ? `${article.utilisateur.prenom} ${article.utilisateur.nom}` : null,
       tags: article.tags ? article.tags.map(tag => tag.Nom) : [],
     };
+  }
+
+  @Post('update')
+  async updateArticle(
+    @Body() body: {
+      id: number;
+      Titre?: string;
+      contenu?: string;
+      Image?: string; // Ajout du champ `Image`
+    }
+  ): Promise<Article> {
+    this.logger.log(`Updating article with id: ${body.id}`);
+    return this.articleService.update(body.id, {
+      Titre: body.Titre,
+      Contenu: body.contenu,
+      Image: body.Image, // Ajout de l'image
+    });
   }
 }

@@ -19,7 +19,7 @@ export class ArticleService {
   ) {}
 
   async create(data: any): Promise<Article> {
-    const { Titre, Contenu, tags: tagEntities, utilisateur } = data;
+    const { Titre, Contenu, tags: tagEntities, utilisateur, Image } = data; // Ajout de `Image`
 
     let tags = [];
     if (data.tagNames) {
@@ -37,7 +37,7 @@ export class ArticleService {
       tags = tagEntities;
     }
 
-    const article = this.articleRepo.create({ Titre, Contenu, tags, utilisateur });
+    const article = this.articleRepo.create({ Titre, Contenu, tags, utilisateur, Image }); // Ajout de `Image`
     return this.articleRepo.save(article);
   }
 
@@ -64,7 +64,8 @@ export class ArticleService {
   }
 
   async update(id: number, data: Partial<Article>): Promise<Article> {
-    await this.articleRepo.update(id, data);
+    const { Image, ...otherData } = data; // Gestion de `Image`
+    await this.articleRepo.update(id, { ...otherData, ...(Image ? { Image } : {}) }); // Mise à jour conditionnelle
     return this.findOne(id, ['tags', 'utilisateur']);
   }
 
