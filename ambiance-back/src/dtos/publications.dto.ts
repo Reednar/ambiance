@@ -26,4 +26,5 @@ export class PublicationDto {
   idGroupe: number;
   idParticipation : number;
   paiementEffectue : boolean;
+  dateFin: Date;
 }

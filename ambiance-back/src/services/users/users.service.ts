@@ -44,4 +44,11 @@ export class UsersService {
 
     return user.role === 'Administrateur'; // Assurez-vous que le champ `role` correspond aux valeurs définies dans l'entité User
   }
+  
+  async findUsersBySchool(idEcole: number): Promise<User[]> {
+    return await this.userRepository.find({
+      where: { ecole: { id: idEcole } },
+      relations: ['ecole'], // Charger la relation avec l'école
+    });
+  }
 }

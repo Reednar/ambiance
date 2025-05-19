@@ -37,6 +37,17 @@ import { ChatGateway } from './gateways/chat.gateway';
 import { ChatModule } from './modules/chat/chat.module';
 import { MessageService } from './services/messages/messages.service';
 import { DiscussionModule } from './modules/discussions/discussions.module';
+import { SchoolsModule } from './modules/schools/schools.module';
+import { SchoolsController } from './controllers/schools/schools.controller';
+import { School } from './entities/schools.entity';
+import { MembresBDE } from './entities/membresBDE.entity';
+import { MembresBDEService } from './services/membresBDE/membresBDE.service';
+import { Tag } from './entities/tag.entity';
+import { Article } from './entities/articles.entity'; 
+import { ArticlesModule } from './modules/articles/articles.modules';
+import { ArticlesController } from './controllers/articles/articles.controllers';
+import { ArticleService } from './services/articles/articles.services';
+
 
 @Module({
   controllers: [
@@ -47,6 +58,7 @@ import { DiscussionModule } from './modules/discussions/discussions.module';
     CategoriesController,
     PublicationCategoriesController,
     DiscussionController,
+    SchoolsController,
   ],
   imports: [
     ConfigModule.forRoot({
@@ -71,7 +83,11 @@ import { DiscussionModule } from './modules/discussions/discussions.module';
         Participation,
         Paiement,
         Discussion,
-        Message,      
+        Message,
+        School,
+        MembresBDE,
+        Tag,
+        Article,      
       ], // Ajouter les entités ici
       synchronize: false, // Permet de manipuler les entités de la base de données avec les fichiers entity.ts en temps réel
     }),
@@ -87,7 +103,10 @@ import { DiscussionModule } from './modules/discussions/discussions.module';
     DiscussionModule,
     MessagesModule,
     ChatModule,
+    SchoolsModule,
+    ArticlesModule,
+    // Mettre les autres modules ici
   ],
-  providers: [AppService,Logger],
+  providers: [AppService, Logger],
 })
 export class AppModule {}

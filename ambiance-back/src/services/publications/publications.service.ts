@@ -93,11 +93,19 @@ export class PublicationsService {
         'publication.prix',
         'publication.lien',
         'publication.dateCreation',
+        'publication.DateFinEvenement',
         'publication.participantMax',
         'publication.participantMin',
         'publication.typePost',
       ])
       .getRawMany(); // Récupérer les résultats
     return d
+  }
+
+  async findBySchool(idEcole: number): Promise<Publication[]> {
+    return await this.publicationRepository.find({
+      where: { ecole: { id: idEcole } }, // Utiliser 'id' pour correspondre à la clé primaire de l'entité School
+      relations: ['ecole'], // Charger la relation avec l'école
+    });
   }
 }

@@ -31,4 +31,13 @@ export class CommentairesService {
   async remove(id: number): Promise<void> {
     await this.commentairesRepository.delete(id);
   }
+
+  async findByPublication(postId: number): Promise<Commentaire[]> {
+    return await this.commentairesRepository
+      .createQueryBuilder('commentaire')
+      .leftJoinAndSelect('commentaire.idUtilisateur', 'utilisateur') // Charger les informations sur l'utilisateur
+      //.leftJoinAndSelect('commentaire.idPublication', 'publication') // Charger les informations sur la publication
+      .where('commentaire.idPublication = :postId', { postId }) // Filtrer par l'ID de la publication
+      .getMany();
+  }
 }

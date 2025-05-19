@@ -1,5 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import { School } from './schools.entity';
 import { Publication } from './publications.entity';
+import { MembresBDE } from './membresBDE.entity';
+import { Article } from './articles.entity';
 
 @Entity('Utilisateurs')
 export class User {
@@ -46,7 +49,19 @@ export class User {
   @Column({ name: 'Telephone', type: 'varchar', length: 50, nullable: true })
   telephone: string;
 
+  // Relation avec les écoles (un utilisateur peut être rattaché à une école)
+  @ManyToOne(() => School, (school) => school.id, { nullable: true })
+  @JoinColumn({ name: 'id_ecole' })
+  ecole: School;
+
   // Relation avec les publications
   @OneToMany(() => Publication, (publication) => publication.utilisateur)
   publications: Publication[];
+
+  // Relation avec MembresBDE
+  @OneToMany(() => MembresBDE, (membreBDE) => membreBDE.utilisateur)
+  membresBDE: MembresBDE[];
+
+  @OneToMany(() => Article, article => article.utilisateur)
+  articles: Article[];
 }
