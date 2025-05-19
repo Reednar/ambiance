@@ -3,7 +3,7 @@ import { User } from './users.entity';
 import { Groupe } from './groups.entity';
 
 @Entity('Moderations') // Correspond au nom de la table
-export class ModerationInteragis {
+export class Moderations {
   @PrimaryGeneratedColumn({ name: 'idModeration' })
   idModeration: number;
 
