@@ -20,6 +20,9 @@ export class Article {
   @JoinColumn({ name: 'IdAuteur' })
   utilisateur: User;
 
+  @Column({ name: 'Image', type: 'varchar', length: 255, nullable: true })
+  Image: string;
+
   @ManyToMany(() => Tag, tag => tag.articles, { cascade: true })
   @JoinTable({
     name: 'Article_Tags',
