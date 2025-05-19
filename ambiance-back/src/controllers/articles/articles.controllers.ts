@@ -1,12 +1,8 @@
-import { Controller, Get, Post, Body, Param, Delete, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Logger, UseGuards } from '@nestjs/common';
 import { ArticleService } from '../../services/articles/articles.services';
 import { Article } from '../../entities/articles.entity';
-import { TagService } from '../../services/tags/tags.service'; // Ajoute l'import
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from '../../entities/users.entity';
-
+import { TagService } from '../../services/tags/tags.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('articles')
 export class ArticlesController {
@@ -18,6 +14,7 @@ export class ArticlesController {
   ) {}
 
   @Post()
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   create(@Body() data: any): Promise<Article> {
     this.logger.log('Creating article', data);
     return this.articleService.create(data);
@@ -30,12 +27,12 @@ export class ArticlesController {
   }
 
   @Post('delete')
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   async remove(@Body() body: { id: number }): Promise<void> {
     this.logger.log(`Deleting article with id: ${body.id}`);
     return this.articleService.remove(body.id);
   }
 
-  
   @Post('list')
   async getArticlesWithAuthorAndTags(): Promise<
     { id: number; DateCreation: Date; utilisateur: string; tags: string[] }[]
@@ -61,6 +58,7 @@ export class ArticlesController {
   }
 
   @Post('add-tags')
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   async addTagsToArticle(
     @Body() body: { articleId: number; tags: string[] }
   ): Promise<{ message: string; article: Article }> {
@@ -90,6 +88,7 @@ export class ArticlesController {
   }
 
   @Post('remove-tags')
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   async removeTagsFromArticle(
     @Body() body: { articleId: number; tags: string[] }
   ): Promise<{ message: string; article: Article }> {
@@ -115,13 +114,14 @@ export class ArticlesController {
   }
 
   @Post('create')
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   async createArticle(
     @Body() body: {
       Titre: string;
       contenu: string;
       idAuteur: number;
       id_ecole?: number;
-      Image?: string; // Ajout du champ `Image`
+      Image?: string;
     }
   ): Promise<Article> {
     this.logger.log(`Creating article with title: ${body.Titre} by author: ${body.idAuteur}`);
@@ -140,7 +140,7 @@ export class ArticlesController {
       Contenu: body.contenu,
       utilisateur: utilisateur,
       DateCreation: new Date(),
-      Image: body.Image, // Ajout de l'image
+      Image: body.Image,
       ...(body.id_ecole ? { ecole: { id: body.id_ecole } } : {}),
     };
 
@@ -168,19 +168,20 @@ export class ArticlesController {
   }
 
   @Post('update')
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   async updateArticle(
     @Body() body: {
       id: number;
       Titre?: string;
       contenu?: string;
-      Image?: string; // Ajout du champ `Image`
+      Image?: string;
     }
   ): Promise<Article> {
     this.logger.log(`Updating article with id: ${body.id}`);
     return this.articleService.update(body.id, {
       Titre: body.Titre,
       Contenu: body.contenu,
-      Image: body.Image, // Ajout de l'image
+      Image: body.Image,
     });
   }
 }

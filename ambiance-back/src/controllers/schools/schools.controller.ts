@@ -4,7 +4,7 @@ import { SchoolsService } from '../../services/schools/schools.service';
 import { School } from '../../entities/schools.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from '../../services/users/users.service';
-import { MembresBDEService } from '../../services/membresBDE/membresBDE.service'; // Assurez-vous que ce service existe
+import { MembresBDEService } from '../../services/membresBDE/membresBDE.service';
 import { User } from 'src/entities/users.entity';
 import { MembresBDE } from 'src/entities/membresBDE.entity';
 
@@ -14,11 +14,12 @@ export class SchoolsController {
   constructor(
     private readonly schoolsService: SchoolsService,
     private readonly usersService: UsersService,
-    private readonly membresBDEService: MembresBDEService, // Injecter le service MembresBDE
+    private readonly membresBDEService: MembresBDEService,
     private readonly logger: Logger,
   ) {}
 
   @Post('update')
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   @ApiOperation({ summary: 'Update an existing school' })
   @ApiResponse({ status: 200, description: 'School updated successfully' })
   async updateSchool(
@@ -32,7 +33,6 @@ export class SchoolsController {
       throw new NotFoundException('School not found');
     }
 
-    // Si allowed_domain est un tableau, le convertir en string
     let updateData: Partial<School> = { ...data };
     if (Array.isArray(data.allowed_domain)) {
       updateData.allowed_domain = data.allowed_domain.join(';');
@@ -42,6 +42,7 @@ export class SchoolsController {
   }
 
   @Post('delete')
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   @ApiOperation({ summary: 'Delete a school by ID' })
   @ApiResponse({ status: 200, description: 'School deleted successfully' })
   async deleteSchool(@Body() body: { id: number }, @Req() req: Request): Promise<void> {
@@ -64,7 +65,6 @@ export class SchoolsController {
     if (!school) {
       throw new NotFoundException('School not found');
     }
-    // Utiliser la fonction du service pour transformer allowed_domain en tableau
     const allowed_domains = this.schoolsService.splitAllowedDomain((school as any).allowed_domain);
     return {
       ...school,
@@ -81,12 +81,11 @@ export class SchoolsController {
   }
 
   @Post('create')
-  //@UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   @ApiOperation({ summary: 'Create a new school ' })
   @ApiResponse({ status: 201, description: 'School created successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  @ApiBody(
-  {
+  @ApiBody({
     description: 'Payload for creating a new school',
     examples: {
       example1: {
@@ -112,19 +111,16 @@ export class SchoolsController {
 
     this.logger.log(`[${req.method} ${req.url}] Creating a new school for user ID: ${idUtilisateur}`, schoolData);
 
-    // Vérifier si l'utilisateur existe
     const utilisateur = await this.usersService.findOne(idUtilisateur);
     if (!utilisateur) {
       throw new NotFoundException('User not found');
     }
 
-    // Concaténer le tableau allowed_domain en string séparé par ";"
     let allowedDomainString: string | undefined = undefined;
     if (Array.isArray(allowed_domain)) {
       allowedDomainString = allowed_domain.join(';');
     }
 
-    // Ajouter l'utilisateur comme créateur de l'école
     const newSchool = {
       ...schoolData,
       allowed_domain: allowedDomainString,
@@ -135,7 +131,7 @@ export class SchoolsController {
   }
 
   @Post('addMember')
-  //@UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   @ApiOperation({ summary: 'Add a member to the BDE (pending status)' })
   @ApiResponse({ status: 201, description: 'Member added successfully' })
   @ApiResponse({ status: 404, description: 'School or user not found' })
@@ -147,19 +143,16 @@ export class SchoolsController {
 
     this.logger.log(`[${req.method} ${req.url}] Adding member to BDE`, body);
 
-    // Vérifier si l'école existe
     const school = await this.schoolsService.findOne(idEcole);
     if (!school) {
       throw new NotFoundException('School not found');
     }
 
-    // Vérifier si l'utilisateur existe
-    const utilisateur = await this.usersService.findOne(idUtilisateur); // Remplacez par la méthode appropriée
+    const utilisateur = await this.usersService.findOne(idUtilisateur);
     if (!utilisateur) {
       throw new NotFoundException('User not found');
     }
 
-    // Ajouter le membre à la table MembresBDE avec le statut "pending"
     await this.membresBDEService.addMember({
       idUtilisateur,
       idEcole,
@@ -169,7 +162,7 @@ export class SchoolsController {
   }
 
   @Post('getPendingMembers')
-  //@UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   @ApiOperation({ summary: 'Get pending BDE members for a school' })
   @ApiResponse({ status: 200, description: 'Pending members retrieved successfully' })
   @ApiResponse({ status: 404, description: 'School or creator not found' })
@@ -181,32 +174,27 @@ export class SchoolsController {
 
     this.logger.log(`[${req.method} ${req.url}] Fetching pending members for school ID: ${idEcole}`, body);
 
-    // Vérifier si l'utilisateur créateur existe
     const creator = await this.usersService.findOne(idCreateur);
     if (!creator) {
       throw new NotFoundException('Creator not found');
     }
 
-    // Vérifier si l'école existe
     const school = await this.schoolsService.findOneWithCreator(idEcole);
     if (!school) {
       throw new NotFoundException('School not found');
     }
 
-    // Vérifier si l'utilisateur est bien le créateur de l'école
-    
     if (school.createur?.idUtilisateur !== idCreateur) {
       throw new NotFoundException('Creator does not match the school');
     }
 
-    // Récupérer les membres en statut "pending"
     const pendingMembers = await this.membresBDEService.findPendingMembersBySchool(idEcole);
 
     return pendingMembers;
   }
 
   @Post('updateMemberStatus')
-  //@UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   @ApiOperation({ summary: 'Update the status of a BDE member to verified' })
   @ApiResponse({ status: 200, description: 'Member status updated successfully' })
   @ApiResponse({ status: 404, description: 'School, creator, or member not found' })
@@ -218,35 +206,30 @@ export class SchoolsController {
 
     this.logger.log(`[${req.method} ${req.url}] Updating member status to verified`, body);
 
-    // Vérifier si l'utilisateur créateur existe
     const creator = await this.usersService.findOne(idCreateur);
     if (!creator) {
       throw new NotFoundException('Creator not found');
     }
 
-    // Vérifier si l'école existe
     const school = await this.schoolsService.findOneWithCreator(idEcole);
     if (!school) {
       throw new NotFoundException('School not found');
     }
 
-    // Vérifier si l'utilisateur est bien le créateur de l'école
     if (school.createur?.idUtilisateur !== idCreateur) {
       throw new NotFoundException('Creator does not match the school');
     }
 
-    // Vérifier si le membre existe dans la table MembresBDE
     const member = await this.membresBDEService.findMemberBySchoolAndUser(idEcole, idUtilisateur);
     if (!member) {
       throw new NotFoundException('Member not found in this school');
     }
 
-    // Mettre à jour le statut du membre en "verified"
     await this.membresBDEService.updateMemberStatus(idEcole, idUtilisateur, 'verified');
   }
 
   @Post('removeMember')
-  //@UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   @ApiOperation({ summary: 'Remove a member from the BDE' })
   @ApiResponse({ status: 200, description: 'Member removed successfully' })
   @ApiResponse({ status: 404, description: 'School, creator, or member not found' })
@@ -258,35 +241,30 @@ export class SchoolsController {
 
     this.logger.log(`[${req.method} ${req.url}] Removing member from BDE`, body);
 
-    // Vérifier si l'utilisateur créateur existe
     const creator = await this.usersService.findOne(idCreateur);
     if (!creator) {
       throw new NotFoundException('Creator not found');
     }
 
-    // Vérifier si l'école existe
     const school = await this.schoolsService.findOneWithCreator(idEcole);
     if (!school) {
       throw new NotFoundException('School not found');
     }
 
-    // Vérifier si l'utilisateur est bien le créateur de l'école
     if (school.createur?.idUtilisateur !== idCreateur) {
       throw new NotFoundException('Creator does not match the school');
     }
 
-    // Vérifier si le membre existe dans la table MembresBDE
     const member = await this.membresBDEService.findMemberBySchoolAndUser(idEcole, idUtilisateur);
     if (!member) {
       throw new NotFoundException('Member not found in this school');
     }
 
-    // Supprimer le membre de la table MembresBDE
     await this.membresBDEService.removeMember(idEcole, idUtilisateur);
   }
 
   @Post('getUsersBySchool')
-  //@UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   @ApiOperation({ summary: 'Get all users attached to a school' })
   @ApiResponse({ status: 200, description: 'Users retrieved successfully' })
   @ApiResponse({ status: 404, description: 'School not found' })
@@ -298,19 +276,17 @@ export class SchoolsController {
 
     this.logger.log(`[${req.method} ${req.url}] Fetching users for school ID: ${idEcole}`);
 
-    // Vérifier si l'école existe
     const school = await this.schoolsService.findOne(idEcole);
     if (!school) {
       throw new NotFoundException('School not found');
     }
 
-    // Récupérer les utilisateurs rattachés à l'école
     const users = await this.usersService.findUsersBySchool(idEcole);
     return users;
   }
 
   @Post('getMembersBySchool')
-  //@UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   @ApiOperation({ summary: 'Get all BDE members for a school' })
   @ApiResponse({ status: 200, description: 'Members retrieved successfully' })
   @ApiResponse({ status: 404, description: 'School not found' })
@@ -322,18 +298,17 @@ export class SchoolsController {
 
     this.logger.log(`[${req.method} ${req.url}] Fetching BDE members for school ID: ${idEcole}`);
 
-    // Vérifier si l'école existe
     const school = await this.schoolsService.findOne(idEcole);
     if (!school) {
       throw new NotFoundException('School not found');
     }
 
-    // Récupérer les membres du BDE pour l'école
     const members = await this.membresBDEService.findMembersBySchool(idEcole);
     return members;
   }
 
   @Post('changeCreator')
+  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
   @ApiOperation({ summary: 'Change the creator of a school' })
   @ApiResponse({ status: 200, description: 'School creator changed successfully' })
   @ApiResponse({ status: 404, description: 'School or user not found' })
@@ -345,21 +320,17 @@ export class SchoolsController {
 
     this.logger.log(`[${req.method} ${req.url}] Changing creator for school ID: ${idEcole} to user ID: ${newCreatorId}`);
 
-    // Vérifier si l'école existe
     const school = await this.schoolsService.findOne(idEcole);
     if (!school) {
       throw new NotFoundException('School not found');
     }
 
-    // Vérifier si le nouvel utilisateur existe
     const newCreator = await this.usersService.findOne(newCreatorId);
     if (!newCreator) {
       throw new NotFoundException('New creator user not found');
     }
 
-    // Mettre à jour le créateur de l'école
     const updatedSchool = await this.schoolsService.update(idEcole, { createur: newCreator });
     return updatedSchool;
   }
-  
 }
