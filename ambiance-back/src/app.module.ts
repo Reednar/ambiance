@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { Logger, Module, OnApplicationShutdown } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
@@ -47,6 +47,7 @@ import { Article } from './entities/articles.entity';
 import { ArticlesModule } from './modules/articles/articles.modules';
 import { ArticlesController } from './controllers/articles/articles.controllers';
 import { ArticleService } from './services/articles/articles.services';
+import { DataSource } from 'typeorm';
 
 
 @Module({
@@ -109,4 +110,10 @@ import { ArticleService } from './services/articles/articles.services';
   ],
   providers: [AppService, Logger],
 })
-export class AppModule {}
+export class AppModule implements OnApplicationShutdown {
+  constructor(private dataSource: DataSource) {}
+
+  async onApplicationShutdown(signal?: string) {
+    await this.dataSource.destroy();
+  }
+}

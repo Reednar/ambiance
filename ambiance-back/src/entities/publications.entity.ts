@@ -18,7 +18,7 @@ export class Publication {
   @Column({ name: 'CodePostal', type: 'varchar', length: 100, nullable: false })
   codePostal: string;
 
-  @Column({ name: 'rue', type: 'varchar', length: 100, nullable: false })
+  @Column({ name: 'Rue', type: 'varchar', length: 100, nullable: false })
   rue: string;
 
   @Column({ name: 'Ville', type: 'varchar', length: 100, nullable: false })
