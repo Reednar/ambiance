@@ -280,14 +280,13 @@ async createPublication(
   @UploadedFile() image: Express.Multer.File,
   @Req() req: Request
 ) {
-this.logger.log(`[${req.method} ${req.url}] Creating a new publication with body: ${JSON.stringify(body)}`);
+  this.logger.log(`[${req.method} ${req.url}] Creating a new publication with body: ${JSON.stringify(body)}`);
 
   const utilisateur = await this.usersService.findOne(body.utilisateurId);
   if (!utilisateur) {
     throw new NotFoundException('Utilisateur non trouvé');
   }
 
-  // Si les catégories sont envoyées en tant que string (ex: via formulaire multipart)
   if (typeof body.categories === 'string') {
     try {
       body.categories = JSON.parse(body.categories);
@@ -306,13 +305,30 @@ this.logger.log(`[${req.method} ${req.url}] Creating a new publication with body
     imageMimeType: image?.mimetype ?? null,
   };
 
+  // 1. Création de la publication
   const publication = await this.publicationsService.create(publicationData);
 
+  // 2. Création du groupe lié à la publication
+  const groupe = await this.groupsService.create({
+    nomDuGroupe: publication.titre,
+    publication: publication, // Passer l'objet Publication complet
+    nombrePersonne: null, // ou null, à adapter selon ta logique
+  });
+
+  // 3. Ajout du créateur comme organisateur dans Participation
+  await this.groupsService.addParticipation({
+    idGroupe: groupe,
+    idUtilisateur: utilisateur,
+    organisateur: true,
+    idPaiement: null,
+  });
+
+  // 4. Ajout des catégories à la publication
   for (const idCategorie of body.categories as number[]) {
     await this.publicationCategoriesService.addCategoryToPublication(publication.idPublication, idCategorie);
   }
 
-  return { message: 'Publication créée avec succès', publication };
+  return { message: 'Publication et groupe créés avec succès', publication, groupe };
 }
 
 

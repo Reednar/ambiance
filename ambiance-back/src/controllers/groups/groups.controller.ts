@@ -54,12 +54,17 @@ export class GroupsController {
 
   @Post("addUser")
   @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({ summary: 'Add a participation' })
-  async addUserToGroup(@Body() body: { IdGroupe: number; IdUtilisateur: number }, @Req() req: Request) {
-    this.logger.log(`[${req.method} ${req.url}] Adding user to group`, body); // Log de la requête
-    const groupe = await this.GroupsService.findOne(body.IdGroupe);
+  @ApiOperation({ summary: 'Add a user to a group by publication' })
+  async addUserToGroup(
+    @Body() body: { idPublication: number; IdUtilisateur: number },
+    @Req() req: Request
+  ) {
+    this.logger.log(`[${req.method} ${req.url}] Adding user to group by publication`, body);
+
+    // Trouver le groupe lié à la publication
+    const groupe = await this.GroupsService.getGroupeByPublicationId(body.idPublication);
     if (!groupe) {
-      throw new NotFoundException('Groupe non trouvé');
+      throw new NotFoundException('Groupe lié à la publication non trouvé');
     }
 
     const utilisateur = await this.UsersService.findOne(body.IdUtilisateur);
@@ -70,7 +75,7 @@ export class GroupsController {
     const participation = {
       idGroupe: groupe,
       idUtilisateur: utilisateur,
-      Organisateur: 0
+      organisateur: false
     };
     await this.GroupsService.addParticipation(participation);
 
