@@ -19,12 +19,42 @@
 CREATE DATABASE IF NOT EXISTS `ambiance-bdd_ensitech` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
 USE `ambiance-bdd_ensitech`;
 
+-- Listage de la structure de table ambiance-bdd_ensitech. Articles
+CREATE TABLE IF NOT EXISTS `Articles` (
+  `IdArticle` int(11) NOT NULL AUTO_INCREMENT,
+  `Titre` varchar(255) NOT NULL,
+  `Contenu` text NOT NULL,
+  `DateCreation` datetime DEFAULT current_timestamp(),
+  `IdAuteur` int(11) NOT NULL,
+  `id_ecole` int(11) DEFAULT NULL,
+  `Image` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`IdArticle`),
+  KEY `IdAuteur` (`IdAuteur`),
+  KEY `id_ecole` (`id_ecole`),
+  CONSTRAINT `Articles_fk_ecole` FOREIGN KEY (`id_ecole`) REFERENCES `Ecoles` (`Id_ecole`) ON DELETE SET NULL,
+  CONSTRAINT `Articles_fk_utilisateur` FOREIGN KEY (`IdAuteur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Les données exportées n'étaient pas sélectionnées.
+
+-- Listage de la structure de table ambiance-bdd_ensitech. Article_Tags
+CREATE TABLE IF NOT EXISTS `Article_Tags` (
+  `IdArticle` int(11) NOT NULL,
+  `IdTag` int(11) NOT NULL,
+  PRIMARY KEY (`IdArticle`,`IdTag`),
+  KEY `IdTag` (`IdTag`),
+  CONSTRAINT `Article_Tags_ibfk_1` FOREIGN KEY (`IdArticle`) REFERENCES `Articles` (`IdArticle`) ON DELETE CASCADE,
+  CONSTRAINT `Article_Tags_ibfk_2` FOREIGN KEY (`IdTag`) REFERENCES `Tags` (`IdTag`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Les données exportées n'étaient pas sélectionnées.
+
 -- Listage de la structure de table ambiance-bdd_ensitech. Categories
 CREATE TABLE IF NOT EXISTS `Categories` (
   `IdCategorie` int(11) NOT NULL AUTO_INCREMENT,
   `Nom` varchar(100) NOT NULL,
   PRIMARY KEY (`IdCategorie`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
@@ -43,13 +73,29 @@ CREATE TABLE IF NOT EXISTS `Commentaires` (
 
 -- Les données exportées n'étaient pas sélectionnées.
 
+-- Listage de la structure de table ambiance-bdd_ensitech. Commentaires_Blog
+CREATE TABLE IF NOT EXISTS `Commentaires_Blog` (
+  `IdCommentaireBlog` int(11) NOT NULL AUTO_INCREMENT,
+  `Contenu` text NOT NULL,
+  `DateCommentaire` datetime DEFAULT current_timestamp(),
+  `IdArticle` int(11) NOT NULL,
+  `IdUtilisateur` int(11) NOT NULL,
+  PRIMARY KEY (`IdCommentaireBlog`),
+  KEY `IdArticle` (`IdArticle`),
+  KEY `IdUtilisateur` (`IdUtilisateur`),
+  CONSTRAINT `CommentairesBlog_fk_article` FOREIGN KEY (`IdArticle`) REFERENCES `Articles` (`IdArticle`) ON DELETE CASCADE,
+  CONSTRAINT `CommentairesBlog_fk_utilisateur` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Les données exportées n'étaient pas sélectionnées.
+
 -- Listage de la structure de table ambiance-bdd_ensitech. Discussions
 CREATE TABLE IF NOT EXISTS `Discussions` (
-  `idDiscussion` int(11) NOT NULL AUTO_INCREMENT,
-  `type_discussion` int(11) DEFAULT NULL,
-  `date_creation` datetime DEFAULT current_timestamp(),
+  `IdDiscussion` int(11) NOT NULL AUTO_INCREMENT,
+  `Type_discussion` int(11) DEFAULT NULL,
+  `Date_creation` datetime DEFAULT current_timestamp(),
   `IdGroupe` int(11) NOT NULL,
-  PRIMARY KEY (`idDiscussion`),
+  PRIMARY KEY (`IdDiscussion`) USING BTREE,
   KEY `IdGroupe` (`IdGroupe`),
   CONSTRAINT `Discussions_ibfk_1` FOREIGN KEY (`IdGroupe`) REFERENCES `Groupes` (`IdGroupe`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -58,22 +104,22 @@ CREATE TABLE IF NOT EXISTS `Discussions` (
 
 -- Listage de la structure de table ambiance-bdd_ensitech. Ecoles
 CREATE TABLE IF NOT EXISTS `Ecoles` (
-  `id_ecole` int(11) NOT NULL AUTO_INCREMENT,
-  `nom` varchar(255) NOT NULL,
-  `site_web` varchar(255) DEFAULT NULL,
-  `telephone` varchar(20) DEFAULT NULL,
-  `description` text DEFAULT NULL,
-  `contact_email` varchar(255) NOT NULL,
-  `type_ecole` enum('publique','privée','autre') NOT NULL,
-  `rue` varchar(255) NOT NULL,
-  `ville` varchar(100) NOT NULL,
-  `code_postal` varchar(20) NOT NULL,
-  `id_createur` int(11) NOT NULL,
-  `date_creation` datetime DEFAULT current_timestamp(),
-  `allowed_domain` text DEFAULT NULL,
-  PRIMARY KEY (`id_ecole`),
-  KEY `Ecole_ibfk_1` (`id_createur`),
-  CONSTRAINT `Ecole_ibfk_1` FOREIGN KEY (`id_createur`) REFERENCES `Utilisateurs` (`IdUtilisateur`)
+  `Id_ecole` int(11) NOT NULL AUTO_INCREMENT,
+  `Nom` varchar(255) NOT NULL,
+  `Site_web` varchar(255) DEFAULT NULL,
+  `Telephone` varchar(20) DEFAULT NULL,
+  `Description` text DEFAULT NULL,
+  `Contact_email` varchar(255) NOT NULL,
+  `Type_ecole` enum('publique','privée','autre') NOT NULL,
+  `Rue` varchar(255) NOT NULL,
+  `Ville` varchar(100) NOT NULL,
+  `Code_postal` varchar(20) NOT NULL,
+  `Id_createur` int(11) NOT NULL,
+  `Date_creation` datetime DEFAULT current_timestamp(),
+  `Allowed_domain` text DEFAULT NULL,
+  PRIMARY KEY (`Id_ecole`) USING BTREE,
+  KEY `Ecole_ibfk_1` (`Id_createur`) USING BTREE,
+  CONSTRAINT `Ecole_ibfk_1` FOREIGN KEY (`Id_createur`) REFERENCES `Utilisateurs` (`IdUtilisateur`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
@@ -104,45 +150,45 @@ CREATE TABLE IF NOT EXISTS `Images` (
 
 -- Les données exportées n'étaient pas sélectionnées.
 
--- Listage de la structure de table ambiance-bdd_ensitech. MembresBDE
-CREATE TABLE IF NOT EXISTS `MembresBDE` (
-  `id_utilisateur` int(11) NOT NULL,
-  `id_ecole` int(11) NOT NULL,
-  `status` enum('pending','verified') NOT NULL DEFAULT 'pending',
-  `date_fin` date DEFAULT NULL,
-  `is_actif` tinyint(1) NOT NULL DEFAULT 1,
-  KEY `MembresBDE_ibfk_1` (`id_utilisateur`),
-  KEY `MembresBDE_ibfk_2` (`id_ecole`),
-  CONSTRAINT `MembresBDE_ibfk_1` FOREIGN KEY (`id_utilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE,
-  CONSTRAINT `MembresBDE_ibfk_2` FOREIGN KEY (`id_ecole`) REFERENCES `Ecoles` (`id_ecole`) ON DELETE CASCADE
+-- Listage de la structure de table ambiance-bdd_ensitech. Membres_BDE
+CREATE TABLE IF NOT EXISTS `Membres_BDE` (
+  `Id_utilisateur` int(11) NOT NULL,
+  `Id_ecole` int(11) NOT NULL,
+  `Status` enum('pending','verified') NOT NULL DEFAULT 'pending',
+  `Date_fin` date DEFAULT NULL,
+  `Is_actif` tinyint(1) NOT NULL DEFAULT 1,
+  KEY `MembresBDE_ibfk_1` (`Id_utilisateur`) USING BTREE,
+  KEY `MembresBDE_ibfk_2` (`Id_ecole`) USING BTREE,
+  CONSTRAINT `Membres_BDE_ibfk_1` FOREIGN KEY (`Id_utilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE,
+  CONSTRAINT `Membres_BDE_ibfk_2` FOREIGN KEY (`Id_ecole`) REFERENCES `Ecoles` (`Id_ecole`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de table ambiance-bdd_ensitech. Messages
 CREATE TABLE IF NOT EXISTS `Messages` (
-  `idMessage` int(11) NOT NULL AUTO_INCREMENT,
-  `contenu` text DEFAULT NULL,
-  `date_envoi` datetime DEFAULT current_timestamp(),
-  `idUtilisateur` int(11) NOT NULL,
-  `idDiscussion` int(11) NOT NULL,
-  PRIMARY KEY (`idMessage`),
-  KEY `idUtilisateur` (`idUtilisateur`),
-  KEY `idDiscussion` (`idDiscussion`),
-  CONSTRAINT `Messages_ibfk_1` FOREIGN KEY (`idUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE,
-  CONSTRAINT `Messages_ibfk_2` FOREIGN KEY (`idDiscussion`) REFERENCES `Discussions` (`idDiscussion`) ON DELETE CASCADE
+  `IdMessage` int(11) NOT NULL AUTO_INCREMENT,
+  `Contenu` text DEFAULT NULL,
+  `Date_envoi` datetime DEFAULT current_timestamp(),
+  `IdUtilisateur` int(11) NOT NULL,
+  `IdDiscussion` int(11) NOT NULL,
+  PRIMARY KEY (`IdMessage`) USING BTREE,
+  KEY `idUtilisateur` (`IdUtilisateur`) USING BTREE,
+  KEY `idDiscussion` (`IdDiscussion`) USING BTREE,
+  CONSTRAINT `Messages_ibfk_1` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE,
+  CONSTRAINT `Messages_ibfk_2` FOREIGN KEY (`IdDiscussion`) REFERENCES `Discussions` (`IdDiscussion`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
 -- Listage de la structure de table ambiance-bdd_ensitech. Moderations
 CREATE TABLE IF NOT EXISTS `Moderations` (
-  `idModeration` int(11) NOT NULL AUTO_INCREMENT,
-  `type_action` varchar(50) DEFAULT NULL,
-  `date_action` datetime DEFAULT current_timestamp(),
+  `IdModeration` int(11) NOT NULL AUTO_INCREMENT,
+  `Type_action` varchar(50) DEFAULT NULL,
+  `Date_action` datetime DEFAULT current_timestamp(),
   `IdUtilisateur` int(11) NOT NULL,
   `IdGroupe` int(11) NOT NULL,
-  PRIMARY KEY (`idModeration`),
+  PRIMARY KEY (`IdModeration`) USING BTREE,
   KEY `IdUtilisateur` (`IdUtilisateur`),
   KEY `IdGroupe` (`IdGroupe`),
   CONSTRAINT `Moderations_ibfk_1` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`),
@@ -153,12 +199,12 @@ CREATE TABLE IF NOT EXISTS `Moderations` (
 
 -- Listage de la structure de table ambiance-bdd_ensitech. Paiements
 CREATE TABLE IF NOT EXISTS `Paiements` (
-  `idPaiement` int(11) NOT NULL AUTO_INCREMENT,
-  `montant` decimal(15,2) DEFAULT NULL,
-  `date_paiement` datetime DEFAULT NULL,
-  `justificatif` varchar(255) DEFAULT NULL,
+  `IdPaiement` int(11) NOT NULL AUTO_INCREMENT,
+  `Montant` decimal(15,2) DEFAULT NULL,
+  `Date_paiement` datetime DEFAULT NULL,
+  `Justificatif` varchar(255) DEFAULT NULL,
   `IdUtilisateur` int(11) NOT NULL,
-  PRIMARY KEY (`idPaiement`),
+  PRIMARY KEY (`IdPaiement`) USING BTREE,
   KEY `IdUtilisateur` (`IdUtilisateur`),
   CONSTRAINT `Paiements_ibfk_1` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -167,19 +213,19 @@ CREATE TABLE IF NOT EXISTS `Paiements` (
 
 -- Listage de la structure de table ambiance-bdd_ensitech. Participation
 CREATE TABLE IF NOT EXISTS `Participation` (
-  `idParticipation` int(11) NOT NULL AUTO_INCREMENT,
+  `IdParticipation` int(11) NOT NULL AUTO_INCREMENT,
   `IdUtilisateur` int(11) NOT NULL,
   `IdGroupe` int(11) NOT NULL,
   `PaiementEffectue` tinyint(1) DEFAULT 0,
   `IdPaiement` int(11) DEFAULT NULL,
   `Organisateur` tinyint(1) DEFAULT 0,
-  PRIMARY KEY (`idParticipation`),
+  PRIMARY KEY (`IdParticipation`) USING BTREE,
   UNIQUE KEY `UNIQUE_User_Groupe` (`IdUtilisateur`,`IdGroupe`),
   KEY `IdGroupe` (`IdGroupe`),
   KEY `IdPaiement` (`IdPaiement`),
   CONSTRAINT `Participation_ibfk_1` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`),
   CONSTRAINT `Participation_ibfk_2` FOREIGN KEY (`IdGroupe`) REFERENCES `Groupes` (`IdGroupe`),
-  CONSTRAINT `Participation_ibfk_3` FOREIGN KEY (`IdPaiement`) REFERENCES `Paiements` (`idPaiement`)
+  CONSTRAINT `Participation_ibfk_3` FOREIGN KEY (`IdPaiement`) REFERENCES `Paiements` (`IdPaiement`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
@@ -188,7 +234,7 @@ CREATE TABLE IF NOT EXISTS `Participation` (
 CREATE TABLE IF NOT EXISTS `Publications` (
   `IdPublication` int(11) NOT NULL AUTO_INCREMENT,
   `CodePostal` varchar(100) NOT NULL,
-  `rue` varchar(100) NOT NULL,
+  `Rue` varchar(100) NOT NULL,
   `Ville` varchar(100) NOT NULL,
   `Titre` varchar(50) NOT NULL,
   `DateEvenement` datetime NOT NULL,
@@ -211,7 +257,7 @@ CREATE TABLE IF NOT EXISTS `Publications` (
   KEY `IdUtilisateur` (`IdUtilisateur`),
   KEY `Publications_ibfk_2` (`id_ecole`),
   CONSTRAINT `Publications_ibfk_1` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE,
-  CONSTRAINT `Publications_ibfk_2` FOREIGN KEY (`id_ecole`) REFERENCES `Ecoles` (`id_ecole`) ON DELETE SET NULL
+  CONSTRAINT `Publications_ibfk_2` FOREIGN KEY (`id_ecole`) REFERENCES `Ecoles` (`Id_ecole`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
@@ -225,6 +271,16 @@ CREATE TABLE IF NOT EXISTS `Publication_Categories` (
   CONSTRAINT `Publication_Categories_ibfk_1` FOREIGN KEY (`IdPublication`) REFERENCES `Publications` (`IdPublication`),
   CONSTRAINT `Publication_Categories_ibfk_2` FOREIGN KEY (`IdCategorie`) REFERENCES `Categories` (`IdCategorie`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Les données exportées n'étaient pas sélectionnées.
+
+-- Listage de la structure de table ambiance-bdd_ensitech. Tags
+CREATE TABLE IF NOT EXISTS `Tags` (
+  `IdTag` int(11) NOT NULL AUTO_INCREMENT,
+  `Nom` varchar(100) NOT NULL,
+  PRIMARY KEY (`IdTag`),
+  UNIQUE KEY `Nom` (`Nom`)
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
@@ -245,51 +301,8 @@ CREATE TABLE IF NOT EXISTS `Utilisateurs` (
   PRIMARY KEY (`IdUtilisateur`),
   UNIQUE KEY `Mail` (`Mail`),
   KEY `Utilisateurs_ibfk_1` (`id_ecole`),
-  CONSTRAINT `Utilisateurs_ibfk_1` FOREIGN KEY (`id_ecole`) REFERENCES `Ecoles` (`id_ecole`) ON DELETE SET NULL
+  CONSTRAINT `Utilisateurs_ibfk_1` FOREIGN KEY (`id_ecole`) REFERENCES `Ecoles` (`Id_ecole`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS `Articles` (
-  `IdArticle` INT(11) NOT NULL AUTO_INCREMENT,
-  `Titre` VARCHAR(255) NOT NULL,
-  `Contenu` TEXT NOT NULL,
-  `DateCreation` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  `IdAuteur` INT(11) NOT NULL,
-  `id_ecole` INT(11) DEFAULT NULL,
-  PRIMARY KEY (`IdArticle`),
-  KEY `IdAuteur` (`IdAuteur`),
-  KEY `id_ecole` (`id_ecole`),
-  CONSTRAINT `Articles_fk_utilisateur` FOREIGN KEY (`IdAuteur`) REFERENCES `Utilisateurs`(`IdUtilisateur`) ON DELETE CASCADE,
-  CONSTRAINT `Articles_fk_ecole` FOREIGN KEY (`id_ecole`) REFERENCES `Ecoles`(`id_ecole`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS `Commentaires_Blog` (
-  `IdCommentaireBlog` INT(11) NOT NULL AUTO_INCREMENT,
-  `Contenu` TEXT NOT NULL,
-  `DateCommentaire` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  `IdArticle` INT(11) NOT NULL,
-  `IdUtilisateur` INT(11) NOT NULL,
-  PRIMARY KEY (`IdCommentaireBlog`),
-  KEY `IdArticle` (`IdArticle`),
-  KEY `IdUtilisateur` (`IdUtilisateur`),
-  CONSTRAINT `CommentairesBlog_fk_article` FOREIGN KEY (`IdArticle`) REFERENCES `Articles`(`IdArticle`) ON DELETE CASCADE,
-  CONSTRAINT `CommentairesBlog_fk_utilisateur` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs`(`IdUtilisateur`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS `Tags` (
-  `IdTag` INT NOT NULL AUTO_INCREMENT,
-  `Nom` VARCHAR(100) NOT NULL UNIQUE,
-  PRIMARY KEY (`IdTag`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
-CREATE TABLE IF NOT EXISTS `Article_Tags` (
-  `IdArticle` INT NOT NULL,
-  `IdTag` INT NOT NULL,
-  PRIMARY KEY (`IdArticle`, `IdTag`),
-  FOREIGN KEY (`IdArticle`) REFERENCES `Articles` (`IdArticle`) ON DELETE CASCADE,
-  FOREIGN KEY (`IdTag`) REFERENCES `Tags` (`IdTag`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 
 -- Les données exportées n'étaient pas sélectionnées.
 
