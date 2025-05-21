@@ -323,7 +323,6 @@ export class PublicationsController {
     const groupe = await this.groupsService.create({
       nomDuGroupe: publication.titre,
       publication: publication,
-      nombrePersonne: null,
       utilisateur: utilisateur, 
     });
 

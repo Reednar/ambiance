@@ -128,7 +128,6 @@ CREATE TABLE IF NOT EXISTS `Ecoles` (
 CREATE TABLE IF NOT EXISTS `Groupes` (
   `IdGroupe` int(11) NOT NULL AUTO_INCREMENT,
   `NomDuGroupe` varchar(50) NOT NULL,
-  `NombrePersonne` smallint(6) DEFAULT NULL,
   `IdPublication` int(11) NOT NULL,
   `date_creation` datetime DEFAULT NULL,
   `IdUtilisateur` int(11) NOT NULL,

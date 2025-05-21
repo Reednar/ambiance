@@ -11,8 +11,6 @@ export class Groupe {
   @Column({ name: 'NomDuGroupe', type: 'varchar', length: 50, nullable: false })
   nomDuGroupe: string;
 
-  @Column({ name: 'NombrePersonne', type: 'smallint', nullable: true })
-  nombrePersonne: number;
 
   @ManyToOne(() => Publication, (publication) => publication, {
     onDelete: 'CASCADE',
