@@ -4,6 +4,8 @@ import { MessageService } from './../../services/messages/messages.service'; // 
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation } from '@nestjs/swagger';
 import { Request } from 'express';
+import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
+
 
 @Controller('discussions')
 export class DiscussionController {
@@ -14,7 +16,7 @@ export class DiscussionController {
   ) {}
 
   @Post("create")
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'create a discussion' }) 
   create(@Body() data: any, @Req() req: Request) { // Ajout de @Req pour obtenir la route
     this.logger.log(`[${req.method} ${req.url}] Creating a new discussion`, data);
@@ -40,7 +42,7 @@ export class DiscussionController {
   }
 
   @Post('user-discussions')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all discussions for groups the user is part of' })
   async getUserDiscussions(@Body() body: { userId: number }, @Req() req: Request) {
     this.logger.log(`[${req.method} ${req.url}] Fetching discussions for user`, body.userId);
@@ -48,7 +50,7 @@ export class DiscussionController {
   }
 
   @Post('messages-history')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get message history for a discussion' })
   async getMessagesHistory(@Body() body: { discussionId: number }, @Req() req: Request) {
     this.logger.log(`[${req.method} ${req.url}] Fetching message history for discussion`, body.discussionId);

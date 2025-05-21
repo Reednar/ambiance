@@ -10,11 +10,13 @@ import { Publication } from 'src/entities/publications.entity';
 import { ParticipationModule } from  '../../modules/participation/participation.module';// Importez le module contenant ParticipationRepository
 import { Participation } from 'src/entities/participation.entity';
 import { GroupsModule } from '../groups/groups.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
   TypeOrmModule.forFeature([Commentaire, User, Publication, Participation]),
-  GroupsModule, // 👈 Ajoute ça
+  GroupsModule,
+  AuthModule // 👈 Ajoute ça
 ],
 
   providers: [CommentairesService, UsersService, PublicationsService,Logger], // Ajouter les services nécessaires

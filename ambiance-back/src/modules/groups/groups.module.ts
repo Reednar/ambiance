@@ -10,12 +10,14 @@ import { PublicationsModule } from '../publications/publications.module';
 import { UsersService } from 'src/services/users/users.service';
 import { PublicationsService } from 'src/services/publications/publications.service';
 import { Publication } from 'src/entities/publications.entity';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Groupe, Participation, User,Publication]),
     UsersModule,
     forwardRef(() => PublicationsModule),
+    AuthModule
   ],
   providers: [GroupsService,Logger,UsersService,PublicationsService],
   controllers: [GroupsController],

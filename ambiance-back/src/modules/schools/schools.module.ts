@@ -7,9 +7,10 @@ import { SchoolsController } from '../../controllers/schools/schools.controller'
 import { School } from '../../entities/schools.entity';
 import { MembresBDE } from '../../entities/membresBDE.entity';
 import { User } from '../../entities/users.entity';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([School, MembresBDE, User])],
+  imports: [TypeOrmModule.forFeature([School, MembresBDE, User]),AuthModule],
   providers: [SchoolsService, MembresBDEService,UsersService,Logger],
   controllers: [SchoolsController],
   exports: [SchoolsService, MembresBDEService],

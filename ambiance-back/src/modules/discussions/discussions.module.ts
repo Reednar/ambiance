@@ -8,9 +8,10 @@ import { Participation } from '../../entities/participation.entity'; // Import d
 import { MessageService } from 'src/services/messages/messages.service';
 import { Message } from 'src/entities/messages.entity';
 import { User } from 'src/entities/users.entity';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Discussion, Groupe, Participation,Message,User])], // Ajout de Participation
+  imports: [TypeOrmModule.forFeature([Discussion, Groupe, Participation,Message,User,]),AuthModule], // Ajout de Participation
   controllers: [DiscussionController],
   providers: [DiscussionService,MessageService,Logger],
   exports: [DiscussionService], // utile si tu veux l'utiliser ailleurs

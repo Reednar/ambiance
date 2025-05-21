@@ -9,19 +9,20 @@ import { PublicationCategoriesService } from 'src/services/publication-categorie
 import { GroupsService } from 'src/services/groups/groups.service';
 import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
 
+
 @ApiTags('publications')
 @Controller('publications')
 export class PublicationsController {
   constructor(private publicationsService: PublicationsService, private readonly usersService: UsersService, private publicationCategoriesService: PublicationCategoriesService, private groupsService: GroupsService, private readonly logger: Logger) { }
 
   @Get('test')//endpoint (endpoit ALWAYS before controller endpoint)
-  @UseGuards(AuthGuard('jwt')) //protected request
+  @UseGuards(JwtAuthGuard) //protected request
   getProtectedData() {
     return { message: 'Accès autorisé à la route protégée.' };
   }
 
   @Post("delete")
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   async deletePublication(@Body() Body: { idPublication: number, utilisateurId: number }, @Req() req: Request) {
     this.logger.log(`[${req.method} ${req.url}] Deleting publication`, Body);
 
@@ -58,7 +59,7 @@ export class PublicationsController {
   }
 
   @Post("update")
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update a publication' })
   @ApiResponse({
     status: 200,
@@ -342,7 +343,7 @@ export class PublicationsController {
   }
 
   @Post('userPublications')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all publications created by a specific user' })
   @ApiResponse({
     status: 200,
@@ -444,7 +445,7 @@ export class PublicationsController {
   }
 
   @Post('userParticipations')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all publications the user participates in' })
   @ApiResponse({
     status: 200,

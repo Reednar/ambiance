@@ -7,6 +7,7 @@ import { UsersService } from '../../services/users/users.service';
 import { MembresBDEService } from '../../services/membresBDE/membresBDE.service';
 import { User } from 'src/entities/users.entity';
 import { MembresBDE } from 'src/entities/membresBDE.entity';
+import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
 
 @ApiTags('schools')
 @Controller('schools')
@@ -19,7 +20,7 @@ export class SchoolsController {
   ) {}
 
   @Post('update')
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   @ApiOperation({ summary: 'Update an existing school' })
   @ApiResponse({ status: 200, description: 'School updated successfully' })
   async updateSchool(
@@ -42,7 +43,7 @@ export class SchoolsController {
   }
 
   @Post('delete')
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   @ApiOperation({ summary: 'Delete a school by ID' })
   @ApiResponse({ status: 200, description: 'School deleted successfully' })
   async deleteSchool(@Body() body: { id: number }, @Req() req: Request): Promise<void> {
@@ -81,7 +82,7 @@ export class SchoolsController {
   }
 
   @Post('create')
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   @ApiOperation({ summary: 'Create a new school ' })
   @ApiResponse({ status: 201, description: 'School created successfully' })
   @ApiResponse({ status: 404, description: 'User not found' })
@@ -131,7 +132,7 @@ export class SchoolsController {
   }
 
   @Post('addMember')
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   @ApiOperation({ summary: 'Add a member to the BDE (pending status)' })
   @ApiResponse({ status: 201, description: 'Member added successfully' })
   @ApiResponse({ status: 404, description: 'School or user not found' })
@@ -162,7 +163,7 @@ export class SchoolsController {
   }
 
   @Post('getPendingMembers')
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   @ApiOperation({ summary: 'Get pending BDE members for a school' })
   @ApiResponse({ status: 200, description: 'Pending members retrieved successfully' })
   @ApiResponse({ status: 404, description: 'School or creator not found' })
@@ -194,7 +195,7 @@ export class SchoolsController {
   }
 
   @Post('updateMemberStatus')
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   @ApiOperation({ summary: 'Update the status of a BDE member to verified' })
   @ApiResponse({ status: 200, description: 'Member status updated successfully' })
   @ApiResponse({ status: 404, description: 'School, creator, or member not found' })
@@ -229,7 +230,7 @@ export class SchoolsController {
   }
 
   @Post('removeMember')
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   @ApiOperation({ summary: 'Remove a member from the BDE' })
   @ApiResponse({ status: 200, description: 'Member removed successfully' })
   @ApiResponse({ status: 404, description: 'School, creator, or member not found' })
@@ -264,7 +265,7 @@ export class SchoolsController {
   }
 
   @Post('getUsersBySchool')
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   @ApiOperation({ summary: 'Get all users attached to a school' })
   @ApiResponse({ status: 200, description: 'Users retrieved successfully' })
   @ApiResponse({ status: 404, description: 'School not found' })
@@ -286,7 +287,7 @@ export class SchoolsController {
   }
 
   @Post('getMembersBySchool')
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   @ApiOperation({ summary: 'Get all BDE members for a school' })
   @ApiResponse({ status: 200, description: 'Members retrieved successfully' })
   @ApiResponse({ status: 404, description: 'School not found' })
@@ -308,7 +309,7 @@ export class SchoolsController {
   }
 
   @Post('changeCreator')
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   @ApiOperation({ summary: 'Change the creator of a school' })
   @ApiResponse({ status: 200, description: 'School creator changed successfully' })
   @ApiResponse({ status: 404, description: 'School or user not found' })

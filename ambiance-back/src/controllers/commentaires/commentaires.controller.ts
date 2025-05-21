@@ -4,6 +4,8 @@ import { CommentairesService } from '../../services/commentaires/commentaires.se
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from '../../services/users/users.service'; 
 import { PublicationsService } from 'src/services/publications/publications.service';
+import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
+
 
 @ApiTags('commentaires')
 @Controller('commentaires')
@@ -16,7 +18,7 @@ export class CommentairesController {
   ) {}
 
   @Post('findAll')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Return all commentaires' })
   async getCommentaires() {
     this.logger.log('/commentaires/findAll called');
@@ -24,7 +26,7 @@ export class CommentairesController {
   }
 
   @Post('findOne')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Find a commentaire by ID' })
   async getCommentaire(@Body() body: { id: number }) {
     this.logger.log('/commentaires/findOne called');
@@ -32,7 +34,7 @@ export class CommentairesController {
   }
 
   @Post('create')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create a new commentaire' })
   async createCommentaire(@Body() body: { content: string; userId: number; postId: number }) {
     this.logger.log('/commentaires/create called'); 
@@ -46,7 +48,7 @@ export class CommentairesController {
   }
 
   @Post('update')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update an existing commentaire' })
   async updateCommentaire(@Body() body: { id: number; content: string }) {
     this.logger.log('/commentaires/update called'); 
@@ -54,7 +56,7 @@ export class CommentairesController {
   }
 
   @Post('delete')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Delete a commentaire by ID' })
   async deleteCommentaire(@Body() body: { id: number; userId: number }) {
     this.logger.log('/commentaires/delete called');
@@ -73,7 +75,7 @@ export class CommentairesController {
   }
 
   @Post('deleteAsAdmin')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Delete a commentaire by ID as an admin' })
   async deleteCommentaireAsAdmin(@Body() body: { id: number; adminId: number }) {
     this.logger.log('/commentaires/deleteAsAdmin called');
@@ -93,7 +95,7 @@ export class CommentairesController {
   }
 
   @Post('getByPublication')
-  //@UseGuards(AuthGuard('jwt'))
+  //@UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all commentaires for a specific publication' })
   @ApiResponse({ status: 200, description: 'Commentaires retrieved successfully' })
   @ApiResponse({ status: 404, description: 'Publication not found' })
