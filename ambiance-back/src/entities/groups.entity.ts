@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Publication } from './publications.entity';
 import { Participation } from './participation.entity';
+import { User } from './users.entity';
 
 @Entity('Groupes') 
 export class Groupe {
@@ -19,7 +20,13 @@ export class Groupe {
   @JoinColumn({ name: 'IdPublication' })
   publication: Publication;
 
-  // Ajout de la relation avec Participation
+  @Column({ name: 'date_creation', type: 'datetime', nullable: true })
+  dateCreation: Date;
+
+  @ManyToOne(() => User, (user) => user.idUtilisateur, { nullable: false })
+  @JoinColumn({ name: 'IdUtilisateur' })
+  utilisateur: User;
+
   @OneToMany(() => Participation, (participation) => participation.idGroupe)
   participations: Participation[];
 }

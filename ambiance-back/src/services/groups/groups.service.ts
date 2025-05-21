@@ -49,7 +49,7 @@ export class GroupsService {
     const participation = new Participation();
     participation.idGroupe = groupe;
     participation.idUtilisateur = utilisateur;
-    participation.organisateur = true;
+    //groupe.utilisateur.idUtilisateur = idUtilisateur;
     participation.idPaiement = null; // Set IdPaiement to null if not applicable
     return await this.participationRepository.save(participation);
   }
@@ -66,7 +66,7 @@ export class GroupsService {
     const newParticipation = new Participation();
     newParticipation.idGroupe = groupe;
     newParticipation.idUtilisateur = utilisateur;
-    newParticipation.organisateur = participation.organisateur;
+    
     newParticipation.idPaiement = participation.idPaiement;
     return await this.participationRepository.save(newParticipation);
   }
@@ -87,34 +87,9 @@ export class GroupsService {
   async changeOrganisateur(idGroupe: number, idUtilisateur: number): Promise<void> {
     const groupe = await this.groupeRepository.findOneBy({ idGroupe });
     const utilisateur = await this.userRepository.findOneBy({ idUtilisateur });
-
-    if (!groupe || !utilisateur) {
-      throw new Error('Groupe or Utilisateur not found');
-    }
-
-    const currentOrganisateur = await this.participationRepository
-      .createQueryBuilder('participation')
-      .where('participation.idGroupe = :idGroupe', { idGroupe })
-      .andWhere('participation.organisateur = :organisateur', { organisateur: true })
-      .getOne();
-
-    if (currentOrganisateur) {
-      currentOrganisateur.organisateur = false;
-      await this.participationRepository.save(currentOrganisateur);
-    }
-
-    const newOrganisateur = await this.participationRepository
-      .createQueryBuilder('participation')
-      .where('participation.idGroupe = :idGroupe', { idGroupe })
-      .andWhere('participation.idUtilisateur = :idUtilisateur', { idUtilisateur })
-      .getOne();
-
-    if (newOrganisateur) {
-      newOrganisateur.organisateur = true;
-      await this.participationRepository.save(newOrganisateur);
-    } else {
-      throw new Error('New organisateur not found');
-    }
+    if (!groupe || !utilisateur) throw new Error('Groupe or Utilisateur not found');
+    groupe.utilisateur = utilisateur;
+    await this.groupeRepository.save(groupe);
   }
 
   async findGroupsByUser(IdUtilisateur: number): Promise<Groupe[]> {
@@ -135,14 +110,11 @@ export class GroupsService {
   }
 
   async isOrganisateur(IdGroupe: number, senderId: number): Promise<boolean> {
-    const participation = await this.participationRepository
-      .createQueryBuilder('participation')
-      .where('participation.idGroupe = :IdGroupe', { IdGroupe })
-      .andWhere('participation.idUtilisateur = :senderId', { senderId })
-      .andWhere('participation.organisateur = :organisateur', { organisateur: true })
-      .getOne();
-
-    return !!participation; // Retourne true si une participation avec le rôle d'organisateur est trouvée, sinon false
+    const groupe = await this.groupeRepository.findOne({
+      where: { idGroupe: IdGroupe },
+      relations: ['utilisateur'],
+    });
+    return groupe?.utilisateur?.idUtilisateur === senderId;
   }
 
   // async getGroupeByPublicationId(publicationId: number) {

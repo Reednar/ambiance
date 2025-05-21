@@ -318,20 +318,20 @@ export class PublicationsController {
     // 1. Création de la publication
     const publication = await this.publicationsService.create(publicationData);
 
-    // 2. Création du groupe lié à la publication
+    // 2. Création du groupe lié à la publication (avec organisateur)
     const groupe = await this.groupsService.create({
       nomDuGroupe: publication.titre,
-      publication: publication, // Passer l'objet Publication complet
-      nombrePersonne: null, // ou null, à adapter selon ta logique
+      publication: publication,
+      nombrePersonne: null,
+      utilisateur: utilisateur, 
     });
 
-    // 3. Ajout du créateur comme organisateur dans Participation
-    await this.groupsService.addParticipation({
+    // 3. Ajout du créateur comme participant (plus besoin de organisateur)
+    /*await this.groupsService.addParticipation({
       idGroupe: groupe,
       idUtilisateur: utilisateur,
-      organisateur: true,
       idPaiement: null,
-    });
+    });*/
 
     // 4. Ajout des catégories à la publication
     for (const idCategorie of body.categories as number[]) {

@@ -46,7 +46,11 @@ export class GroupsController {
       throw new NotFoundException('Publication non trouvée');
     }
 
-    const newGroup = await this.GroupsService.create({ nomDuGroupe: body.nomDuGroupe, publication });
+    const newGroup = await this.GroupsService.create({
+      nomDuGroupe: body.nomDuGroupe,
+      publication,
+      utilisateur, // <-- Ajoute l'organisateur ici
+    });
     // Add the user to the created group
     await this.GroupsService.addUserToGroup(newGroup.idGroupe, utilisateur.idUtilisateur);
     return newGroup;
@@ -75,7 +79,6 @@ export class GroupsController {
     const participation = {
       idGroupe: groupe,
       idUtilisateur: utilisateur,
-      organisateur: false
     };
     await this.GroupsService.addParticipation(participation);
 
