@@ -18,6 +18,7 @@ import { User } from '../../entities/users.entity';
 import bcrypt from 'bcrypt';
 import { AuthGuard } from '@nestjs/passport';
 import { privateDecrypt } from 'crypto';
+import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
 const bcrypt = require('bcrypt');
 
 @ApiTags('users')
@@ -29,7 +30,7 @@ export class UsersController {
 
 
   @Post("findAll")
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Return all Users if the requester is an admin' })
   @ApiResponse({
     status: 200,

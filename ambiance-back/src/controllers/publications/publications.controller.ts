@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, NotFoundException, UseGuards, Body,Req,Logger,UploadedFile, UseInterceptors, BadRequestException,   } from '@nestjs/common';
+import { Controller, Get, Post, Param, NotFoundException, UseGuards, Body, Req, Logger, UploadedFile, UseInterceptors, BadRequestException } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PublicationsService } from '../../services/publications/publications.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -9,22 +9,23 @@ import { PublicationCategoriesService } from 'src/services/publication-categorie
 import { GroupsService } from 'src/services/groups/groups.service';
 import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
 
+
 @ApiTags('publications')
 @Controller('publications')
 export class PublicationsController {
   constructor(private publicationsService: PublicationsService, private readonly usersService: UsersService, private publicationCategoriesService: PublicationCategoriesService, private groupsService: GroupsService, private readonly logger: Logger) { }
 
-
   @Get('test')//endpoint (endpoit ALWAYS before controller endpoint)
-  @UseGuards(AuthGuard('jwt')) //protected request
+  @UseGuards(JwtAuthGuard) //protected request
   getProtectedData() {
     return { message: 'Accès autorisé à la route protégée.' };
   }
 
   @Post("delete")
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   async deletePublication(@Body() Body: { idPublication: number, utilisateurId: number }, @Req() req: Request) {
     this.logger.log(`[${req.method} ${req.url}] Deleting publication`, Body);
+
     const utilisateur = await this.usersService.findOne(Body.utilisateurId);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
@@ -36,11 +37,29 @@ export class PublicationsController {
     if (publication.utilisateurId !== utilisateur.idUtilisateur) {
       throw new NotFoundException('Utilisateur non autorisé à supprimer ce publication');
     }
-    return await this.publicationsService.remove(publication.idPublication);
+
+    // 1. Récupérer le groupe lié à la publication
+    const groupe = await this.groupsService.getGroupeByPublicationId(publication.idPublication);
+
+    if (groupe) {
+      // 2. Supprimer toutes les participations liées à ce groupe
+      if (groupe.participations && groupe.participations.length > 0) {
+        for (const participation of groupe.participations) {
+          await this.groupsService.removeUserFromGroup(groupe.idGroupe, participation.idUtilisateur.idUtilisateur);
+        }
+      }
+      // 3. Supprimer le groupe
+      await this.groupsService.remove(groupe.idGroupe);
+    }
+
+    // 4. Supprimer la publication
+    await this.publicationsService.remove(publication.idPublication);
+
+    return { message: 'Publication, groupe et participations supprimés avec succès' };
   }
 
   @Post("update")
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update a publication' })
   @ApiResponse({
     status: 200,
@@ -83,7 +102,7 @@ export class PublicationsController {
     placeHandicape: boolean,
     rampe: boolean,
     ascenseur: boolean,
-  },@Req() req: Request) {
+  }, @Req() req: Request) {
     this.logger.log(`[${req.method} ${req.url}] Updating publication`, Body.idPublication);
     const utilisateur = await this.usersService.findOne(Body.utilisateurId);
     if (!utilisateur) {
@@ -110,17 +129,10 @@ export class PublicationsController {
     description: 'Successful response',
     type: PublicationDto,
   })
-  @Get()
-  @ApiOperation({ summary: 'Return all publications' })
-  @ApiResponse({
-    status: 200,
-    description: 'Successful response',
-    type: PublicationDto,
-  })
-async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
-  this.logger.log(`[${req.method} ${req.url}] Fetching all publications`);
-  
-  const publications = await this.publicationsService.findAll();
+  async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
+    this.logger.log(`[${req.method} ${req.url}] Fetching all publications`);
+
+    const publications = await this.publicationsService.findAll();
 
     return Promise.all(publications.map(async pub => {
       const dto = new PublicationDto();
@@ -165,7 +177,6 @@ async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
     }));
   }
 
-
   @Get(':id')
   @ApiOperation({ summary: 'Return one publication by id' })
   @ApiResponse({
@@ -190,7 +201,7 @@ async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
   async getPublicationById(@Param('id') id: number, @Req() req: Request) {
     this.logger.log(`[${req.method} ${req.url}] Fetching publication with ID: ${id}`);
 
-   const pub = await this.publicationsService.findOne(id);
+    const pub = await this.publicationsService.findOne(id);
 
     if (!pub) {
       throw new NotFoundException('publication not found');
@@ -227,97 +238,111 @@ async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
     })) ?? [];
 
     return dto;
-}
+  }
 
-@UseGuards(JwtAuthGuard)
-@Post("create")
-@ApiOperation({ summary: 'Create a publication' })
-@ApiResponse({
-  status: 201,
-  description: 'publication created',
-  examples: {
-    example1: {
-      summary: 'publication created example',
-      value: {
-        idPublication: 1,
-        codePostal: '78000',
-        rue: '2',
-        ville: 'Montigny',
-        titre: 'Cinéma',
-        dateEvenement: '2024-11-06T10:36:19.000Z',
-        description: 'Scary movie',
-        prix: '12.00',
-        lien: 'cineugc.com',
-        dateCreation: '2024-11-06T10:36:58.000Z',
-        participantMax: 10,
-        participantMin: 2,
-        typePost: 'activité',
-        image: 'https://domain.com/chemin/vers/image.jpg'
+  @UseGuards(JwtAuthGuard)
+  @Post("create")
+  @ApiOperation({ summary: 'Create a publication' })
+  @ApiResponse({
+    status: 201,
+    description: 'publication created',
+    examples: {
+      example1: {
+        summary: 'publication created example',
+        value: {
+          idPublication: 1,
+          codePostal: '78000',
+          rue: '2',
+          ville: 'Montigny',
+          titre: 'Cinéma',
+          dateEvenement: '2024-11-06T10:36:19.000Z',
+          description: 'Scary movie',
+          prix: '12.00',
+          lien: 'cineugc.com',
+          dateCreation: '2024-11-06T10:36:58.000Z',
+          participantMax: 10,
+          participantMin: 2,
+          typePost: 'activité',
+          image: 'https://domain.com/chemin/vers/image.jpg'
+        },
       },
     },
-  },
-})
-@UseInterceptors(FileInterceptor('image'))
-async createPublication(
-  @Body() body: {
-    titre: string;
-    dateEvenement: Date;
-    participantMax: number;
-    participantMin: number;
-    prix: number;
-    codePostal: string;
-    description: string;
-    rue: string;
-    ville: string;
-    lien: string;
-    typePost: 'Evenement' | 'activité';
-    placeHandicape: string | boolean;
-    rampe: string | boolean;
-    ascenseur: string | boolean;
-    utilisateurId: number;
-    categories: number[] | string; // Peut être un string JSON envoyé depuis le formulaire
-  },
-  @UploadedFile() image: Express.Multer.File,
-  @Req() req: Request
-) {
-this.logger.log(`[${req.method} ${req.url}] Creating a new publication with body: ${JSON.stringify(body)}`);
+  })
+  @UseInterceptors(FileInterceptor('image'))
+  async createPublication(
+    @Body() body: {
+      titre: string;
+      dateEvenement: Date;
+      participantMax: number;
+      participantMin: number;
+      prix: number;
+      codePostal: string;
+      description: string;
+      rue: string;
+      ville: string;
+      lien: string;
+      typePost: 'Evenement' | 'activité';
+      placeHandicape: string | boolean;
+      rampe: string | boolean;
+      ascenseur: string | boolean;
+      utilisateurId: number;
+      categories: number[] | string; // Peut être un string JSON envoyé depuis le formulaire
+    },
+    @UploadedFile() image: Express.Multer.File,
+    @Req() req: Request
+  ) {
+    this.logger.log(`[${req.method} ${req.url}] Creating a new publication with body: ${JSON.stringify(body)}`);
 
-  const utilisateur = await this.usersService.findOne(body.utilisateurId);
-  if (!utilisateur) {
-    throw new NotFoundException('Utilisateur non trouvé');
-  }
-
-  // Si les catégories sont envoyées en tant que string (ex: via formulaire multipart)
-  if (typeof body.categories === 'string') {
-    try {
-      body.categories = JSON.parse(body.categories);
-    } catch (err) {
-      throw new BadRequestException('Le champ "categories" doit être un tableau ou un JSON valide');
+    const utilisateur = await this.usersService.findOne(body.utilisateurId);
+    if (!utilisateur) {
+      throw new NotFoundException('Utilisateur non trouvé');
     }
+
+    if (typeof body.categories === 'string') {
+      try {
+        body.categories = JSON.parse(body.categories);
+      } catch (err) {
+        throw new BadRequestException('Le champ "categories" doit être un tableau ou un JSON valide');
+      }
+    }
+
+    const publicationData = {
+      ...body,
+      utilisateur,
+      placeHandicape: body.placeHandicape === 'true' || body.placeHandicape === true,
+      rampe: body.rampe === 'true' || body.rampe === true,
+      ascenseur: body.ascenseur === 'true' || body.ascenseur === true,
+      image: image?.buffer ?? null,
+      imageMimeType: image?.mimetype ?? null,
+    };
+
+    // 1. Création de la publication
+    const publication = await this.publicationsService.create(publicationData);
+
+    // 2. Création du groupe lié à la publication (avec organisateur)
+    const groupe = await this.groupsService.create({
+      nomDuGroupe: publication.titre,
+      publication: publication,
+      utilisateur: utilisateur, 
+    });
+
+    // 3. Ajout du créateur comme participant (plus besoin de organisateur)
+    /*await this.groupsService.addParticipation({
+      idGroupe: groupe,
+      idUtilisateur: utilisateur,
+      idPaiement: null,
+    });*/
+
+    // 4. Ajout des catégories à la publication
+    for (const idCategorie of body.categories as number[]) {
+      await this.publicationCategoriesService.addCategoryToPublication(publication.idPublication, idCategorie);
+    }
+
+    return { message: 'Publication et groupe créés avec succès', publication, groupe };
   }
-
-  const publicationData = {
-    ...body,
-    utilisateur,
-    placeHandicape: body.placeHandicape === 'true' || body.placeHandicape === true,
-    rampe: body.rampe === 'true' || body.rampe === true,
-    ascenseur: body.ascenseur === 'true' || body.ascenseur === true,
-    image: image?.buffer ?? null,
-    imageMimeType: image?.mimetype ?? null,
-  };
-
-  const publication = await this.publicationsService.create(publicationData);
-
-  for (const idCategorie of body.categories as number[]) {
-    await this.publicationCategoriesService.addCategoryToPublication(publication.idPublication, idCategorie);
-  }
-
-  return { message: 'Publication créée avec succès', publication };
-}
-
 
   @Post('userPublications')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all publications created by a specific user' })
   @ApiResponse({
     status: 200,
@@ -408,18 +433,18 @@ this.logger.log(`[${req.method} ${req.url}] Creating a new publication with body
         dto.idGroupe = groupe?.idGroupe ?? null;
 
         const participation = groupe?.participations?.find(
-        p => p.idUtilisateur && p.idUtilisateur.idUtilisateur == utilisateurId
+          p => p.idUtilisateur && p.idUtilisateur.idUtilisateur == utilisateurId
         );
         dto.idParticipation = participation?.idParticipation ?? null;
         dto.paiementEffectue = participation?.paiementEffectue ?? false;
 
         return dto;
-          }),
+      }),
     );
   }
-  
+
   @Post('userParticipations')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all publications the user participates in' })
   @ApiResponse({
     status: 200,

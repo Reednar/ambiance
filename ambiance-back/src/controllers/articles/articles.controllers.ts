@@ -3,6 +3,7 @@ import { ArticleService } from '../../services/articles/articles.services';
 import { Article } from '../../entities/articles.entity';
 import { TagService } from '../../services/tags/tags.service';
 import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
 
 @Controller('articles')
 export class ArticlesController {
@@ -14,7 +15,7 @@ export class ArticlesController {
   ) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   create(@Body() data: any): Promise<Article> {
     this.logger.log('Creating article', data);
     return this.articleService.create(data);
@@ -27,7 +28,7 @@ export class ArticlesController {
   }
 
   @Post('delete')
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   async remove(@Body() body: { id: number }): Promise<void> {
     this.logger.log(`Deleting article with id: ${body.id}`);
     return this.articleService.remove(body.id);
@@ -58,7 +59,7 @@ export class ArticlesController {
   }
 
   @Post('add-tags')
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   async addTagsToArticle(
     @Body() body: { articleId: number; tags: string[] }
   ): Promise<{ message: string; article: Article }> {
@@ -88,7 +89,7 @@ export class ArticlesController {
   }
 
   @Post('remove-tags')
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   async removeTagsFromArticle(
     @Body() body: { articleId: number; tags: string[] }
   ): Promise<{ message: string; article: Article }> {
@@ -114,7 +115,7 @@ export class ArticlesController {
   }
 
   @Post('create')
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   async createArticle(
     @Body() body: {
       Titre: string;
@@ -168,7 +169,7 @@ export class ArticlesController {
   }
 
   @Post('update')
-  @UseGuards(AuthGuard('jwt')) // Protection ajoutée
+  @UseGuards(JwtAuthGuard) // Protection ajoutée
   async updateArticle(
     @Body() body: {
       id: number;
