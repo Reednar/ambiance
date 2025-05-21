@@ -55,8 +55,9 @@ export class GroupsService {
   }
 
   async addParticipation(participation: Partial<Participation>): Promise<Participation> {
-    const groupe = await this.groupeRepository.findOneBy({ idGroupe: participation.idGroupe.idGroupe });
-    const utilisateur = await this.userRepository.findOneBy({ idUtilisateur: participation.idUtilisateur.idUtilisateur });
+    // Si on reçoit déjà les objets, inutile de les rechercher à nouveau
+    const groupe = participation.idGroupe;
+    const utilisateur = participation.idUtilisateur;
 
     if (!groupe || !utilisateur) {
       throw new Error('Groupe or Utilisateur not found');

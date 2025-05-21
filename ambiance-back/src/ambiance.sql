@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `Articles` (
   KEY `id_ecole` (`id_ecole`),
   CONSTRAINT `Articles_fk_ecole` FOREIGN KEY (`id_ecole`) REFERENCES `Ecoles` (`Id_ecole`) ON DELETE SET NULL,
   CONSTRAINT `Articles_fk_utilisateur` FOREIGN KEY (`IdAuteur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `Ecoles` (
   PRIMARY KEY (`Id_ecole`) USING BTREE,
   KEY `Ecole_ibfk_1` (`Id_createur`) USING BTREE,
   CONSTRAINT `Ecole_ibfk_1` FOREIGN KEY (`Id_createur`) REFERENCES `Utilisateurs` (`IdUtilisateur`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS `Groupes` (
   PRIMARY KEY (`IdGroupe`),
   UNIQUE KEY `UNIQUE_Publication_Groupe` (`IdPublication`),
   CONSTRAINT `Groupes_ibfk_1` FOREIGN KEY (`IdPublication`) REFERENCES `Publications` (`IdPublication`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
@@ -226,7 +226,7 @@ CREATE TABLE IF NOT EXISTS `Participation` (
   CONSTRAINT `Participation_ibfk_1` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`),
   CONSTRAINT `Participation_ibfk_2` FOREIGN KEY (`IdGroupe`) REFERENCES `Groupes` (`IdGroupe`),
   CONSTRAINT `Participation_ibfk_3` FOREIGN KEY (`IdPaiement`) REFERENCES `Paiements` (`IdPaiement`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
@@ -258,7 +258,7 @@ CREATE TABLE IF NOT EXISTS `Publications` (
   KEY `Publications_ibfk_2` (`id_ecole`),
   CONSTRAINT `Publications_ibfk_1` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE,
   CONSTRAINT `Publications_ibfk_2` FOREIGN KEY (`id_ecole`) REFERENCES `Ecoles` (`Id_ecole`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
 
@@ -268,7 +268,7 @@ CREATE TABLE IF NOT EXISTS `Publication_Categories` (
   `IdCategorie` int(11) NOT NULL,
   PRIMARY KEY (`IdPublication`,`IdCategorie`),
   KEY `Publication_Categories_ibfk_2` (`IdCategorie`),
-  CONSTRAINT `Publication_Categories_ibfk_1` FOREIGN KEY (`IdPublication`) REFERENCES `Publications` (`IdPublication`),
+  CONSTRAINT `Publication_Categories_ibfk_1` FOREIGN KEY (`IdPublication`) REFERENCES `Publications` (`IdPublication`) ON DELETE CASCADE,
   CONSTRAINT `Publication_Categories_ibfk_2` FOREIGN KEY (`IdCategorie`) REFERENCES `Categories` (`IdCategorie`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
