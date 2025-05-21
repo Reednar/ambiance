@@ -23,6 +23,5 @@ export class Participation {
   @JoinColumn({ name: 'IdPaiement' })
   idPaiement: Paiement;
 
-  @Column({ name: 'Organisateur', type: 'boolean', default: false })
-  organisateur: boolean;
+
 }
