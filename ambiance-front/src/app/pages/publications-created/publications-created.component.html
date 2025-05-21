@@ -78,7 +78,7 @@
                       <td>{{ publication.participantMin }}</td>
                       <td>{{ publication.participantMax }}</td>
                       <td>{{ publication.ville }}</td>
-                      <td>{{ publication.description }}</td>
+                      <td>{{ publication.description | slice:0:50 }}{{ publication.description.length > 50 ? '...' : '' }}</td>
                       <td>{{ publication.codePostal }}</td>
                       <td>{{ publication.dateEvenement | date: 'dd/MM/yyyy' }}</td>
                       <td>
