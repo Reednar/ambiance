@@ -61,18 +61,16 @@ export class DiscussionService {
     await this.discussionRepository.remove(discussion);
   }
 
-
-
   async findGroupNamesAndDiscussionIdsByUser(userId: number): Promise<{ nomGroupe: string; idDiscussion: number }[]> {
     return this.discussionRepository
       .createQueryBuilder('discussion')
-      .innerJoin('discussion.idGroupe', 'groupe') // Relation avec la table Groupes
-      .innerJoin('groupe.participations', 'participation') // Relation avec la table Participation
-      .where('participation.idUtilisateur = :userId', { userId }) // Filtrer par utilisateur
+      .innerJoin('discussion.idGroupe', 'groupe')
+      .leftJoin('groupe.participations', 'participation')
+      .where('participation.idUtilisateur = :userId OR groupe.utilisateur = :userId', { userId })
       .select([
-        'groupe.NomDuGroupe AS nomGroupe', // Nom du groupe
-        'discussion.idDiscussion AS idDiscussion', // ID de la discussion
+        'groupe.NomDuGroupe AS nomGroupe',
+        'discussion.idDiscussion AS idDiscussion',
       ])
-      .getRawMany(); // Récupérer les résultats sous forme brute
+      .getRawMany();
   }
 }
