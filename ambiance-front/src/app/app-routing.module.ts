@@ -13,6 +13,8 @@ import { ProfileComponent } from './pages/user/profile/profile.component';
 import { PublicationShowComponent } from './pages/publication-show/publication-show.component';
 import { AuthGuard } from './service/auth.guard';
 import { EcoleComponent } from './pages/ecole/ecole.component';
+import { BlogComponent } from './pages/blogs/blog/blog.component';
+import { ArticleShowComponent } from './pages/blogs/article-show/article-show.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -26,7 +28,13 @@ const routes: Routes = [
   { path: 'moderation', component: ModerationComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'publication-show/:id', component: PublicationShowComponent },
-  { path: 'ecole', component: EcoleComponent }
+  { path: 'ecoles', component: EcoleComponent },
+  { path: 'blogs', component: BlogComponent },
+  { path: 'article-show', component: BlogComponent },
+  { path: 'article-create', component: BlogComponent },
+  { path: 'article-created', component: BlogComponent },
+  { path: 'article/:id', component: ArticleShowComponent }
+
 
 ];
 
