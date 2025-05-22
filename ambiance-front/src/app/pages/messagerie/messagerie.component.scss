@@ -1,0 +1,139 @@
+.messagerie-container {
+  display: flex;
+  height: 700px; // ou 100vh selon besoin
+  background: #111;
+}
+
+.discussions-list {
+  width: 30%;
+  min-width: 220px;
+  max-width: 350px;
+  border-right: 1px solid #ccc;
+  background: #dddcdc;
+  color: #fff;
+  padding: 20px 10px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.discussions-list h4 {
+  margin-bottom: 18px;
+  margin-top: 0;
+  color: #222;
+  font-weight: bold;
+  font-size: 1.2em;
+  letter-spacing: 0.5px;
+}
+
+.discussions-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.discussions-list li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.discussions-list li.selected {
+  background: #e0e0e0;
+  font-weight: bold;
+}
+
+.messages-section {
+  width: 100%;
+  padding: 20px;
+  background: #222;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.messages-history {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.send-message {
+  display: flex;
+  gap: 10px;
+}
+
+.no-discussion, .no-discussion-list {
+  color: #888;
+  padding: 10px;
+  text-align: center;
+}
+
+.discussion-card {
+  background: #232323;
+  color: #fff;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  border: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.discussion-card.selected {
+  border-color: #4cafef;
+  background: #2a2a2a;
+}
+
+.discussion-card:hover {
+  background: #292929;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.13);
+}
+
+.card-title {
+  font-weight: bold;
+  font-size: 1.05em;
+}
+
+.card-id {
+  font-size: 0.85em;
+  color: #aaa;
+}
+
+.message-bubble-container {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.message-author {
+  font-size: 0.95em;
+  color: #4cafef;
+  font-weight: 600;
+  margin-bottom: 2px;
+  margin-left: 6px;
+}
+
+.message-bubble {
+  background: #353b48;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 18px;
+  max-width: 70%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  position: relative;
+  word-break: break-word;
+}
+
+.message-date {
+  font-size: 0.75em;
+  color: #aaa;
+  margin-top: 4px;
+  text-align: right;
+}

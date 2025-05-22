@@ -50,6 +50,7 @@ import { BlogComponent } from './pages/blogs/blog/blog.component';
 import { ArticleCreateComponent } from './pages/blogs/article-create/article-create.component';
 import { ArticleShowComponent } from './pages/blogs/article-show/article-show.component';
 import { ArticleCreatedComponent } from './pages/blogs/article-created/article-created.component';
+import { MessagerieComponent } from './pages/messagerie/messagerie.component';
 
 // Enregistrer la locale française
 registerLocaleData(localeFr);
@@ -74,7 +75,8 @@ registerLocaleData(localeFr);
     BlogComponent,
     ArticleCreateComponent,
     ArticleShowComponent,
-    ArticleCreatedComponent
+    ArticleCreatedComponent,
+    MessagerieComponent
   ],
   imports: [
     BrowserModule,

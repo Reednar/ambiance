@@ -15,6 +15,7 @@ import { AuthGuard } from './service/auth.guard';
 import { EcoleComponent } from './pages/ecole/ecole.component';
 import { BlogComponent } from './pages/blogs/blog/blog.component';
 import { ArticleShowComponent } from './pages/blogs/article-show/article-show.component';
+import { MessagerieComponent } from './pages/messagerie/messagerie.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -33,7 +34,8 @@ const routes: Routes = [
   { path: 'article-show', component: BlogComponent },
   { path: 'article-create', component: BlogComponent },
   { path: 'article-created', component: BlogComponent },
-  { path: 'article/:id', component: ArticleShowComponent }
+  { path: 'article/:id', component: ArticleShowComponent },
+  { path: 'messagerie', component: MessagerieComponent,  canActivate: [AuthGuard]},//
 
 
 ];
