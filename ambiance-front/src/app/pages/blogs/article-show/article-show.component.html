@@ -1,0 +1,19 @@
+<div class="container my-5" *ngIf="article" style="padding-top: 80px !important;">
+  <div class="card shadow-lg" style="padding-top: 50px !important;">
+    <img [src]="article.image" class="card-img-top" [alt]="article.title" />
+    <div class="card-body">
+      <h1 class="card-title">{{ article.title }}</h1>
+      <h5 class="text-muted">{{ article.schoolName }}</h5>
+      <p class="text-end"><small class="text-secondary">{{ article.date | date:'longDate' }}</small></p>
+      <hr />
+      <p class="card-text fs-5">{{ article.content }}</p>
+      <a routerLink="/blogs" class="btn btn-outline-primary mt-4">← Retour aux articles</a>
+    </div>
+  </div>
+</div>
+
+<div class="container my-5" *ngIf="!article" style="padding-top: 80px !important;">
+  <div class="alert alert-warning">
+    L'article demandé n'a pas été trouvé.
+  </div>
+</div>

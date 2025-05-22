@@ -1,3 +1,33 @@
 .layout-main-container {
     padding-top: 0 !important;
 }
+
+
+/* Style général du toast container */
+::ng-deep .p-toast {
+    top: 90px !important;
+    right: 1rem !important;
+    width: 350px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+  }
+  
+  /* Style des messages individuels */
+  ::ng-deep .p-toast-message {
+    background-color: rgba(54, 49, 49, 0.85);
+    color: #ffffff;
+    border-radius: 10px;
+    border: none;
+    backdrop-filter: blur(2px);
+    overflow: hidden;
+  }
+  
+  /* Responsive : sur mobile */
+  @media (max-width: 576px) {
+    ::ng-deep .p-toast {
+      top: 60px !important;       /* descend plus sur mobile */
+      width: 90% !important;
+      right: 5% !important;
+    }
+  }

@@ -45,6 +45,11 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 
 // Import de la locale française
 import localeFr from '@angular/common/locales/fr';
+import { EcoleComponent } from './pages/ecole/ecole.component';
+import { BlogComponent } from './pages/blogs/blog/blog.component';
+import { ArticleCreateComponent } from './pages/blogs/article-create/article-create.component';
+import { ArticleShowComponent } from './pages/blogs/article-show/article-show.component';
+import { ArticleCreatedComponent } from './pages/blogs/article-created/article-created.component';
 
 // Enregistrer la locale française
 registerLocaleData(localeFr);
@@ -64,7 +69,12 @@ registerLocaleData(localeFr);
     PublicationsComponent,
     PublicationsCreateFormComponent,
     ProfileComponent,
-    PublicationShowComponent
+    PublicationShowComponent,
+    EcoleComponent,
+    BlogComponent,
+    ArticleCreateComponent,
+    ArticleShowComponent,
+    ArticleCreatedComponent
   ],
   imports: [
     BrowserModule,
@@ -96,11 +106,6 @@ registerLocaleData(localeFr);
   ],
   bootstrap: [AppComponent],
   providers: [
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   // useClass: AuthInterceptor,
-    //   multi: true,
-    // },
     {
       provide: LOCALE_ID,
       useValue: 'fr-FR',

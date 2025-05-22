@@ -1,0 +1,37 @@
+<div class="school-list container py-5">
+  <h1 class="text-center mb-4" style="padding-top: 50px;">Liste des écoles</h1>
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-4" *ngFor="let school of schools">
+      <div class="card school-card h-100 shadow-sm">
+        <img [src]="school.image" class="card-img-top" alt="{{ school.name }}">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ school.name }}</h5>
+          <p class="card-text">{{ school.description }}</p>
+          <p class="card-text">
+            <small class="text-muted"><i class="bi bi-geo-alt"></i> {{ school.city }}</small>
+          </p>
+          <div class="mt-auto d-flex gap-2">
+            <a [href]="" target="_blank" class="btn btn-outline-primary btn-sm w-50">Voir les blog</a>
+            <a [routerLink]="['/publications']" class="btn btn-primary btn-sm w-50">Voir les publications</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4" *ngFor="let school of schools">
+      <div class="card school-card h-100 shadow-sm">
+        <img [src]="school.image" class="card-img-top" alt="{{ school.name }}">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ school.name }}</h5>
+          <p class="card-text">{{ school.description }}</p>
+          <p class="card-text">
+            <small class="text-muted"><i class="bi bi-geo-alt"></i> {{ school.city }}</small>
+          </p>
+          <div class="mt-auto d-flex gap-2">
+            <a [href]="" target="_blank" class="btn btn-outline-primary btn-sm w-50">Voir les blog</a>
+            <a [routerLink]="['/publications']" class="btn btn-primary btn-sm w-50">Voir les publications</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

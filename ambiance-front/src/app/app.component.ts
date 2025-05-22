@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
 import { AuthService } from './service/authent.service';
 import { catchError, map } from 'rxjs';
+import { MessageService } from 'primeng/api';
+
 interface Claim {
   claim: string;
   value: unknown;
@@ -10,7 +12,7 @@ interface Claim {
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'ambiance-front';
@@ -19,7 +21,7 @@ export class AppComponent {
   role: string | undefined;
   roles: any;
   perimeter : any;
-  constructor(private primengConfig: PrimeNGConfig, private authService: AuthService) {}
+  constructor(private primengConfig: PrimeNGConfig, private authService: AuthService, public messageService: MessageService) {}
 
 ngOnInit() {
   this.authService.isAuthenticated().subscribe(authenticated => {

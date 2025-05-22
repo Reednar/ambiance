@@ -1,0 +1,16 @@
+<div class="container mt-4">
+  <div class="row" style="padding-top: 100px !important;">
+    <div class="col-md-4 mb-4" *ngFor="let blog of blogs">
+      <div class="card h-100 shadow-sm blog-card">
+            <img [src]="blog.image" class="card-img-top" alt="{{ blog.ecole }}">
+            <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ blog.titre }}</h5>
+            <p class="card-text text-muted mb-1"><small>{{ blog.date | date:'longDate' }}</small></p>
+            <p class="card-text flex-grow-1">{{ blog.contenu }}</p>
+            <p class="card-text fw-bold text-primary mt-auto">{{ blog.ecole }}</p>
+            <a [routerLink]="['/article', blog.id]" class="btn btn-outline-primary w-100 mt-2">Voir plus</a>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
