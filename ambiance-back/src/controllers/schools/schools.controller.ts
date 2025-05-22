@@ -20,7 +20,7 @@ export class SchoolsController {
   ) {}
 
   @Post('update')
-  @UseGuards(JwtAuthGuard) // Protection ajoutée
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update an existing school' })
   @ApiResponse({ status: 200, description: 'School updated successfully' })
   async updateSchool(
@@ -43,7 +43,7 @@ export class SchoolsController {
   }
 
   @Post('delete')
-  @UseGuards(JwtAuthGuard) // Protection ajoutée
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Delete a school by ID' })
   @ApiResponse({ status: 200, description: 'School deleted successfully' })
   async deleteSchool(@Body() body: { id: number }, @Req() req: Request): Promise<void> {
@@ -99,7 +99,8 @@ export class SchoolsController {
           type_ecole: "publique",
           rue: "123 Rue de Test",
           ville: "Paris",
-          code_postal: "75000"
+          code_postal: "75000",
+          image: "url"
         }
       }
     }
@@ -333,5 +334,16 @@ export class SchoolsController {
 
     const updatedSchool = await this.schoolsService.update(idEcole, { createur: newCreator });
     return updatedSchool;
+  }
+
+  // POST /schools/by-user
+  // Body: { userId: number }
+  @Post('by-user')
+  async findByUserId(@Body('userId') userId: number): Promise<School> {
+    const school = await this.schoolsService.findByUserId(userId);
+    if (!school) {
+      throw new NotFoundException(`École pour l'utilisateur ${userId} non trouvée`);
+    }
+    return school;
   }
 }

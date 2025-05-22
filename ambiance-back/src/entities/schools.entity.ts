@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMan
 import { User } from './users.entity';
 import { MembresBDE } from './membresBDE.entity';
 import { Publication } from './publications.entity';
+import { Article } from './articles.entity';
 
 @Entity('Ecoles')
 export class School {
@@ -50,4 +51,10 @@ export class School {
 
   @Column({ name: 'Allowed_domain', type: 'text', nullable: true })
   allowed_domain: string;
+
+  @Column({ name: 'Image', type: 'text', nullable: true })
+  image: string;
+
+  @OneToMany(() => Article, article => article.ecole)
+  articles: Article[];
 }

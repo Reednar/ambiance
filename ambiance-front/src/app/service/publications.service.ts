@@ -41,4 +41,8 @@ create(data: any): Observable<any> {
   getPublicationsByUser(id: number): Observable<any> {
     return this.http.get(`${this.url}/user/${id}`);
   }
+
+  getAccessibleSchools(userId: number): Observable<{ id: number; nom: string }[]> {
+    return this.http.post<{ id: number; nom: string }[]>(`${this.url}/accessible-ecoles`, { userId });
+  }
 }

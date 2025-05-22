@@ -129,7 +129,7 @@
                             <div class="product-card-2">
                                 <div class="product-card-image">
                                     <div class="product-wishlist">
-                                        <a class="btn btn-outline-primary">{{ publication.prix }}€</a>
+                                        <a class="btn btn-outline-dark" style="color: black !important;">{{ publication.prix }}€</a>
                                     </div>
                                     <div class="product-media">
                                         <a routerLink="#"><img alt="" class="img-fluid" [src]="publication.image" /></a>
@@ -144,17 +144,17 @@
                                         HH\'h\'mm' }}</div>
                                     <div class="rating-star text">
                                         <!-- Première catégorie -->
-                                        <span *ngIf="publication.categories.length > 0" class="badge bg-info" style="margin-top: 15px;">
+                                        <span *ngIf="publication.categories.length > 0" class="badge bg-info" style="margin-top: 15px;  background-color: #080808da !important">
                                         {{ publication.categories[0].nom }}
                                         </span>
 
                                         <!-- Deuxième catégorie -->
-                                        <span *ngIf="publication.categories.length > 1" class="badge bg-info" style="margin-top: 15px;">
+                                        <span *ngIf="publication.categories.length > 1" class="badge bg-info" style="margin-top: 15px;  background-color:  #080808da !important">
                                         {{ publication.categories[1].nom }}
                                         </span>
 
                                         <!-- Badge "3 ..." si plus de 2 catégories -->
-                                        <span *ngIf="publication.categories.length > 2" class="badge bg-info" style="margin-top: 15px;">
+                                        <span *ngIf="publication.categories.length > 2" class="badge bg-info" style="margin-top: 15px; background-color:  #080808da !important;">
                                         ...
                                         </span>
                                     </div>

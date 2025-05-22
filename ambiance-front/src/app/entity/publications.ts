@@ -26,6 +26,9 @@ export interface Publication {
   idGroupe: number;
   idParticipation : number;
   paiementEffectue : boolean;
+  nomEcole: string;
+  idEcole: number;
+  listeEcoleIds: string;
 }
 
 //  Objet Categorie

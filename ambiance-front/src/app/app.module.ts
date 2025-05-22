@@ -42,6 +42,7 @@ import { PublicationsCreateFormComponent } from './pages/publications-create-for
 import { ProfileComponent } from './pages/user/profile/profile.component';
 import { PublicationShowComponent } from './pages/publication-show/publication-show.component';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import { PickListModule } from 'primeng/picklist';
 
 // Import de la locale française
 import localeFr from '@angular/common/locales/fr';

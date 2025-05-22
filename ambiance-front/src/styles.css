@@ -1266,7 +1266,6 @@ fieldset:disabled .btn {
   --bs-navbar-brand-color: #fff;
   --bs-navbar-brand-hover-color: #fff;
   --bs-navbar-toggler-border-color: rgba(255, 255, 255, 0.1);
-  --bs-navbar-toggler-icon-bg: url(data:image/svg+xml,%3csvg\ xmlns=\'http://www.w3.org/2000/svg\'\ viewBox=\'0\ 0\ 30\ 30\'%3e%3cpath\ stroke=\'rgba%28255,\ 255,\ 255,\ 0.55%29\'\ stroke-linecap=\'round\'\ stroke-miterlimit=\'10\'\ stroke-width=\'2\'\ d=\'M4\ 7h22M4\ 15h22M4\ 23h22\'/%3e%3c/svg%3e)
 }
 
 @media (min-width:576px) {}
@@ -1278,18 +1277,6 @@ fieldset:disabled .btn {
 @media (prefers-reduced-motion:reduce) {}
 
 .badge {
-  --bs-badge-padding-x: 0.65em;
-  --bs-badge-padding-y: 0.35em;
-  --bs-badge-font-size: 0.75em;
-  --bs-badge-font-weight: 700;
-  --bs-badge-color: #fff;
-  --bs-badge-border-radius: var(--bs-border-radius);
-  display: inline-block;
-  padding: var(--bs-badge-padding-y) var(--bs-badge-padding-x);
-  font-size: var(--bs-badge-font-size);
-  font-weight: var(--bs-badge-font-weight);
-  line-height: 1;
-  color: var(--bs-badge-color);
 
   background-color: grey !important;
   text-align: center;
@@ -2584,7 +2571,7 @@ img {
 
 @media (min-width:576px) {}
 .product-card-2 {
-    border: 1px solid var(--bs-gray-300);
+    /* border: 1px solid var(--bs-gray-300); */
     position: relative;
     background: var(--bs-body-bg);
     display: flex;

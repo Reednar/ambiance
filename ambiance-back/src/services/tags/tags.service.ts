@@ -10,10 +10,10 @@ export class TagService {
     private readonly tagRepository: Repository<Tag>,
   ) {}
 
-  async create(Nom: string): Promise<Tag> {
-    let tag = await this.tagRepository.findOne({ where: { Nom } });
+  async create(nom: string): Promise<Tag> {
+    let tag = await this.tagRepository.findOne({ where: { nom } });
     if (!tag) {
-      tag = this.tagRepository.create({ Nom });
+      tag = this.tagRepository.create({ nom });
       await this.tagRepository.save(tag);
     }
     return tag;
@@ -23,11 +23,11 @@ export class TagService {
     return this.tagRepository.find();
   }
 
-  async findOne(IdTag: number): Promise<Tag | null> {
-    return this.tagRepository.findOne({ where: { IdTag } });
+  async findOne(idTag: number): Promise<Tag | null> {
+    return this.tagRepository.findOne({ where: { idTag } });
   }
 
-  async remove(IdTag: number): Promise<void> {
-    await this.tagRepository.delete(IdTag);
+  async remove(idTag: number): Promise<void> {
+    await this.tagRepository.delete(idTag);
   }
 }

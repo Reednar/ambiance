@@ -1,13 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-
-interface Blog {
-  id: number;
-  titre: string;
-  contenu: string;
-  date: string;
-  image: string;
-  ecole: string;
-}
+import { Ecole } from '../../../entity/ecole';
+import { EcoleService } from '../../../service/ecole.service';
+import { BlogService } from '../../../service/blog.service';
+import { Article } from '../../../entity/article';
 
 @Component({
   selector: 'app-blog',
@@ -15,36 +10,80 @@ interface Blog {
   styleUrl: './blog.component.scss'
 })
 export class BlogComponent implements OnInit{
+  ecoles: Ecole[] = [];
+  articles: Article[] = [];
+  selectedSchools: Set<number> = new Set();
 
-blogs: Blog[] = [];
+  constructor(
+    private ecoleService: EcoleService,
+    private blogService: BlogService
+  ){}
 
   ngOnInit(): void {
-    this.blogs = [
-      {
-        id: 1,
-        titre: 'Ensitech : une pédagogie innovante',
-        contenu: 'Découvrez comment Ensitech forme les développeurs de demain en alternance.',
-        date: '2025-05-20',
-        image: 'assets/dev.jpg',
-        ecole: 'Ensitech'
-      },
-      {
-        id: 2,
-        titre: 'La Sorbonne : excellence académique',
-        contenu: 'Un regard sur les programmes interdisciplinaires de la Sorbonne Université.',
-        date: '2025-05-19',
-        image: 'assets/sorb.jpg',
-        ecole: 'Sorbonne Université'
-      },
-      {
-        id: 3,
-        titre: 'Paris-Saclay : moteur scientifique',
-        contenu: 'Retour sur les dernières innovations et partenariats de Paris-Saclay.',
-        date: '2025-05-18',
-        image: 'assets/mot.jpg',
-        ecole: 'Université Paris-Saclay'
-      }
-    ];
+    this.loadEcoles();
+    this.loadArticles();
   }
+
+  // Récupérer les écoles
+loadEcoles(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    this.ecoleService.findAllSchools().subscribe({
+      next: (data) => {
+        this.ecoles = data;
+        resolve();  // Résoudre la Promise une fois les données récupérées
+      },
+      error: (err) => {
+        console.error('Erreur lors de la récupération des écoles', err);
+       resolve();  // Rejeter la Promise en cas d'erreur
+      }
+    });
+  });
+}
+
+  // Récupérer les écoles
+loadArticles(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    this.blogService.list().subscribe({
+      next: (data) => {
+        this.articles = data;
+        resolve();  // Résoudre la Promise une fois les données récupérées
+      },
+      error: (err) => {
+        console.error('Erreur lors de la récupération des écoles', err);
+       resolve();  // Rejeter la Promise en cas d'erreur
+      }
+    });
+  });
+}
+
+ // Pour récupérer la liste des écoles sélectionnées (objet complet, pas seulement id)
+  getSelectedSchools() {
+    return this.ecoles.filter(school => this.selectedSchools.has(school.id));
+  }
+
+filteredArticles(): Article[] {
+  console.log('Filtrage des articles avec écoles sélectionnées:', Array.from(this.selectedSchools));
+  if (this.selectedSchools.size === 0) {
+    console.log('Aucune école sélectionnée, affichage de tous les articles');
+    return this.articles;
+  }
+  const filtered = this.articles.filter(article => 
+    article.idEcole !== undefined && this.selectedSchools.has(article.idEcole)
+  );
+  console.log(`Articles filtrés (${filtered.length}):`, filtered.map(a => a.titre));
+  return filtered;
+}
+
+
+  toggleSchoolFilter(schoolId: number): void {
+  if (this.selectedSchools.has(schoolId)) {
+    this.selectedSchools.delete(schoolId);
+    console.log(`École décochée : ${schoolId}`);
+  } else {
+    this.selectedSchools.add(schoolId);
+    console.log(`École cochée : ${schoolId}`);
+  }
+  console.log('Écoles sélectionnées:', Array.from(this.selectedSchools));
+}
 
 }
