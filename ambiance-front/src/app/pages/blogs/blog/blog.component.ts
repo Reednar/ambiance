@@ -3,6 +3,7 @@ import { Ecole } from '../../../entity/ecole';
 import { EcoleService } from '../../../service/ecole.service';
 import { BlogService } from '../../../service/blog.service';
 import { Article } from '../../../entity/article';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-blog',
@@ -16,12 +17,20 @@ export class BlogComponent implements OnInit{
 
   constructor(
     private ecoleService: EcoleService,
-    private blogService: BlogService
+    private blogService: BlogService,
+    private route: ActivatedRoute
   ){}
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+    if (params['ecole']) {
+      this.selectedSchools.add(Number(params['ecole']));
+    }
+
+
     this.loadEcoles();
     this.loadArticles();
+    });
   }
 
   // Récupérer les écoles

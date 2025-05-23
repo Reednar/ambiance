@@ -10,9 +10,6 @@ import {
 } from '@angular/core';
 import Swiper from 'swiper';
 import { MenuItem } from 'primeng/api';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 import { AuthService } from '../service/authent.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
