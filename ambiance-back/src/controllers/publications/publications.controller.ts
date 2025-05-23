@@ -504,19 +504,13 @@ async getAccessibleSchoolsPost(
   @Body('userId') userId: number,
   @Req() req: Request
 ): Promise<{ id: number; nom: string }[]> {
-    console.log("id ecole")
-
   this.logger.log(`[${req.method} ${req.url}] Get schools accessible to user ${userId}`);
-
   const user = await this.usersService.findOne(userId);
   const idEcoleUser = user?.idEcole;
-  console.log("id ecole : " + idEcoleUser)
   if (!idEcoleUser) {
     return [];
   }
-
   const publications = await this.publicationsService.findAllWhereEcoleIdInListe(idEcoleUser);
-
 const uniqueEcoles = new Map<number, string>();
   for (const pub of publications) {
     uniqueEcoles.set(pub.idEcole, pub.ecole.nom);

@@ -68,11 +68,41 @@ export class ArticleService {
     });
   }
 
-  async update(id: number, data: Partial<Article>): Promise<Article> {
-    const { image, ...otherData } = data; // Gestion de `Image`
-    await this.articleRepo.update(id, { ...otherData, ...(image ? { image } : {}) }); // Mise à jour conditionnelle
-    return this.findOne(id, ['tags', 'utilisateur']);
+  // async update(id: number, data: Partial<Article>): Promise<Article> {
+  //   const { image, ...otherData } = data; // Gestion de `Image`
+  //   await this.articleRepo.update(id, { ...otherData, ...(image ? { image } : {}) }); // Mise à jour conditionnelle
+  //   return this.findOne(id, ['tags', 'utilisateur']);
+  // }
+
+  async update(
+  id: number,
+  data: Partial<Article> & { tagIds?: number[] }
+): Promise<Article> {
+  const { image, tagIds, ...otherData } = data;
+
+  // Mise à jour des champs de base
+  await this.articleRepo.update(id, {
+    ...otherData,
+    ...(image ? { image } : {}),
+  });
+
+  const article = await this.articleRepo.findOne({
+    where: { idArticle: id },
+    relations: ['tags', 'utilisateur', 'ecole'],
+  });
+
+  // Mise à jour des relations tags
+  if (article && tagIds) {
+    const tags = await this.tagRepo.find({
+      where: { idTag: In(tagIds) },
+    });
+    article.tags = tags;
+    await this.articleRepo.save(article);
   }
+
+  return this.findOne(id, ['tags', 'utilisateur', 'ecole']);
+}
+
 
   async findAuteur(idAuteur: number): Promise<User | null> {
     return await this.userRepo.findOneBy({ idUtilisateur: idAuteur });

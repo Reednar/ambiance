@@ -94,8 +94,6 @@ async ngOnInit() {
 
     // Une fois que les données sont prêtes, initialiser le service de recherche
     this.searchService.initialize(this.publications, this.users, this.ecoles);
-
-    console.log('Données initialisées pour la recherche');
   } catch (error) {
     console.error('Erreur lors du chargement des données', error);
   }

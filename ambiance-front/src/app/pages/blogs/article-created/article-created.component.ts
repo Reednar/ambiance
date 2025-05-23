@@ -5,7 +5,7 @@ import { BlogService } from '../../../service/blog.service';
 @Component({
   selector: 'app-article-created',
   templateUrl: './article-created.component.html',
-  styleUrl: './article-created.component.scss'
+  // styleUrls: ['./article-form/article-form.component.scss']
 })
 export class ArticleCreatedComponent implements OnInit {
   paginatedArticles: Article[] = [];

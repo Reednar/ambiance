@@ -181,23 +181,29 @@ export class ArticlesController {
     };
   }
 
-  @Post('update')
-  @UseGuards(JwtAuthGuard) // Protection ajoutée
-  async updateArticle(
-    @Body() body: {
-      id: number;
-      titre?: string;
-      contenu?: string;
-      image?: string;
-    }
-  ): Promise<Article> {
-    this.logger.log(`Updating article with id: ${body.id}`);
-    return this.articleService.update(body.id, {
-      titre: body.titre,
-      contenu: body.contenu,
-      image: body.image,
-    });
+@Post('update')
+@UseGuards(JwtAuthGuard)
+async updateArticle(
+  @Body() body: {
+    id: number;
+    titre?: string;
+    contenu?: string;
+    image?: string;
+    tagIds?: number[];
   }
+): Promise<Article> {
+  this.logger.log(`Updating article with id: ${body.id}`);
+  return this.articleService.update(
+  body.id,
+  {
+    titre: body.titre,
+    contenu: body.contenu,
+    image: body.image,
+    tagIds: body.tagIds,
+  } as Partial<Article> & { tagIds?: number[] }
+);
+
+}
 
   @Post('findAllByAuthor')
 async findAllByAuthor(

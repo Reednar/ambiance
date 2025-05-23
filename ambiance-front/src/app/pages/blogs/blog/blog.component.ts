@@ -62,15 +62,12 @@ loadArticles(): Promise<void> {
   }
 
 filteredArticles(): Article[] {
-  console.log('Filtrage des articles avec écoles sélectionnées:', Array.from(this.selectedSchools));
   if (this.selectedSchools.size === 0) {
-    console.log('Aucune école sélectionnée, affichage de tous les articles');
     return this.articles;
   }
   const filtered = this.articles.filter(article => 
     article.idEcole !== undefined && this.selectedSchools.has(article.idEcole)
   );
-  console.log(`Articles filtrés (${filtered.length}):`, filtered.map(a => a.titre));
   return filtered;
 }
 
@@ -78,12 +75,9 @@ filteredArticles(): Article[] {
   toggleSchoolFilter(schoolId: number): void {
   if (this.selectedSchools.has(schoolId)) {
     this.selectedSchools.delete(schoolId);
-    console.log(`École décochée : ${schoolId}`);
   } else {
     this.selectedSchools.add(schoolId);
-    console.log(`École cochée : ${schoolId}`);
   }
-  console.log('Écoles sélectionnées:', Array.from(this.selectedSchools));
 }
 
 }

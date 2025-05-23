@@ -43,7 +43,6 @@ export class PublicationsComponent implements OnInit {
     if (params['category']) {
       this.selectedCategories.add(Number(params['category']));
     } else if (params['ecole']) {
-      console.log("param ecole: " + Number(params['ecole']));
       this.selectedSchools.add(Number(params['ecole']));
     }
 
