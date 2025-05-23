@@ -91,7 +91,13 @@ export class Publication {
   utilisateur: User;
 
   @Column({ name: 'IdUtilisateur', type: 'int', nullable: false })
-  utilisateurId: number; // Explicitly define utilisateurId as a column
+  utilisateurId: number;
+
+  @Column({ name: 'id_ecole', type: 'int', nullable: false })
+  idEcole: number;
+
+  @Column({ name: 'ListeEcoleIds', type: 'int', nullable: false })
+  listeEcoleIds: string;
 
   @OneToMany(() => PublicationCategories, pc => pc.publication)
   publicationCategories: PublicationCategories[];
@@ -99,6 +105,7 @@ export class Publication {
   categories: any;
 
   @ManyToOne(() => School, (ecole) => ecole.publications, { nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'id_ecole' }) // Colonne de la clé étrangère
+  @JoinColumn({ name: 'id_ecole' }) 
   ecole: School;
+
 }

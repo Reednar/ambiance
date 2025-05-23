@@ -4,6 +4,7 @@ import { Article } from '../../entities/articles.entity';
 import { TagService } from '../../services/tags/tags.service';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
+import { SchoolsService } from 'src/services/schools/schools.service';
 
 @Controller('articles')
 export class ArticlesController {
@@ -11,7 +12,8 @@ export class ArticlesController {
 
   constructor(
     private readonly articleService: ArticleService,
-    private readonly tagService: TagService
+    private readonly tagService: TagService,
+    private readonly schoolService: SchoolsService
   ) {}
 
   @Post()
@@ -36,15 +38,19 @@ export class ArticlesController {
 
   @Post('list')
   async getArticlesWithAuthorAndTags(): Promise<
-    { id: number; DateCreation: Date; utilisateur: string; tags: string[] }[]
+    { id: number; dateCreation: Date; utilisateur: string; tags: string[] }[]
   > {
     this.logger.log('Fetching all articles with authors and tags');
     const articles = await this.articleService.findAllWithAuthorAndTags();
     return articles.map(article => ({
-      id: article.IdArticle,
-      DateCreation: article.DateCreation,
+      id: article.idArticle,
+      dateCreation: article.dateCreation,
       utilisateur: article.utilisateur ? `${article.utilisateur.prenom} ${article.utilisateur.nom}` : null,
-      tags: article.tags ? article.tags.map(tag => tag.Nom) : [],
+      tags: article.tags ? article.tags.map(tag => tag.nom) : [],
+      contenu: article.contenu,
+      image: article.image,
+      nomEcole: article?.ecole?.nom ?? null,
+      idEcole: article?.ecole?.id ?? null
     }));
   }
 
@@ -53,8 +59,8 @@ export class ArticlesController {
     this.logger.log('Fetching all tags');
     const tags = await this.tagService.findAll();
     return tags.map(tag => ({
-      id: tag.IdTag,
-      nom: tag.Nom,
+      id: tag.idTag,
+      nom: tag.nom,
     }));
   }
 
@@ -76,7 +82,7 @@ export class ArticlesController {
     article.tags = article.tags || [];
     for (const tagName of tags) {
       let tag = await this.tagService.create(tagName);
-      if (!article.tags.find(t => t.IdTag === tag.IdTag)) {
+      if (!article.tags.find(t => t.idTag === tag.idTag)) {
         article.tags.push(tag);
       }
     }
@@ -104,7 +110,7 @@ export class ArticlesController {
     }
 
     article.tags = (article.tags || []).filter(
-      tag => !tags.includes(tag.Nom)
+      tag => !tags.includes(tag.nom)
     );
 
     // Sauvegarde l'article avec les tags mis à jour
@@ -115,43 +121,48 @@ export class ArticlesController {
   }
 
   @Post('create')
-  @UseGuards(JwtAuthGuard) // Protection ajoutée
+  @UseGuards(JwtAuthGuard)
   async createArticle(
     @Body() body: {
-      Titre: string;
+      titre: string;
       contenu: string;
       idAuteur: number;
       id_ecole?: number;
-      Image?: string;
+      image?: string;
+      tagIds?: number[];
     }
   ): Promise<Article> {
-    this.logger.log(`Creating article with title: ${body.Titre} by author: ${body.idAuteur}`);
+    this.logger.log(`Creating article with title: ${body.titre} by author: ${body.idAuteur}`);
     const utilisateur = await this.articleService.findAuteur(body.idAuteur);
     if (!utilisateur) {
       this.logger.error(`Auteur not found: ${body.idAuteur}`);
       throw new Error('Auteur not found');
     }
 
-    if (body.Image && !body.Image.startsWith('http')) {
+    if (body.image && !body.image.startsWith('http')) {
       throw new Error('Invalid image URL');
     }
 
-    const articleData: Partial<Article> = {
-      Titre: body.Titre,
-      Contenu: body.contenu,
-      utilisateur: utilisateur,
-      DateCreation: new Date(),
-      Image: body.Image,
-      ...(body.id_ecole ? { ecole: { id: body.id_ecole } } : {}),
-    };
+    const ecole = body.id_ecole ? await this.schoolService.findOne(body.id_ecole) : null;
 
+
+    const articleData: Partial<any> = {
+    titre: body.titre,
+    contenu: body.contenu,
+    utilisateur: utilisateur,
+    dateCreation: new Date(),
+    image: body.image,
+    idEcole: body.id_ecole,
+    ...(ecole ? { ecole } : {}),
+    tagIds: body.tagIds
+  };
     return await this.articleService.create(articleData);
   }
 
   @Post('findWithAuthor')
   async findArticleWithAuthor(
     @Body() body: { id: number }
-  ): Promise<{ id: number; Titre: string; contenu: string; DateCreation: Date; utilisateur: string; tags: string[] }> {
+  ): Promise<{ id: number; titre: string; contenu: string; dateCreation: Date; utilisateur: string; tags: string[], nomEcole?: string; idEcole?: number}> {
     this.logger.log(`Finding article with author for id: ${body.id}`);
     const article = await this.articleService.findOne(body.id, ['utilisateur']);
     if (!article) {
@@ -159,30 +170,68 @@ export class ArticlesController {
       throw new Error('Article not found');
     }
     return {
-      id: article.IdArticle,
-      Titre: article.Titre,
-      contenu: article.Contenu,
-      DateCreation: article.DateCreation,
+      id: article.idArticle,
+      titre: article.titre,
+      contenu: article.contenu,
+      dateCreation: article.dateCreation,
       utilisateur: article.utilisateur ? `${article.utilisateur.prenom} ${article.utilisateur.nom}` : null,
-      tags: article.tags ? article.tags.map(tag => tag.Nom) : [],
+      tags: article.tags ? article.tags.map(tag => tag.nom) : [],
+      nomEcole: article?.ecole?.nom ?? null,
+      idEcole: article?.ecole?.id ?? null
     };
   }
 
-  @Post('update')
-  @UseGuards(JwtAuthGuard) // Protection ajoutée
-  async updateArticle(
-    @Body() body: {
-      id: number;
-      Titre?: string;
-      contenu?: string;
-      Image?: string;
-    }
-  ): Promise<Article> {
-    this.logger.log(`Updating article with id: ${body.id}`);
-    return this.articleService.update(body.id, {
-      Titre: body.Titre,
-      Contenu: body.contenu,
-      Image: body.Image,
-    });
+@Post('update')
+@UseGuards(JwtAuthGuard)
+async updateArticle(
+  @Body() body: {
+    id: number;
+    titre?: string;
+    contenu?: string;
+    image?: string;
+    tagIds?: number[];
   }
+): Promise<Article> {
+  this.logger.log(`Updating article with id: ${body.id}`);
+  return this.articleService.update(
+  body.id,
+  {
+    titre: body.titre,
+    contenu: body.contenu,
+    image: body.image,
+    tagIds: body.tagIds,
+  } as Partial<Article> & { tagIds?: number[] }
+);
+
+}
+
+  @Post('findAllByAuthor')
+async findAllByAuthor(
+  @Body() body: { id: number }
+): Promise<Array<{
+  id: number;
+  titre: string;
+  contenu: string;
+  dateCreation: Date;
+  utilisateur: string;
+  tags: string[];
+  nomEcole?: string;
+  idEcole?: number;
+}>> {
+  this.logger.log(`Finding all articles for author ID: ${body.id}`);
+
+  const articles = await this.articleService.findByAuthorId(body.id);
+
+  return articles.map(article => ({
+    id: article.idArticle,
+    titre: article.titre,
+    contenu: article.contenu,
+    dateCreation: article.dateCreation,
+    utilisateur: article.utilisateur ? `${article.utilisateur.prenom} ${article.utilisateur.nom}` : '',
+    tags: article.tags?.map(tag => tag.nom) || [],
+    nomEcole: article.ecole?.nom ?? null,
+    idEcole: article.ecole?.id ?? null
+  }));
+}
+
 }

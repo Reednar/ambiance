@@ -4,10 +4,10 @@ import { Article } from './articles.entity';
 @Entity('Tags')
 export class Tag {
   @PrimaryGeneratedColumn()
-  IdTag: number;
+  idTag: number;
 
   @Column({ length: 100, unique: true })
-  Nom: string;
+  nom: string;
 
   @ManyToMany(() => Article, article => article.tags)
   articles: Article[];

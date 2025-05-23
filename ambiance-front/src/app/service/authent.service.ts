@@ -86,6 +86,7 @@ login(credentials: { mail: string; password: string }): Observable<{ success: bo
   return this.http.post<void>(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
     tap(() => {
       this.isConnected.next(false);
+      sessionStorage.removeItem('id_utilisateur');
       this.router.navigate(['/login']);
     }),
     catchError(error => {
@@ -101,25 +102,25 @@ login(credentials: { mail: string; password: string }): Observable<{ success: bo
     document.cookie = 'refresh_token=; Max-Age=0; path=/'; // Effacer le cookie
   }
 
-refreshToken(): Observable<{ access_token: string }> {
-  const refreshToken = this.getRefreshToken();
+// refreshToken(): Observable<{ access_token: string }> {
+//   const refreshToken = this.getRefreshToken();
 
-  // Vérifie si le refresh token existe avant d'envoyer la requête
-  if (!refreshToken) {
-    return throwError(() => new Error('No refresh token available'));
-  }
+//   // Vérifie si le refresh token existe avant d'envoyer la requête
+//   if (!refreshToken) {
+//     return throwError(() => new Error('No refresh token available'));
+//   }
 
-  return this.http.post<{ access_token: string }>(`${environment.baseUrl}/auth/refresh`, { refreshToken }).pipe(
-    tap(response => {
-      const newAccessToken = response.access_token;
-      sessionStorage.setItem('access_token', newAccessToken);
-    }),
-    catchError(error => {
-      console.error('Error during refresh token request', error);
-      return throwError(() => new Error('Error during refresh token request'));
-    })
-  );
-}
+//   return this.http.post<{ access_token: string }>(`${environment.baseUrl}/auth/refresh`, { refreshToken }).pipe(
+//     tap(response => {
+//       const newAccessToken = response.access_token;
+//       sessionStorage.setItem('access_token', newAccessToken);
+//     }),
+//     catchError(error => {
+//       console.error('Error during refresh token request', error);
+//       return throwError(() => new Error('Error during refresh token request'));
+//     })
+//   );
+// }
 
 
   getRefreshToken(): string | null {

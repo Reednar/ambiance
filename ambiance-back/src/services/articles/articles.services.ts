@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Article } from '../../entities/articles.entity';
 import { Tag } from '../../entities/tag.entity';
 import { User } from '../../entities/users.entity';
@@ -19,38 +19,43 @@ export class ArticleService {
   ) {}
 
   async create(data: any): Promise<Article> {
-    const { Titre, Contenu, tags: tagEntities, utilisateur, Image } = data; // Ajout de `Image`
+  const { titre, contenu, tagIds, utilisateur, image, dateCreation, idEcole } = data;
 
-    let tags = [];
-    if (data.tagNames) {
-      tags = await Promise.all(
-        (data.tagNames || []).map(async (name: string) => {
-          let tag = await this.tagRepo.findOne({ where: { Nom: name } });
-          if (!tag) {
-            tag = this.tagRepo.create({ Nom: name });
-            await this.tagRepo.save(tag);
-          }
-          return tag;
-        }),
-      );
-    } else if (tagEntities) {
-      tags = tagEntities;
-    }
-
-    const article = this.articleRepo.create({ Titre, Contenu, tags, utilisateur, Image }); // Ajout de `Image`
-    return this.articleRepo.save(article);
+  // Gestion des tags (comme tu l'as déjà)
+   let tags = [];
+  if (Array.isArray(tagIds) && tagIds.length > 0) {
+    tags = await this.tagRepo.find({ where: { idTag: In(tagIds) } });
   }
+
+  const article = this.articleRepo.create({
+    titre,
+    contenu,
+    tags,
+    utilisateur,
+    image,
+    idEcole,
+    dateCreation: dateCreation || new Date(),
+  });
+
+  return this.articleRepo.save(article);
+}
+
+
 
   findAll(): Promise<Article[]> {
     return this.articleRepo.find({ relations: ['tags'] });
   }
 
-  async findOne(id: number, relations: string[] = []): Promise<Article | null> {
-    return await this.articleRepo.findOne({
-      where: { IdArticle: id },
-      relations,
-    });
-  }
+ async findOne(
+  id: number, 
+  relations: string[] = ['utilisateur', 'ecole', 'tags']
+): Promise<Article | null> {
+  return await this.articleRepo.findOne({
+    where: { idArticle: id },
+    relations,
+  });
+}
+
 
   async remove(id: number): Promise<void> {
     await this.articleRepo.delete(id);
@@ -58,16 +63,46 @@ export class ArticleService {
 
   async findAllWithAuthorAndTags(): Promise<Article[]> {
     return this.articleRepo.find({
-      relations: ['utilisateur', 'tags'],
-      order: { DateCreation: 'DESC' }
+      relations: ['utilisateur', 'tags', 'utilisateur.ecole', 'ecole'],
+      order: { dateCreation: 'DESC' }
     });
   }
 
-  async update(id: number, data: Partial<Article>): Promise<Article> {
-    const { Image, ...otherData } = data; // Gestion de `Image`
-    await this.articleRepo.update(id, { ...otherData, ...(Image ? { Image } : {}) }); // Mise à jour conditionnelle
-    return this.findOne(id, ['tags', 'utilisateur']);
+  // async update(id: number, data: Partial<Article>): Promise<Article> {
+  //   const { image, ...otherData } = data; // Gestion de `Image`
+  //   await this.articleRepo.update(id, { ...otherData, ...(image ? { image } : {}) }); // Mise à jour conditionnelle
+  //   return this.findOne(id, ['tags', 'utilisateur']);
+  // }
+
+  async update(
+  id: number,
+  data: Partial<Article> & { tagIds?: number[] }
+): Promise<Article> {
+  const { image, tagIds, ...otherData } = data;
+
+  // Mise à jour des champs de base
+  await this.articleRepo.update(id, {
+    ...otherData,
+    ...(image ? { image } : {}),
+  });
+
+  const article = await this.articleRepo.findOne({
+    where: { idArticle: id },
+    relations: ['tags', 'utilisateur', 'ecole'],
+  });
+
+  // Mise à jour des relations tags
+  if (article && tagIds) {
+    const tags = await this.tagRepo.find({
+      where: { idTag: In(tagIds) },
+    });
+    article.tags = tags;
+    await this.articleRepo.save(article);
   }
+
+  return this.findOne(id, ['tags', 'utilisateur', 'ecole']);
+}
+
 
   async findAuteur(idAuteur: number): Promise<User | null> {
     return await this.userRepo.findOneBy({ idUtilisateur: idAuteur });
@@ -76,4 +111,12 @@ export class ArticleService {
   async save(article: Article): Promise<Article> {
     return this.articleRepo.save(article);
   }
+
+  async findByAuthorId(authorId: number): Promise<Article[]> {
+  return this.articleRepo.find({
+    where: { utilisateur: { idUtilisateur: authorId } },
+    relations: ['utilisateur', 'tags', 'ecole']
+  });
+}
+
 }

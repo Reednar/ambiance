@@ -17,20 +17,53 @@
             {{ cat.nom }}
           </span>
         </div>
+        <div *ngIf="selectedSchools.size > 0" class="d-flex align-items-center flex-wrap gap-2 categories-container">
+          <span class="categories-label">Écoles sélectionnées :</span>
+          <span *ngFor="let school of getSelectedSchools()" class="category-item">
+            {{ school.nom }}
+          </span>
+        </div>
       </div>
-      <div class="d-flex align-items-center">
-        <button class="btn btn-outline-light ms-2" (click)="resetFilters()">
+
+
+
+      <div class="d-flex flex-wrap gap-2">
+
+        <button class="btn btn-outline-light flex-grow-1 flex-md-grow-0" (click)="resetFilters()">
           Réinitialiser
         </button>
-        <div class="card flex justify-content-center" style="margin-right: 10px;">
+
+        <div *ngIf="userId" class="dropdown flex-grow-1 flex-md-grow-0">
+          <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="filterSchoolsDropdown"
+            data-bs-toggle="dropdown" aria-expanded="false"
+            style="background-color: transparent; border: 1px solid white; color: white;">
+            Filtrer par écoles
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="filterSchoolsDropdown"
+            style="max-height: 300px; overflow-y: auto;">
+            <li *ngFor="let school of accessibleSchools">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" [id]="'school-' + school.id"
+                  [checked]="selectedSchools.has(school.id)" (change)="toggleSchoolFilter(school.id)" />
+                <label class="form-check-label" [for]="'school-' + school.id">
+                  {{ school.nom }}
+                </label>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card flex-grow-1 flex-md-grow-0" style="min-width: 250px;">
           <p-calendar [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [showIcon]="true"
             (ngModelChange)="applyFilters()" [placeholder]="'Sélectionner une plage de dates'" dateFormat="dd/mm/yy"
             class="custom-calendar">
           </p-calendar>
         </div>
-        <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown"
-            aria-expanded="false" style="background-color: transparent; border: 1px solid white; color: white;">
+
+        <div class="dropdown flex-grow-1 flex-md-grow-0">
+          <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="filterDropdown"
+            data-bs-toggle="dropdown" aria-expanded="false"
+            style="background-color: transparent; border: 1px solid white; color: white;">
             Filtrer
           </button>
           <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="filterDropdown">
@@ -46,6 +79,8 @@
           </ul>
         </div>
       </div>
+
+
       <div class="container">
         <div class="row g-3">
           <ng-container *ngIf="isLoading; else publicationsList">
@@ -74,7 +109,7 @@
               <a [routerLink]="['/publication-show', pub.idPublication]" class="text-decoration-none text-dark">
                 <div class="poste-card">
                   <div *ngIf="hasJoined(pub.idPublication)" class="poste-joined-badge">Déjà rejoint</div>
-                  <div class="poste-ecole">Ensitech</div>
+                  <div class="poste-ecole">{{ pub.nomEcole }}</div>
                   <img [src]="pub.image" alt="Image de l'événement" class="poste-img"
                     onerror="this.onerror=null;this.src='assets/no-image.jpg';" />
                   <div class="poste-hover">
@@ -89,21 +124,21 @@
                       <div class="poste-ville">{{ pub.ville }}</div>
                     </div>
                     <div class="poste-categories">
-                      
+
 
                       <span *ngIf="pub.categories.length > 0">
-                          {{ pub.categories[0].nom }}
-                          </span>
+                        {{ pub.categories[0].nom }}
+                      </span>
 
-                          <!-- Deuxième catégorie -->
-                          <span *ngIf="pub.categories.length > 1">
-                          {{ pub.categories[1].nom }}
-                          </span>
+                      <!-- Deuxième catégorie -->
+                      <span *ngIf="pub.categories.length > 1">
+                        {{ pub.categories[1].nom }}
+                      </span>
 
-                          <!-- Badge "3 ..." si plus de 2 catégories -->
-                          <span *ngIf="pub.categories.length > 2">
-                          ...
-                          </span>
+                      <!-- Badge "3 ..." si plus de 2 catégories -->
+                      <span *ngIf="pub.categories.length > 2">
+                        ...
+                      </span>
                     </div>
                   </div>
                   <div class="poste-participants">{{ pub.nombreParticipants }} / {{ pub.participantMax }}</div>

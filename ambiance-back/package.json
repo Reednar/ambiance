@@ -81,5 +81,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "overrides": {
+    "multer": "1.4.5-lts.2"
   }
+
 }

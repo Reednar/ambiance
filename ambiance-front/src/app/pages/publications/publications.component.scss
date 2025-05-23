@@ -145,7 +145,7 @@ button.btn.dropdown-toggle:hover {
 
 ::ng-deep .custom-calendar .p-datepicker-input {
   background-color: transparent !important;
-  border: 1px solid white !important;
+  border: 1px solid transparent !important;
   color: white !important;
   padding: 0.375rem 1.25rem;
   border-radius: 0.25rem;
@@ -154,7 +154,7 @@ button.btn.dropdown-toggle:hover {
 
 ::ng-deep .custom-calendar .p-datepicker-trigger {
   background-color: transparent !important;
-  border: 1px solid white !important;
+  //border: 1px solid white !important;
   color: white !important;
   font-size: 1rem !important;
 }
@@ -164,13 +164,13 @@ button.btn.dropdown-toggle:hover {
 }
 
 ::ng-deep .custom-calendar .p-datepicker {
-  background-color: #333 !important;
+  background-color: #212529 !important;
   border-radius: 0.25rem;
 }
 
 ::ng-deep .custom-calendar .p-calendar .p-calendar-button {
   background-color: transparent;
-  border: 1px solid white;
+  //border: 1px solid white;
 }
 
 ::ng-deep .custom-calendar .p-calendar .p-calendar-prev-next {
@@ -183,7 +183,7 @@ button.btn.dropdown-toggle:hover {
 
 ::ng-deep .custom-calendar .p-datepicker-input {
   background-color: transparent !important;
-  border: 1px solid white !important;
+  //border: 1px solid white !important;
   color: white !important;
   padding: 0.375rem 1.25rem;
   border-radius: 0.25rem;
@@ -192,13 +192,13 @@ button.btn.dropdown-toggle:hover {
 
 ::ng-deep .custom-calendar .p-datepicker-trigger {
   background-color: transparent !important;
-  border: 1px solid white !important;
+  border: 1px solid transparent !important;
   color: white !important;
   font-size: 1rem;
 }
 
 ::ng-deep .custom-calendar .p-calendar {
-  background-color: #333 !important;
+  background-color: #212529 !important;
   border-radius: 0.25rem;
 }
 
@@ -207,7 +207,7 @@ button.btn.dropdown-toggle:hover {
 ::ng-deep .custom-calendar .p-datepicker-month,
 ::ng-deep .custom-calendar .p-datepicker-year {
   background-color: #444;
-  border: 1px solid white;
+  //border: 1px solid white;
   color: white;
   border-radius: 0.25rem;
   padding: 0.25rem 0.5rem;
@@ -239,7 +239,7 @@ button.btn.dropdown-toggle:hover {
 
 ::ng-deep .custom-calendar .p-calendar-button {
   background-color: transparent;
-  border: 1px solid white;
+  //border: 1px solid white;
   color: white;
 }
 

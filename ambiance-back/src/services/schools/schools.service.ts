@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { School } from '../../entities/schools.entity';
+import { User } from 'src/entities/users.entity';
 
 @Injectable()
 export class SchoolsService {
   constructor(
     @InjectRepository(School)
     private readonly schoolsRepository: Repository<School>,
+    @InjectRepository(User)
+  private readonly usersRepository: Repository<User>,
   ) {}
 
   async create(data: Partial<School>): Promise<School> {
@@ -52,4 +55,15 @@ export class SchoolsService {
       .map(domain => domain.trim())
       .filter(domain => domain.length > 0);
   }
+
+
+async findByUserId(userId: number): Promise<School | null> {
+  const user = await this.usersRepository.findOne({
+  where: { idUtilisateur: userId },
+  relations: ['ecole']
+});
+  return user?.ecole || null;
+}
+
+
 }
