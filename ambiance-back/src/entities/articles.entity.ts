@@ -1,46 +1,38 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, CreateDateColumn, JoinColumn } from 'typeorm';
 import { User } from './users.entity';
 import { Tag } from './tag.entity';
-import { School } from './schools.entity';
 
 @Entity('Articles')
 export class Article {
   @PrimaryGeneratedColumn({ name: 'IdArticle' })
-  idArticle: number;
+  IdArticle: number;
 
   @Column({ name: 'Titre', length: 255 })
-  titre: string;
+  Titre: string;
 
   @Column({ name: 'Contenu', type: 'text' })
-  contenu: string;
+  Contenu: string;
 
   @CreateDateColumn({ name: 'DateCreation', type: 'datetime' })
-  dateCreation: Date;
+  DateCreation: Date;
 
   @ManyToOne(() => User, user => user.articles)
   @JoinColumn({ name: 'IdAuteur' })
   utilisateur: User;
 
-  @ManyToOne(() => School, ecole => ecole.articles)
-  @JoinColumn({ name: 'id_ecole' })
-  ecole: School;
-
-  @Column({ name: 'id_ecole', type: 'int', nullable: false })
-  idEcole: number;
-  
   @Column({ name: 'Image', type: 'varchar', length: 255, nullable: true })
-  image: string;
+  Image: string;
 
   @ManyToMany(() => Tag, tag => tag.articles, { cascade: true })
   @JoinTable({
     name: 'Article_Tags',
     joinColumn: {
-      name: 'idArticle',
-      referencedColumnName: 'idArticle',
+      name: 'IdArticle',
+      referencedColumnName: 'IdArticle',
     },
     inverseJoinColumn: {
-      name: 'idTag',
-      referencedColumnName: 'idTag',
+      name: 'IdTag',
+      referencedColumnName: 'IdTag',
     }
   })
   tags: Tag[];

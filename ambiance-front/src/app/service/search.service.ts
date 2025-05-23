@@ -40,7 +40,7 @@ export class SearchService {
       type: 'ecole' as const,
       title: e.nom,
       content: `${e.ville} ${e.description}`,
-      route: `/ecoles/${e.id}`,
+      route: `/ecoles/${e.idEcole}`,
       original: e
     }))
   ];

@@ -8,7 +8,6 @@ import { PublicationDto } from 'src/dtos/publications.dto';
 import { PublicationCategoriesService } from 'src/services/publication-categories/publication-categories.service';
 import { GroupsService } from 'src/services/groups/groups.service';
 import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
-import { School } from 'src/entities/schools.entity';
 
 
 @ApiTags('publications')
@@ -155,11 +154,10 @@ export class PublicationsController {
       dto.rampe = pub.rampe;
       dto.ascenseur = pub.ascenseur;
       dto.idUtilisateur = pub.utilisateurId;
-      dto.idEcole = pub.idEcole;
-      dto.nomEcole = pub.ecole?.nom ?? null;
-      dto.listeEcoleIds = pub.listeEcoleIds;
+
+      // Si pub.image est déjà un Buffer, tu peux directement le convertir
       if (pub.image && pub.imageMimeType) {
-        const base64 = pub.image.toString('base64');
+        const base64 = pub.image.toString('base64');  // Utilisation du Buffer sans data
         dto.image = `data:${pub.imageMimeType};base64,${base64}`;
       } else {
         dto.image = null;
@@ -227,9 +225,6 @@ export class PublicationsController {
     dto.rampe = pub.rampe;
     dto.ascenseur = pub.ascenseur;
     dto.idUtilisateur = pub.utilisateurId;
-    dto.idEcole = pub.idEcole;
-    dto.listeEcoleIds = pub.listeEcoleIds;
-    dto.nomEcole = pub.ecole.nom;
     if (pub.image && pub.imageMimeType) {
       const base64 = pub.image.toString('base64');
       dto.image = `data:${pub.imageMimeType};base64,${base64}`;
@@ -291,8 +286,7 @@ export class PublicationsController {
       rampe: string | boolean;
       ascenseur: string | boolean;
       utilisateurId: number;
-      categories: number[] | string;
-      idEcole?: number;
+      categories: number[] | string; // Peut être un string JSON envoyé depuis le formulaire
     },
     @UploadedFile() image: Express.Multer.File,
     @Req() req: Request
@@ -497,27 +491,4 @@ export class PublicationsController {
 
     return participations;
   }
-
-@Post('/accessible-ecoles')
-@ApiOperation({ summary: 'Get accessible school IDs for a user based on listeEcoleIds of publications' })
-async getAccessibleSchoolsPost(
-  @Body('userId') userId: number,
-  @Req() req: Request
-): Promise<{ id: number; nom: string }[]> {
-  this.logger.log(`[${req.method} ${req.url}] Get schools accessible to user ${userId}`);
-  const user = await this.usersService.findOne(userId);
-  const idEcoleUser = user?.idEcole;
-  if (!idEcoleUser) {
-    return [];
-  }
-  const publications = await this.publicationsService.findAllWhereEcoleIdInListe(idEcoleUser);
-const uniqueEcoles = new Map<number, string>();
-  for (const pub of publications) {
-    uniqueEcoles.set(pub.idEcole, pub.ecole.nom);
-    }
-
-return Array.from(uniqueEcoles.entries()).map(([id, nom]) => ({ id, nom }));
-}
-
-
 }

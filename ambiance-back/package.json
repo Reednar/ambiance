@@ -34,6 +34,7 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "socket.io-client": "^4.8.1",
+    "stripe": "^18.1.0",
     "swagger-ui-express": "^5.0.1",
     "typeorm": "^0.3.20",
     "winston": "^3.17.0",
@@ -81,9 +82,5 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  },
-  "overrides": {
-    "multer": "1.4.5-lts.2"
   }
-
 }

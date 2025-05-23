@@ -24,8 +24,6 @@ export class PublicationsComponent implements OnInit {
   userJoinedEvents: Set<number> = new Set();
   isLoading = true;
   userId: number = 0;
-  accessibleSchools: { id: number; nom: string }[] = [];
-  selectedSchools: Set<number> = new Set<number>();
 
   constructor(
     private publicationsService: PublicationsService,
@@ -34,33 +32,14 @@ export class PublicationsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-  this.userId = Number(sessionStorage.getItem('id_utilisateur') ?? '');
-  if (this.userId) {
-    this.loadEcoleAccessible(this.userId);
-  }
-
-  this.route.queryParams.subscribe(params => {
-    if (params['category']) {
-      this.selectedCategories.add(Number(params['category']));
-    } else if (params['ecole']) {
-      this.selectedSchools.add(Number(params['ecole']));
-    }
-
-    // Maintenant que les filtres sont prêts, on peut charger les données
+    this.userId = Number(sessionStorage.getItem('id_utilisateur') ?? '');
     this.loadCategories();
     this.loadPublications();
     this.loadPublicationsFromUser();
-  });
-}
 
-
-  loadEcoleAccessible(userId: number): void {
-    this.publicationsService.getAccessibleSchools(userId).subscribe({
-      next: (schools) => {
-        this.accessibleSchools = schools;
-      },
-      error: (err) => {
-        console.error('Erreur récupération écoles accessibles :', err);
+    this.route.queryParams.subscribe(params => {
+      if (params['category']) {
+        this.selectedCategories.add(Number(params['category']));
       }
     });
   }
@@ -98,62 +77,29 @@ export class PublicationsComponent implements OnInit {
     this.applyFilters();
   }
 
-  toggleSchoolFilter(schoolId: number): void {
-  if (this.selectedSchools.has(schoolId)) {
-    this.selectedSchools.delete(schoolId);
-  } else {
-    this.selectedSchools.add(schoolId);
-  }
-  this.applyFilters();
-}
-
   // Appliquer les filtres en fonction des catégories sélectionnées
-applyFilters(): void {
-  let startDate: Date | undefined;
-  let endDate: Date | undefined;
-  if (this.rangeDates?.length === 2) {
-    [startDate, endDate] = this.rangeDates;
-  }
-
-
-  this.filteredPublications = this.publications.filter(pub => {
-
-    // Filtre catégories (existant)
-    const matchesCategory =
-      this.selectedCategories.size === 0 ||
-      pub.categories?.some(cat => this.selectedCategories.has(cat.id));
-
-    // Filtre dates (existant)
-    let matchesDate = true;
-    if (startDate && endDate) {
-      const eventDate = new Date(pub.dateEvenement);
-      matchesDate = eventDate >= startDate && eventDate <= endDate;
+  applyFilters(): void {
+    let startDate: Date | undefined;
+    let endDate: Date | undefined;
+    if (this.rangeDates?.length === 2) {
+      [startDate, endDate] = this.rangeDates;
     }
-
-    // Filtre écoles — on vérifie si pub.listeEcoleIds contient au moins une des écoles sélectionnées
-  let matchesSchools = true;
-  if (this.selectedSchools.size > 0) {
-    if (!pub.idEcole) {
-      matchesSchools = false; // exclure si pub.idEcole n'existe pas
-    } else {
-      matchesSchools = this.selectedSchools.has(pub.idEcole);
-    }
+    this.filteredPublications = this.publications.filter(pub => {
+      const matchesCategory =
+        this.selectedCategories.size === 0 ||
+        pub.categories?.some(cat => this.selectedCategories.has(cat.id));
+      let matchesDate = true;
+      if (startDate && endDate) {
+        const eventDate = new Date(pub.dateEvenement);
+        matchesDate = eventDate >= startDate && eventDate <= endDate;
+      }
+      return matchesCategory && matchesDate;
+    });
   }
-
-
-    return matchesCategory && matchesDate && matchesSchools;
-  });
-}
-
 
   getSelectedCategories(): any[] {
     return this.categories.filter(cat => this.selectedCategories.has(cat.idCategorie));
   }
-
-  getSelectedSchools(): any[] {
-  return this.accessibleSchools.filter(school => this.selectedSchools.has(school.id));
-}
-
 
   resetFilters() {
     this.rangeDates = undefined;

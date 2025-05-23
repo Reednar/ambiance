@@ -10,6 +10,9 @@ import {
 } from '@angular/core';
 import Swiper from 'swiper';
 import { MenuItem } from 'primeng/api';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import { AuthService } from '../service/authent.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -21,7 +24,6 @@ import { Ecole } from '../entity/ecole';
 import { UsersService } from '../service/users.service';
 import { SearchEntry, SearchService } from '../service/search.service';
 import { MessageService } from 'primeng/api';
-import { EcoleService } from '../service/ecole.service';
 
 @Component({
   selector: 'app-navbar',
@@ -52,8 +54,7 @@ export class NavbarComponent implements AfterViewInit, OnInit, OnDestroy {
     private usersService: UsersService,
     private searchService: SearchService,
     private eRef: ElementRef,
-    private messageService: MessageService,
-    private ecoleService: EcoleService
+    private messageService: MessageService
 
   ) {}
 
@@ -77,6 +78,21 @@ export class NavbarComponent implements AfterViewInit, OnInit, OnDestroy {
     });
   }
 
+// async ngOnInit() {
+//   try {
+//       this.authSubscription = this.authService.isConnected$.subscribe((value) => {
+//       this.isConnected = value;
+//       this.updateMenuItems();
+//       this.cdr.detectChanges();
+//     });
+//     this.loadPublications();
+//     this.loadUsers();
+//     this.searchService.initialize(this.publications, this.users, this.ecoles);
+//       } catch (error) {
+//     console.error('Erreur lors du chargement des données', error);
+//   }
+//   }
+
 async ngOnInit() {
   try {
     this.authSubscription = this.authService.isConnected$.subscribe((value) => {
@@ -87,10 +103,11 @@ async ngOnInit() {
     // Attendre que les données soient chargées avant de les passer à `initialize()`
     await this.loadPublications();
     await this.loadUsers();
-    await this.loadEcoles();
 
     // Une fois que les données sont prêtes, initialiser le service de recherche
     this.searchService.initialize(this.publications, this.users, this.ecoles);
+
+    console.log('Données initialisées pour la recherche');
   } catch (error) {
     console.error('Erreur lors du chargement des données', error);
   }
@@ -159,6 +176,25 @@ async ngOnInit() {
   }
 
 
+  // loadPublications(): void {
+  //   this.publicationsService.getAll().subscribe({
+  //     next: (data) => {
+  //       this.publications = data;
+  //     },
+  //     error: (err) => {
+  //       console.error('Erreur chargement publications :', err);
+  //     }
+  //   });
+  // }
+
+  // // Récupérer les utilisateurs
+  // loadUsers(): void {
+  //   this.usersService.getUsers().subscribe(
+  //     (data) => this.users = data,
+  //     (error) => console.error('Erreur lors de la récupération des utilisateurs', error)
+  //   );
+  // }
+
   // Récupérer les publications
 loadPublications(): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -191,21 +227,46 @@ loadUsers(): Promise<void> {
   });
 }
 
-// Récupérer les écoles
-loadEcoles(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    this.ecoleService.findAllSchools().subscribe({
-      next: (data) => {
-        this.ecoles = data;
-        resolve();  // Résoudre la Promise une fois les données récupérées
-      },
-      error: (err) => {
-        console.error('Erreur lors de la récupération des écoles', err);
-       resolve();  // Rejeter la Promise en cas d'erreur
-      }
-    });
-  });
-}
+
+private searchTimeout: any;
+
+// onSearch(): void {
+//   clearTimeout(this.searchTimeout);
+
+//   this.searchTimeout = setTimeout(() => {
+//     this.results = this.searchService.search(this.searchTerm);
+//   }, 200); // 200ms après la dernière touche
+// }
+
+// onSearch(): void {
+//     console.log('Recherche déclenchée avec :', this.searchTerm);
+//     this.results = this.searchService.search(this.searchTerm);
+//     console.log('Résultats obtenus :', this.results.length);
+//   }
+
+
+//    onLinkClick(route: string) {
+//     console.log('Navigation vers :', route);
+//     this.router.navigate([route]).catch(error => {
+//       console.error('Erreur de navigation :', error);
+//     });
+//      this.results = [];
+//   }
+
+//   // Clic en dehors de l'input pour cacher les résultats
+//   @HostListener('document:click', ['$event'])
+//   onDocumentClick(event: MouseEvent) {
+//     const clickedInside = (event.target as HTMLElement).closest('.search-container');
+//     if (!clickedInside) {
+//       this.showResults = false;  // Cache les résultats
+//     }
+//   }
+
+//   // Lorsque l'utilisateur clique dans l'input, montre les résultats
+//   onInputClick() {
+//     this.showResults = true;
+//     console.log(this.showResults)
+//   }
 
 
  onSearch(): void {

@@ -27,7 +27,4 @@ export class PublicationDto {
   idParticipation : number;
   paiementEffectue : boolean;
   dateFin: Date;
-  idEcole: number;
-  nomEcole: string;
-  listeEcoleIds: string;
 }

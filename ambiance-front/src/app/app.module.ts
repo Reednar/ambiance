@@ -42,17 +42,14 @@ import { PublicationsCreateFormComponent } from './pages/publications-create-for
 import { ProfileComponent } from './pages/user/profile/profile.component';
 import { PublicationShowComponent } from './pages/publication-show/publication-show.component';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { PickListModule } from 'primeng/picklist';
 
 // Import de la locale française
 import localeFr from '@angular/common/locales/fr';
 import { EcoleComponent } from './pages/ecole/ecole.component';
 import { BlogComponent } from './pages/blogs/blog/blog.component';
-import { ArticleCreateComponent } from './pages/blogs/article-create.component';
+import { ArticleCreateComponent } from './pages/blogs/article-create/article-create.component';
 import { ArticleShowComponent } from './pages/blogs/article-show/article-show.component';
 import { ArticleCreatedComponent } from './pages/blogs/article-created/article-created.component';
-import { ArticleFormComponent } from './pages/blogs/article-form/article-form.component';
-import { ArticleUpdateComponent } from './pages/blogs/article-update.component';
 
 // Enregistrer la locale française
 registerLocaleData(localeFr);
@@ -77,9 +74,7 @@ registerLocaleData(localeFr);
     BlogComponent,
     ArticleCreateComponent,
     ArticleShowComponent,
-    ArticleCreatedComponent,
-    ArticleFormComponent,
-    ArticleUpdateComponent
+    ArticleCreatedComponent
   ],
   imports: [
     BrowserModule,

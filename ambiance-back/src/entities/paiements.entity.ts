@@ -12,7 +12,7 @@ export class Paiement {
   @Column({ name: 'date_paiement', type: 'datetime' })
   datePaiement: Date;
 
-  @Column({ name: 'justificatif', type: 'varchar', length: 255 })
+  @Column({ name: 'justificatif', type: 'longtext' })
   justificatif: string;
 
   @ManyToOne(() => User, { nullable: false })

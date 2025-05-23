@@ -38,9 +38,6 @@ export class User {
   @Column({ name: 'Pays', type: 'varchar', length: 50, nullable: false })
   pays: string;
 
-   @Column({ name: 'id_ecole', type: 'int', nullable: false })
-  idEcole: number;
-
   @Column({
     name: 'Role',
     type: 'enum',

@@ -2,40 +2,38 @@ import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { Categorie, Publication } from '../../entity/publications';
 import { PublicationsService } from '../../service/publications.service';
 import { CategoriesService } from '../../service/categories.service';
-import { EcoleService } from '../../service/ecole.service';
-import { Ecole } from '../../entity/ecole';
 
 @Component({
   selector: 'app-ecole',
   templateUrl: './ecole.component.html',
   styleUrls: ['./ecole.component.scss']
 })
-export class EcoleComponent implements OnInit{
-  ecoles: Ecole[] = [];
-
+export class EcoleComponent {
+  schools = [
+      {
+        name: 'École Polytechnique',
+        description: 'Grande école d\'ingénieurs située en France, renommée pour son excellence académique.',
+        city: 'Palaiseau',
+        image: 'assets/ensitech.jpg'
+      },
+      {
+        name: 'HEC Paris',
+        description: 'École de commerce prestigieuse, spécialisée en management et stratégie.',
+        city: 'Jouy-en-Josas',
+        image: 'assets/ensitech.jpg'
+      },
+      {
+        name: 'ENSA Lyon',
+        description: 'École d\'architecture reconnue pour sa créativité et ses projets novateurs.',
+        city: 'Lyon',
+        image: 'assets/image_7.jpg'
+      }
+    ];
+    
   constructor(
     private publicationsService: PublicationsService,
-    private categoriesService: CategoriesService,
-    private ecoleService: EcoleService
+    private categoriesService: CategoriesService
   ) { }
 
   
-  ngOnInit(): void {
-    this.loadEcoles();
-  }
-  // Récupérer les écoles
-loadEcoles(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    this.ecoleService.findAllSchools().subscribe({
-      next: (data) => {
-        this.ecoles = data;
-        resolve();  // Résoudre la Promise une fois les données récupérées
-      },
-      error: (err) => {
-        console.error('Erreur lors de la récupération des écoles', err);
-       resolve();  // Rejeter la Promise en cas d'erreur
-      }
-    });
-  });
-}
 }

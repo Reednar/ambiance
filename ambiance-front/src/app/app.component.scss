@@ -1,76 +1,33 @@
 .layout-main-container {
-  padding-top: 0 !important;
+    padding-top: 0 !important;
 }
 
 
-/* Container toast */
+/* Style général du toast container */
 ::ng-deep .p-toast {
-  top: 80px !important;
-  right: 1rem !important;
-  width: 320px !important;
-  border-radius: 14px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7) !important;
-  padding: 0 !important;
-  background: transparent !important;
-  z-index: 1100 !important;
-}
-
-/* Message toast */
-::ng-deep .p-toast-message {
-  background-color: #222831cc !important;
-  color: #eeeeee !important;
-  border-radius: 12px !important;
-  border: 1px solid #393e46 !important;
-  box-shadow: 0 0 10px #00adb5cc !important;
-  backdrop-filter: blur(8px) !important;
-  padding: 12px 20px !important;
-  font-weight: 600 !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-  user-select: none !important;
-  transition: background-color 0.3s ease !important;
-  position: relative !important;
-}
-
-/* Icône toast */
-::ng-deep .p-toast-icon {
-  color: #00adb5 !important;
-  font-size: 1.3rem !important;
-}
-
-/* Bouton croix de fermeture - important ! */
-::ng-deep .p-toast-icon-close,
-::ng-deep .p-toast-message .p-toast-icon-close {
-  color: #eeeeee !important;
-  background-color: transparent !important;
-  font-size: 1.2rem !important;
-  cursor: pointer !important;
-  transition: color 0.3s ease !important;
-  position: absolute !important;
-  top: 8px !important;
-  right: 12px !important;
-  opacity: 0.8 !important;
-  z-index: 1200 !important;
-}
-
-::ng-deep .p-toast-icon-close:hover,
-::ng-deep .p-toast-message .p-toast-icon-close:hover {
-  color: #00adb5 !important;
-  opacity: 1 !important;
-}
-
-/* Hover sur toast */
-::ng-deep .p-toast-message:hover {
-  background-color: #393e46ee !important;
-}
-
-/* Responsive mobile */
-@media (max-width: 576px) {
-  ::ng-deep .p-toast {
-    top: 60px !important;
-    width: 90% !important;
-    right: 5% !important;
+    top: 90px !important;
+    right: 1rem !important;
+    width: 350px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    padding: 5px;
   }
-}
+  
+  /* Style des messages individuels */
+  ::ng-deep .p-toast-message {
+    background-color: rgba(54, 49, 49, 0.85);
+    color: #ffffff;
+    border-radius: 10px;
+    border: none;
+    backdrop-filter: blur(2px);
+    overflow: hidden;
+  }
+  
+  /* Responsive : sur mobile */
+  @media (max-width: 576px) {
+    ::ng-deep .p-toast {
+      top: 60px !important;       /* descend plus sur mobile */
+      width: 90% !important;
+      right: 5% !important;
+    }
+  }

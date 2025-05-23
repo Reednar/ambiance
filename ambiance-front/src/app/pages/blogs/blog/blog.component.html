@@ -1,64 +1,14 @@
-<div class="container mt-4" style="padding-top: 100px !important;">
-
-  <!-- Ligne avec titre à gauche et filtre à droite -->
-  <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
-    <h1 class="m-0">Liste des articles</h1>
-
-    <div class="dropdown" style="min-width: 200px;">
-      <button
-        class="btn btn-primary dropdown-toggle w-100"
-        type="button"
-        id="filterSchoolsDropdown"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        Filtrer par écoles
-      </button>
-      <ul
-        class="dropdown-menu dropdown-menu-end p-2"
-        aria-labelledby="filterSchoolsDropdown"
-        style="max-height: 300px; overflow-y: auto;"
-      >
-        <li *ngFor="let school of ecoles">
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              [id]="'school-' + school.id"
-              [checked]="selectedSchools.has(school.id)"
-              (change)="toggleSchoolFilter(school.id)"
-            />
-            <label class="form-check-label" [for]="'school-' + school.id">
-              {{ school.nom }}
-            </label>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- Écoles sélectionnées -->
-  <div *ngIf="selectedSchools.size > 0" class="d-flex align-items-center flex-wrap gap-2 mb-4">
-    <span class="fw-bold">Écoles sélectionnées :</span>
-    <span *ngFor="let school of getSelectedSchools()" class="badge bg-secondary">
-      {{ school.nom }}
-    </span>
-  </div>
-
-
-
-  <div class="row" >
-    <div class="col-md-4 mb-4" *ngFor="let article of filteredArticles()">
+<div class="container mt-4">
+  <div class="row" style="padding-top: 100px !important;">
+    <div class="col-md-4 mb-4" *ngFor="let blog of blogs">
       <div class="card h-100 shadow-sm blog-card">
-            <img [src]="article.image" class="card-img-top" alt="{{ article.nomEcole }}">
+            <img [src]="blog.image" class="card-img-top" alt="{{ blog.ecole }}">
             <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{ article.titre }}</h5>
-            <p class="card-text text-muted mb-1"><small>{{ article.dateCreation| date:'longDate' }}</small></p>
-            <p class="card-text flex-grow-1">
-              {{ article.contenu.length > 100 ? (article.contenu | slice:0:100) + '...' : article.contenu }}
-            </p>
-            <p class="card-text fw-bold text-primary mt-auto">{{ article.nomEcole }}</p>
-            <a [routerLink]="['/article', article.id]" class="btn btn-outline-primary w-100 mt-2">Voir plus</a>
+            <h5 class="card-title">{{ blog.titre }}</h5>
+            <p class="card-text text-muted mb-1"><small>{{ blog.date | date:'longDate' }}</small></p>
+            <p class="card-text flex-grow-1">{{ blog.contenu }}</p>
+            <p class="card-text fw-bold text-primary mt-auto">{{ blog.ecole }}</p>
+            <a [routerLink]="['/article', blog.id]" class="btn btn-outline-primary w-100 mt-2">Voir plus</a>
             </div>
       </div>
     </div>

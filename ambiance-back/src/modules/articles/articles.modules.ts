@@ -7,10 +7,9 @@ import { ArticleService } from '../../services/articles/articles.services';
 import { ArticlesController } from '../../controllers/articles/articles.controllers';
 import { TagService } from '../../services/tags/tags.service';
 import { AuthModule } from '../auth/auth.module';
-import { SchoolsModule } from '../schools/schools.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Article, Tag, User]),AuthModule, SchoolsModule],
+  imports: [TypeOrmModule.forFeature([Article, Tag, User]),AuthModule],
   providers: [ArticleService, TagService,Logger],
   controllers: [ArticlesController],
   exports: [ArticleService],

@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Ecole } from '../../../entity/ecole';
-import { EcoleService } from '../../../service/ecole.service';
-import { BlogService } from '../../../service/blog.service';
-import { Article } from '../../../entity/article';
-import { ActivatedRoute } from '@angular/router';
+
+interface Blog {
+  id: number;
+  titre: string;
+  contenu: string;
+  date: string;
+  image: string;
+  ecole: string;
+}
 
 @Component({
   selector: 'app-blog',
@@ -11,82 +15,36 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './blog.component.scss'
 })
 export class BlogComponent implements OnInit{
-  ecoles: Ecole[] = [];
-  articles: Article[] = [];
-  selectedSchools: Set<number> = new Set();
 
-  constructor(
-    private ecoleService: EcoleService,
-    private blogService: BlogService,
-    private route: ActivatedRoute
-  ){}
+blogs: Blog[] = [];
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-    if (params['ecole']) {
-      this.selectedSchools.add(Number(params['ecole']));
-    }
-
-
-    this.loadEcoles();
-    this.loadArticles();
-    });
-  }
-
-  // Récupérer les écoles
-loadEcoles(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    this.ecoleService.findAllSchools().subscribe({
-      next: (data) => {
-        this.ecoles = data;
-        resolve();  // Résoudre la Promise une fois les données récupérées
+    this.blogs = [
+      {
+        id: 1,
+        titre: 'Ensitech : une pédagogie innovante',
+        contenu: 'Découvrez comment Ensitech forme les développeurs de demain en alternance.',
+        date: '2025-05-20',
+        image: 'assets/dev.jpg',
+        ecole: 'Ensitech'
       },
-      error: (err) => {
-        console.error('Erreur lors de la récupération des écoles', err);
-       resolve();  // Rejeter la Promise en cas d'erreur
-      }
-    });
-  });
-}
-
-  // Récupérer les écoles
-loadArticles(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    this.blogService.list().subscribe({
-      next: (data) => {
-        this.articles = data;
-        resolve();  // Résoudre la Promise une fois les données récupérées
+      {
+        id: 2,
+        titre: 'La Sorbonne : excellence académique',
+        contenu: 'Un regard sur les programmes interdisciplinaires de la Sorbonne Université.',
+        date: '2025-05-19',
+        image: 'assets/sorb.jpg',
+        ecole: 'Sorbonne Université'
       },
-      error: (err) => {
-        console.error('Erreur lors de la récupération des écoles', err);
-       resolve();  // Rejeter la Promise en cas d'erreur
+      {
+        id: 3,
+        titre: 'Paris-Saclay : moteur scientifique',
+        contenu: 'Retour sur les dernières innovations et partenariats de Paris-Saclay.',
+        date: '2025-05-18',
+        image: 'assets/mot.jpg',
+        ecole: 'Université Paris-Saclay'
       }
-    });
-  });
-}
-
- // Pour récupérer la liste des écoles sélectionnées (objet complet, pas seulement id)
-  getSelectedSchools() {
-    return this.ecoles.filter(school => this.selectedSchools.has(school.id));
+    ];
   }
-
-filteredArticles(): Article[] {
-  if (this.selectedSchools.size === 0) {
-    return this.articles;
-  }
-  const filtered = this.articles.filter(article => 
-    article.idEcole !== undefined && this.selectedSchools.has(article.idEcole)
-  );
-  return filtered;
-}
-
-
-  toggleSchoolFilter(schoolId: number): void {
-  if (this.selectedSchools.has(schoolId)) {
-    this.selectedSchools.delete(schoolId);
-  } else {
-    this.selectedSchools.add(schoolId);
-  }
-}
 
 }

@@ -15,9 +15,6 @@ import { AuthGuard } from './service/auth.guard';
 import { EcoleComponent } from './pages/ecole/ecole.component';
 import { BlogComponent } from './pages/blogs/blog/blog.component';
 import { ArticleShowComponent } from './pages/blogs/article-show/article-show.component';
-import { ArticleCreateComponent } from './pages/blogs/article-create.component';
-import { ArticleCreatedComponent } from './pages/blogs/article-created/article-created.component';
-import { ArticleUpdateComponent } from './pages/blogs/article-update.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -32,13 +29,11 @@ const routes: Routes = [
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'publication-show/:id', component: PublicationShowComponent },
   { path: 'ecoles', component: EcoleComponent },
-  { path: 'articles', component: BlogComponent },
+  { path: 'blogs', component: BlogComponent },
   { path: 'article-show', component: BlogComponent },
-  { path: 'article-create', component: ArticleCreateComponent, canActivate: [AuthGuard]  },
-  { path: 'article-created', component: ArticleCreatedComponent, canActivate: [AuthGuard]  },
-  { path: 'article/:id', component: ArticleShowComponent },
-  { path: 'article-update/:id', component: ArticleUpdateComponent }
-
+  { path: 'article-create', component: BlogComponent },
+  { path: 'article-created', component: BlogComponent },
+  { path: 'article/:id', component: ArticleShowComponent }
 
 
 ];

@@ -1,32 +1,18 @@
-<div class="container my-5" *ngIf="isLoading" style="padding-top: 80px !important;">
-  <div class="text-center">
-    <div class="spinner-border" role="status"></div>
-    <p class="mt-3">Chargement de l'article...</p>
-  </div>
-</div>
 <div class="container my-5" *ngIf="article" style="padding-top: 80px !important;">
   <div class="card shadow-lg" style="padding-top: 50px !important;">
-    <img [src]="article.image" class="card-img-top" [alt]="article.titre" />
+    <img [src]="article.image" class="card-img-top" [alt]="article.title" />
     <div class="card-body">
-      <h1 class="card-title">{{ article.titre }}</h1>
-      <h5 class="text-muted">{{ article.ecole?.nom }}</h5>
-      <p class="text-end"><small class="text-secondary">{{ article.dateCreation | date:'longDate' }}</small></p>
+      <h1 class="card-title">{{ article.title }}</h1>
+      <h5 class="text-muted">{{ article.schoolName }}</h5>
+      <p class="text-end"><small class="text-secondary">{{ article.date | date:'longDate' }}</small></p>
       <hr />
-      <p class="card-text fs-5">{{ article.contenu }}</p>
-
-        <!-- Affichage des tags -->
-      <div *ngIf="article.tags && article.tags.length > 0" class="mb-3">
-        <strong>Tags :</strong>
-        <span *ngFor="let tag of article.tags; let last = last">
-          {{ tag.nom }}<span *ngIf="!last">, </span>
-        </span>
-      </div>
-      <a routerLink="/articles" class="btn btn-outline-primary mt-4">← Retour aux articles</a>
+      <p class="card-text fs-5">{{ article.content }}</p>
+      <a routerLink="/blogs" class="btn btn-outline-primary mt-4">← Retour aux articles</a>
     </div>
   </div>
 </div>
 
-<div class="container my-5" *ngIf="!article && !isLoading" style="padding-top: 80px !important;">
+<div class="container my-5" *ngIf="!article" style="padding-top: 80px !important;">
   <div class="alert alert-warning">
     L'article demandé n'a pas été trouvé.
   </div>

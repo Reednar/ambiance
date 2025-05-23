@@ -47,6 +47,7 @@ import { Article } from './entities/articles.entity';
 import { ArticlesModule } from './modules/articles/articles.modules';
 import { ArticlesController } from './controllers/articles/articles.controllers';
 import { ArticleService } from './services/articles/articles.services';
+import { PaiementsModule } from './modules/paiements/paiements.module';
 import { DataSource } from 'typeorm';
 
 
@@ -59,7 +60,7 @@ import { DataSource } from 'typeorm';
     CategoriesController,
     PublicationCategoriesController,
     DiscussionController,
-    SchoolsController,
+    SchoolsController
   ],
   imports: [
     ConfigModule.forRoot({
@@ -91,6 +92,9 @@ import { DataSource } from 'typeorm';
         Article,      
       ], // Ajouter les entités ici
       synchronize: false, // Permet de manipuler les entités de la base de données avec les fichiers entity.ts en temps réel
+      extra: {
+        connectionLimit: 5, // Limite le nombre de connexions simultanées pour éviter l'erreur
+      },
     }),
     PublicationsModule,
     UsersModule,
@@ -106,6 +110,7 @@ import { DataSource } from 'typeorm';
     ChatModule,
     SchoolsModule,
     ArticlesModule,
+    PaiementsModule
     // Mettre les autres modules ici
   ],
   providers: [AppService, Logger],
@@ -114,6 +119,6 @@ export class AppModule implements OnApplicationShutdown {
   constructor(private dataSource: DataSource) {}
 
   async onApplicationShutdown(signal?: string) {
-    await this.dataSource.destroy();
+    //await this.dataSource.destroy();
   }
 }

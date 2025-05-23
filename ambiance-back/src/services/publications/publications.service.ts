@@ -16,7 +16,7 @@ export class PublicationsService {
 
   async findAll(): Promise<Publication[]> {
     return await this.publicationRepository.find({
-      relations: ['publicationCategories', 'publicationCategories.categorie', 'ecole'],
+      relations: ['publicationCategories', 'publicationCategories.categorie'],
     });
   }
 
@@ -108,17 +108,4 @@ export class PublicationsService {
       relations: ['ecole'], // Charger la relation avec l'école
     });
   }
-
-async findAllWhereEcoleIdInListe(idEcole: number): Promise<Publication[]> {
-  return this.publicationRepository
-    .createQueryBuilder('publication')
-    .leftJoinAndSelect('publication.ecole', 'ecole') 
-    .where("publication.listeEcoleIds = :id", { id: `${idEcole}` })
-    .orWhere("publication.listeEcoleIds LIKE :start", { start: `${idEcole};%` })
-    .orWhere("publication.listeEcoleIds LIKE :middle", { middle: `%;${idEcole};%` })
-    .orWhere("publication.listeEcoleIds LIKE :end", { end: `%;${idEcole}` })
-    .getMany();
-}
-
-
 }

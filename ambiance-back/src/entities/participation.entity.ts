@@ -22,6 +22,4 @@ export class Participation {
   @ManyToOne(() => Paiement, { nullable: true })
   @JoinColumn({ name: 'IdPaiement' })
   idPaiement: Paiement;
-
-
 }
