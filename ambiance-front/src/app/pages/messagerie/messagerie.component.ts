@@ -23,8 +23,16 @@ export class MessagerieComponent implements OnInit, OnDestroy {
     });
 
     this.messagerieService.onMessage().subscribe(msg => {
-      if (this.selectedDiscussion && msg.idDiscussion === this.selectedDiscussion.idDiscussion) {
-        this.messages.push(msg);
+      // Adapter le format du message reçu du WebSocket
+      const mappedMsg = {
+        message_contenu: msg.contenu,
+        message_date_envoi: msg.dateEnvoi,
+        user_IdUtilisateur: msg.idUtilisateur?.idUtilisateur,
+        user_Prenom: msg.idUtilisateur?.prenom,
+        idDiscussion: msg.idDiscussion?.idDiscussion ?? msg.idDiscussion 
+      };
+      if (this.selectedDiscussion && mappedMsg.idDiscussion === this.selectedDiscussion.idDiscussion) {
+        this.messages.push(mappedMsg);
       }
     });
   }

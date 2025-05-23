@@ -112,12 +112,12 @@
   align-items: flex-start;
 }
 
-.message-author {
-  font-size: 0.95em;
-  color: #4cafef;
-  font-weight: 600;
-  margin-bottom: 2px;
-  margin-left: 6px;
+.message-bubble-container.mine {
+  align-items: flex-end;
+}
+
+.message-bubble-container.other {
+  align-items: flex-start;
 }
 
 .message-bubble {
@@ -129,6 +129,24 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   position: relative;
   word-break: break-word;
+}
+
+.message-bubble-container.mine .message-bubble {
+  background: #4cafef;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 18px;
+  border-top-right-radius: 18px;
+  border-top-left-radius: 18px;
+}
+
+.message-bubble-container.other .message-bubble {
+  background: #353b48;
+  color: #fff;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 18px;
+  border-top-right-radius: 18px;
+  border-top-left-radius: 18px;
 }
 
 .message-date {

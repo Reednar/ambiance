@@ -8,11 +8,12 @@ import { environment } from '../../environments/environment';
 export class MessagerieService {
   private socket!: Socket;
   private apiUrl = `${environment.baseUrl}`; // Remplace par ton URL backend
-
+  private socketUrl = `${this.apiUrl}`;  // Remplace par ton URL socket
   constructor(private http: HttpClient) {}
 
   connect(userId: number) {
-    this.socket = io(this.apiUrl, { query: { userId } });
+    var liveCHatUrl = this.socketUrl.split("/api")[0]
+    this.socket = io(liveCHatUrl, { query: { userId } });
   }
 
   disconnect() {

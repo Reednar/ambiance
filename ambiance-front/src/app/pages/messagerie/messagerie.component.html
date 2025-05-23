@@ -23,7 +23,9 @@
       <ng-container *ngIf="selectedDiscussion; else noDiscussion">
         <h5>Discussion : {{ selectedDiscussion.nomGroupe }}</h5>
         <div class="messages-history">
-          <div *ngFor="let m of messages" class="message-bubble-container">
+          <div *ngFor="let m of messages" 
+               class="message-bubble-container"
+               [ngClass]="{'mine': m.user_IdUtilisateur === userId, 'other': m.user_IdUtilisateur !== userId}">
             <div class="message-author">{{ m.user_Prenom }}</div>
             <div class="message-bubble">
               {{ m.message_contenu }}
@@ -32,7 +34,7 @@
           </div>
         </div>
         <div class="send-message mb-3">
-          <textarea  class="form-control" rows="3" placeholder="Écrire un message..."></textarea>
+          <textarea class="form-control" rows="3" placeholder="Écrire un message..." [(ngModel)]="newMessage"></textarea>
           <button class="btn btn-primary mt-2" (click)="sendMessage()" >Envoyer</button>
 
         </div>

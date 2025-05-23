@@ -77,6 +77,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
       // Diffuser le message aux membres de la room
       this.server.to(`room-${payload.discussionId}`).emit('receiveMessage', savedMessage);
+      console.log('Message envoyé :', savedMessage);
     } catch (error) {
       console.error('Erreur lors de l’envoi du message :', error.message);
       client.emit('errorMessage', { message: error.message });
