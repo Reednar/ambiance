@@ -3,7 +3,8 @@
     <h2 class="text-center mb-4 fw-bold text-white" style="padding-top: 10px;">Inscription</h2>
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <!-- Username Field -->
+      
+      <!-- Username -->
       <div class="mb-3">
         <label for="username" class="form-label fw-semibold">Nom d'utilisateur</label>
         <input type="text"
@@ -11,9 +12,13 @@
                class="form-control form-control-lg rounded-3"
                formControlName="username"
                placeholder="Votre nom d'utilisateur">
+        <div *ngIf="registerForm.get('username')?.touched && registerForm.get('username')?.invalid" class="text-danger small mt-1">
+          <div *ngIf="registerForm.get('username')?.errors?.['required']">Le nom d'utilisateur est requis.</div>
+          <div *ngIf="registerForm.get('username')?.errors?.['minlength']">Minimum 3 caractères.</div>
+        </div>
       </div>
 
-      <!-- Email Field -->
+      <!-- Email -->
       <div class="mb-3">
         <label for="email" class="form-label fw-semibold">Email</label>
         <input type="email"
@@ -21,9 +26,18 @@
                class="form-control form-control-lg rounded-3"
                formControlName="email"
                placeholder="exemple@mail.com">
+        <div *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" class="text-danger small mt-1">
+          <div *ngIf="registerForm.get('email')?.errors?.['required']">L'email est requis.</div>
+          <div *ngIf="registerForm.get('email')?.errors?.['email']">Veuillez saisir un email valide.</div>
+        </div>
+        
+<div *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['emailUsed']" class="text-danger small mt-1">
+  Cet e-mail est déjà associé à un compte.
+</div>
+
       </div>
 
-      <!-- Password Field -->
+      <!-- Password -->
       <div class="mb-3">
         <label for="password" class="form-label fw-semibold">Mot de passe</label>
         <input type="password"
@@ -31,9 +45,13 @@
                class="form-control form-control-lg rounded-3"
                formControlName="password"
                placeholder="••••••••">
+        <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" class="text-danger small mt-1">
+          <div *ngIf="registerForm.get('password')?.errors?.['required']">Le mot de passe est requis.</div>
+          <div *ngIf="registerForm.get('password')?.errors?.['minlength']">Minimum 6 caractères.</div>
+        </div>
       </div>
 
-      <!-- Confirm Password Field -->
+      <!-- Confirm Password -->
       <div class="mb-3">
         <label for="confirmPassword" class="form-label fw-semibold">Confirmer le mot de passe</label>
         <input type="password"
@@ -41,23 +59,72 @@
                class="form-control form-control-lg rounded-3"
                formControlName="confirmPassword"
                placeholder="••••••••">
+        <div *ngIf="(registerForm.get('confirmPassword')?.touched || registerForm.get('confirmPassword')?.dirty) && registerForm.hasError('mismatch')" class="text-danger small mt-1">
+          Les mots de passe ne correspondent pas.
+        </div>
+        <div *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.hasError('required')" class="text-danger small mt-1">
+          La confirmation du mot de passe est requise.
+        </div>
+      </div>
+
+      <!-- Genre -->
+      <div class="mb-3">
+        <label for="genre" class="form-label fw-semibold">Genre</label>
+        <select id="genre" class="form-select form-select-lg rounded-3" formControlName="genre">
+          <option value="" disabled>Choisissez votre genre</option>
+          <option value="Homme">Homme</option>
+          <option value="Femme">Femme</option>
+          <option value="Autre">Autre</option>
+        </select>
+        <div *ngIf="registerForm.get('genre')?.touched && registerForm.get('genre')?.invalid" class="text-danger small mt-1">
+          Le genre est requis.
+        </div>
+      </div>
+
+      <!-- Date de naissance -->
+      <div class="mb-3">
+        <label for="dateDeNaissance" class="form-label fw-semibold">Date de naissance</label>
+        <input type="date"
+               id="dateDeNaissance"
+               class="form-control form-control-lg rounded-3"
+               formControlName="dateDeNaissance"
+               [max]="maxDate">
+        <div *ngIf="registerForm.get('dateDeNaissance')?.touched && registerForm.get('dateDeNaissance')?.invalid" class="text-danger small mt-1">
+          <div *ngIf="registerForm.get('dateDeNaissance')?.errors?.['required']">La date de naissance est requise.</div>
+          <div *ngIf="registerForm.get('dateDeNaissance')?.errors?.['ageLimit']">Vous devez avoir au moins 13 ans.</div>
+        </div>
+      </div>
+
+      <!-- Pays -->
+      <div class="mb-3">
+        <label for="pays" class="form-label fw-semibold">Pays</label>
+        <select id="pays" class="form-select form-select-lg rounded-3" formControlName="pays">
+          <option value="" disabled>Choisissez votre pays</option>
+          <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+        </select>
+        <div *ngIf="registerForm.get('pays')?.touched && registerForm.get('pays')?.invalid" class="text-danger small mt-1">
+          Le pays est requis.
+        </div>
       </div>
 
       <!-- Terms Checkbox -->
       <div class="form-check mb-4">
         <input type="checkbox"
-               class="form-check-input"
                id="reglement"
-               [(ngModel)]="reglement"
-               name="reglement">
+               class="form-check-input"
+               formControlName="reglement">
         <label class="form-check-label small text-muted ms-1" for="reglement">
           J'accepte le règlement
         </label>
+        <div *ngIf="registerForm.get('reglement')?.touched && registerForm.get('reglement')?.invalid" class="text-danger small mt-1">
+          Vous devez accepter le règlement.
+        </div>
       </div>
 
       <!-- Submit Button -->
       <button type="submit"
-              class="btn btn-primary btn-lg w-100 mb-3 shadow-sm">
+              class="btn btn-primary btn-lg w-100 mb-3 shadow-sm"
+              [disabled]="registerForm.invalid">
         <i class="pi pi-check me-2"></i>S'inscrire
       </button>
 
@@ -69,7 +136,8 @@
 
       <!-- Google Button -->
       <button type="button"
-              class="btn btn-outline-secondary btn-lg w-100 mb-2 shadow-sm">
+              class="btn btn-outline-secondary btn-lg w-100 mb-2 shadow-sm"
+              (click)="loginWithGoogle()">
         <i class="pi pi-google me-2"></i>Se connecter avec Google
       </button>
 
@@ -85,6 +153,7 @@
           Connectez-vous ici
         </a>
       </div>
+
     </form>
   </div>
 </div>

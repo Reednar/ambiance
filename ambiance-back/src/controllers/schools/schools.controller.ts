@@ -113,7 +113,7 @@ export class SchoolsController {
 
     this.logger.log(`[${req.method} ${req.url}] Creating a new school for user ID: ${idUtilisateur}`, schoolData);
 
-    const utilisateur = await this.usersService.findOne(idUtilisateur);
+    const utilisateur = await this.usersService.findEntityById(idUtilisateur);
     if (!utilisateur) {
       throw new NotFoundException('User not found');
     }
@@ -327,7 +327,7 @@ export class SchoolsController {
       throw new NotFoundException('School not found');
     }
 
-    const newCreator = await this.usersService.findOne(newCreatorId);
+    const newCreator = await this.usersService.findEntityById(newCreatorId);
     if (!newCreator) {
       throw new NotFoundException('New creator user not found');
     }

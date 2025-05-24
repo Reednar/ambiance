@@ -38,7 +38,7 @@ export class CommentairesController {
   @ApiOperation({ summary: 'Create a new commentaire' })
   async createCommentaire(@Body() body: { content: string; userId: number; postId: number }) {
     this.logger.log('/commentaires/create called'); 
-    const user = await this.usersService.findOne(body.userId); // Utilisation correcte
+    const user = await this.usersService.findEntityById(body.userId); // Utilisation correcte
     const post = await this.publicationsService.findOne(body.postId); // Utilisation correcte
     return await this.commentairesService.create({
       contenu: body.content,

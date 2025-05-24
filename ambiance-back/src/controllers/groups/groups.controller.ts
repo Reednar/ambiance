@@ -37,7 +37,7 @@ export class GroupsController {
   @ApiOperation({ summary: 'Create a group and add the user who created the group' })
   async createGroup(@Body() body: { nomDuGroupe: string; utilisateurId: number; idPublication: number }, @Req() req: Request) {
     this.logger.log(`[${req.method} ${req.url}] Creating a new group`, body);// Log de la requête
-    const utilisateur = await this.UsersService.findOne(body.utilisateurId);
+    const utilisateur = await this.UsersService.findEntityById(body.utilisateurId);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
@@ -72,7 +72,7 @@ export class GroupsController {
       throw new NotFoundException('Groupe lié à la publication non trouvé');
     }
 
-    const utilisateur = await this.UsersService.findOne(body.IdUtilisateur);
+    const utilisateur = await this.UsersService.findEntityById(body.IdUtilisateur);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
     }

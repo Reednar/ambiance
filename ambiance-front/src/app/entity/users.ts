@@ -5,12 +5,13 @@ export interface User {
     nom: string;
     pseudo: string;
     dateDeNaissance: string;
-    description: string;
     genre: string;
     mail: string;
     motDePasse: string;
     role: string;
     telephone: string;
-    rib: string;
+    pays: string;
+    image: string | null;  // base64 image
+    emailConfirmed: boolean;
   }
   

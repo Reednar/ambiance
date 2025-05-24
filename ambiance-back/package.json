@@ -29,6 +29,7 @@
     "dotenv": "^16.4.7",
     "mysql2": "^3.11.3",
     "nest-winston": "^1.10.2",
+    "nodemailer": "^7.0.3",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.0",
@@ -85,5 +86,4 @@
   "overrides": {
     "multer": "1.4.5-lts.2"
   }
-
 }

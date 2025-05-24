@@ -5,11 +5,12 @@ import { UsersController } from '../../controllers/users/users.controller';
 import { User } from '../../entities/users.entity';
 import { School } from 'src/entities/schools.entity';
 import { AuthModule } from '../auth/auth.module';
+import { MailService } from 'src/services/mail.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, School]), forwardRef(() => AuthModule)],
-  providers: [UsersService, Logger],
+  providers: [UsersService, Logger, MailService],
   controllers: [UsersController],
-  exports: [UsersService],
+  exports: [UsersService, MailService],
 })
 export class UsersModule {}

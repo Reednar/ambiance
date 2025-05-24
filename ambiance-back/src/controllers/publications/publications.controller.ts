@@ -229,7 +229,7 @@ export class PublicationsController {
     dto.idUtilisateur = pub.utilisateurId;
     dto.idEcole = pub.idEcole;
     dto.listeEcoleIds = pub.listeEcoleIds;
-    dto.nomEcole = pub.ecole.nom;
+    dto.nomEcole = pub.ecole ? pub.ecole.nom : null;
     if (pub.image && pub.imageMimeType) {
       const base64 = pub.image.toString('base64');
       dto.image = `data:${pub.imageMimeType};base64,${base64}`;
@@ -299,7 +299,7 @@ export class PublicationsController {
   ) {
     this.logger.log(`[${req.method} ${req.url}] Creating a new publication with body: ${JSON.stringify(body)}`);
 
-    const utilisateur = await this.usersService.findOne(body.utilisateurId);
+    const utilisateur = await this.usersService.findEntityById(body.utilisateurId);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
@@ -505,7 +505,7 @@ async getAccessibleSchoolsPost(
   @Req() req: Request
 ): Promise<{ id: number; nom: string }[]> {
   this.logger.log(`[${req.method} ${req.url}] Get schools accessible to user ${userId}`);
-  const user = await this.usersService.findOne(userId);
+  const user = await this.usersService.findEntityById(userId);
   const idEcoleUser = user?.idEcole;
   if (!idEcoleUser) {
     return [];

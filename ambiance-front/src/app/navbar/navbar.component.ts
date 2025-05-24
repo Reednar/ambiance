@@ -32,6 +32,7 @@ export class NavbarComponent implements AfterViewInit, OnInit, OnDestroy {
   navbarOpen = false;
   items: MenuItem[] = [];
   isConnected = false;
+  emailConfirmed = false;
   private authSubscription!: Subscription;
   publications: Publication[] = [];
   ecoles: Ecole[] = [];
@@ -82,6 +83,11 @@ async ngOnInit() {
     this.authSubscription = this.authService.isConnected$.subscribe((value) => {
     this.isConnected = value;
     this.updateMenuItems();
+    this.cdr.detectChanges();
+    });
+
+    this.authSubscription = this.authService.emailConfirmed$.subscribe((value) => {
+    this.emailConfirmed = value;
     this.cdr.detectChanges();
     });
     // Attendre que les données soient chargées avant de les passer à `initialize()`

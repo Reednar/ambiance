@@ -13,6 +13,9 @@ export class AuthService {
   private isConnected = new BehaviorSubject<boolean>(this.isLoggedIn());
   isConnected$ = this.isConnected.asObservable();
 
+  private emailConfirmed = new BehaviorSubject<boolean>(this.isLoggedIn());
+  emailConfirmed$ = this.emailConfirmed.asObservable();
+
   constructor(private http: HttpClient, private router: Router) { 
     this.isAuthenticated();
   }
@@ -36,11 +39,11 @@ export class AuthService {
     return false;
   }
 
-login(credentials: { mail: string; password: string }): Observable<{ success: boolean; userId: string }> {
+login(credentials: { mail: string; password: string }): Observable<{ success: boolean; userId: string, emailConfirmed: boolean }> {
   const { mail, password } = credentials;
   const user = { mail, password };
 
-  return this.http.post<{ success: boolean; userId: string }>(
+  return this.http.post<{ success: boolean; userId: string; emailConfirmed: boolean }>(
     `${this.apiUrl}/login`,
     user,
     { withCredentials: true }  // Assurez-vous que cette option est active pour envoyer les cookies
@@ -53,6 +56,12 @@ login(credentials: { mail: string; password: string }): Observable<{ success: bo
 
         // Mettre à jour l'état de la connexion
         this.isConnected.next(true);
+        if(response.emailConfirmed == true){
+          this.emailConfirmed.next(true);
+        }
+        else{
+          this.emailConfirmed.next(false);
+        }
       }
     }),
     catchError(error => {
@@ -86,6 +95,7 @@ login(credentials: { mail: string; password: string }): Observable<{ success: bo
   return this.http.post<void>(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
     tap(() => {
       this.isConnected.next(false);
+      this.emailConfirmed.next(false);
       sessionStorage.removeItem('id_utilisateur');
       this.router.navigate(['/login']);
     }),
@@ -135,32 +145,33 @@ login(credentials: { mail: string; password: string }): Observable<{ success: bo
   //     return this.http.get<boolean>(`${this.apiUrl}/is-authenticated`, { withCredentials: true });
   //   }
 
-isAuthenticated(): Observable<boolean> {
-    return this.http.get<{ authenticated: boolean; userId: string }>(`${this.apiUrl}/is-authenticated`, { withCredentials: true })
-      .pipe(
-        map((response) => {
-          
-          if (response.authenticated) {
-            // L'utilisateur est connecté, on sauvegarde son ID dans sessionStorage
-            sessionStorage.setItem('id_utilisateur', response.userId);
-            this.isConnected.next(true);
-          } else {
-            // L'utilisateur n'est pas connecté, on nettoie sessionStorage
-            sessionStorage.removeItem('id_utilisateur');
-            this.isConnected.next(false);
-          }
-
-          // Ne retourner que la valeur de 'authenticated' (boolean)
-          return response.authenticated;
-        }),
-        catchError((error) => {
-          console.error('Erreur lors de la vérification de l\'authentification:', error);
-
-          // En cas d'erreur, on considère l'utilisateur comme non connecté
+isAuthenticated(): Observable<{ authenticated: boolean; emailConfirmed: boolean }> {
+  return this.http.get<{ authenticated: boolean; userId: string; emailConfirmed: boolean }>(`${this.apiUrl}/is-authenticated`, { withCredentials: true })
+    .pipe(
+      map(response => {
+        if (response.authenticated) {
+          sessionStorage.setItem('id_utilisateur', response.userId);
+          this.isConnected.next(true);
+          this.emailConfirmed.next(response.emailConfirmed);
+        } else {
           sessionStorage.removeItem('id_utilisateur');
           this.isConnected.next(false);
-          return of(false); // Retourne false en cas d'erreur
-        })
-      );
+          this.emailConfirmed.next(false);
+        }
+        return { authenticated: response.authenticated, emailConfirmed: response.emailConfirmed };
+      }),
+      catchError(error => {
+        console.error('Erreur lors de la vérification de l\'authentification:', error);
+        sessionStorage.removeItem('id_utilisateur');
+        this.isConnected.next(false);
+        this.emailConfirmed.next(false);
+        return of({ authenticated: false, emailConfirmed: false });
+      })
+    );
+}
+
+
+  setEmailConfirmed(value: boolean) {
+    this.emailConfirmed.next(value);
   }
 }

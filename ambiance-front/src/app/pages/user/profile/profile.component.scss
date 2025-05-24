@@ -23,13 +23,13 @@
   
   @media (max-width: 768px) {
     .testStyle {
-      padding-top: 90px !important;
+      padding-top: 70px !important;
     }
   }
   
   @media (max-width: 992px) {
     .testStyle {
-      padding-top: 120px !important;
+      padding-top: 80px !important;
     }
   }
   
@@ -41,19 +41,51 @@
 
   @media (max-width: 576px) {
     .testStyle {
-      padding-top: 30px !important;
+      padding-top: 20px !important;
     }
   }
 
   @media (max-width: 706px) {
     .testStyle {
-      padding-top: 50px !important;
+      padding-top:50px !important;
     }
   }
 
-  @media (max-width: 2800px) {
+  @media (min-width: 1200px) {
     .testStyle {
       padding-top: 100px !important;
     }
   }
   
+
+
+.profile-pic-wrapper {
+  position: relative;
+  width: 250px;
+  height: 250px;
+
+  .profile-pic-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+    background-color: #f0f0f0;
+  }
+
+.profile-pic-btn {
+  position: absolute;
+  bottom: 5px;  /* petit padding depuis le bord */
+  right: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  background-color: white;
+  z-index: 10;
+  transform: none;
+}
+
+.profile-pic.no-image .profile-pic-btn {
+  background-color: #f0f0f0; /* gris clair */
+  border-color: #bbb;        /* bordure grise */
+  color: #666;               /* icône plus douce */
+}
+}

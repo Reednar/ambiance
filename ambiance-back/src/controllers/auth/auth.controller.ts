@@ -10,12 +10,13 @@ import {
 import { Request, Response } from 'express';
 import { AuthService } from 'src/services/auth/auth.service';
 import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
+import { UsersService } from 'src/services/users/users.service';
 
 const isProd = process.env.NODE_ENV === 'production';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService, private readonly userService: UsersService) {}
 
   private setAuthCookies(res: Response, accessToken: string, refreshToken: string, userId: string) {
     res.cookie('access_token', accessToken, {
@@ -75,14 +76,16 @@ export class AuthController {
       res,
       loginResponse.access_token,
       loginResponse.refresh_token,
-      loginResponse.idUtilisateur.toString() // Ajoute l'ID utilisateur dans les cookies
+      loginResponse.idUtilisateur.toString()
     );
 
     return {
       success: true,
-      userId: loginResponse.idUtilisateur, // On retourne l'ID ici aussi si nécessaire
+      userId: loginResponse.idUtilisateur, 
+      emailConfirmed: loginResponse.emailConfirmed,
     };
   }
+
 @Post('refresh')
 async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
   const refreshToken = req.cookies?.refresh_token;
@@ -118,7 +121,9 @@ async isAuthenticated(@Req() req: Request, @Res() res: Response) {
   try {
     // Vérification du access token
     const payload = await this.authService.verifyToken(accessToken);
-    return res.status(200).json({ authenticated: true, userId: payload.sub });
+    const user = await this.userService.findEntityById(payload.sub);
+
+    return res.status(200).json({ authenticated: true, userId: payload.sub, emailConfirmed: user.emailConfirmed });
   } catch (e) {
     console.error('Erreur lors de la vérification du token:', e);
 

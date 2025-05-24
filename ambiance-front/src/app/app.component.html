@@ -1,4 +1,7 @@
 <p-toast></p-toast>
 <app-navbar></app-navbar>
+<div *ngIf="isConnected && emailConfirmed == false" class="alert alert-warning text-center" style="margin-top: 80px;  margin-bottom: -80px; z-index: 999;">
+  ⚠️ Veuillez confirmer votre compte pour débloquer toutes les fonctionnalités. <a href="#" (click)="resendConfirmationEmail($event)">renvoyer un mail</a>
+</div>
 <router-outlet></router-outlet>
 <app-footer></app-footer>

@@ -52,6 +52,21 @@ export class User {
   @Column({ name: 'Telephone', type: 'varchar', length: 50, nullable: true })
   telephone: string;
 
+    @Column({ name: 'Image', type: 'longblob', nullable: true })
+  image: Buffer;
+
+   @Column({ name: 'ImageMimeType', type: 'varchar', length: 50, nullable: true })
+  imageMimeType: string;
+
+  @Column({ name: 'ConfirmationToken', type: 'varchar', length: 64, nullable: true })
+  confirmationToken?: string;
+
+  @Column({ name: 'ConfirmationTokenExpires', type: 'datetime', nullable: true })
+  confirmationTokenExpires?: Date;
+
+  @Column({ name: 'EmailConfirmed', type: 'boolean', default: false })
+  emailConfirmed: boolean;
+  
   // Relation avec les écoles (un utilisateur peut être rattaché à une école)
   @ManyToOne(() => School, (school) => school.id, { nullable: true })
   @JoinColumn({ name: 'id_ecole' })
