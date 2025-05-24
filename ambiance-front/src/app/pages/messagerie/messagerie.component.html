@@ -6,11 +6,15 @@
   </div>
   <div class="messagerie-container">
     <!-- Conteneur gauche : 30% -->
-    <div class="discussions-list  mt-4 ">
+          <button class="burger-btn d-md-none" (click)="showMenu = !showMenu">
+            <i class="bi bi-list"></i>
+          </button>
 
+    <div class="discussions-list" [class.mobile-open]="showMenu" [class.d-none]="!showMenu && isMobile">
       <h4>Mes discussions :</h4>
       <div *ngFor="let d of discussions" class="discussion-card"
-        [class.selected]="selectedDiscussion?.idDiscussion === d.idDiscussion" (click)="selectDiscussion(d)">
+        [class.selected]="selectedDiscussion?.idDiscussion === d.idDiscussion"
+        (click)="selectDiscussion(d); showMenu = false">
         <div class="card-title">{{ d.nomGroupe }}</div>
         <div class="card-id">#{{ d.idDiscussion }}</div>
       </div>
@@ -21,7 +25,17 @@
     <!-- Conteneur droit : 70% -->
     <div class="messages-section">
       <ng-container *ngIf="selectedDiscussion; else noDiscussion">
-        <h5>Discussion : {{ selectedDiscussion.nomGroupe }}</h5>
+        <br class="d-none d-md-block">
+        <div class="discussion-header d-flex justify-content-between align-items-center">
+
+          <span>{{ selectedDiscussion.nomGroupe }}</span>
+          <button class="btn btn-outline-light btn-sm"
+                  style="margin-left:auto"
+                  (click)="goToPublication(selectedDiscussion.idDiscussion)">
+            publication
+          </button>
+        </div>
+        
         <div class="messages-history">
           <div *ngFor="let m of messages" 
                class="message-bubble-container"
@@ -46,4 +60,5 @@
       </ng-template>
     </div>
   </div>
+
 </div>

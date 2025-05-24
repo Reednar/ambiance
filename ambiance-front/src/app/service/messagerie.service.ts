@@ -37,4 +37,8 @@ export class MessagerieService {
   getMessagesHistory(discussionId: number) {
     return this.http.post<any[]>(`${this.apiUrl}/discussions/messages-history`, { discussionId }, { withCredentials: true });
   }
+
+  getPublicationIdByDiscussionId(discussionId: number) {
+    return this.http.get<{ publicationId: number }>(`${this.apiUrl}/discussions/publication-id/${discussionId}`, { withCredentials: true });
+  }
 }

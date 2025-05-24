@@ -155,3 +155,87 @@
   margin-top: 4px;
   text-align: right;
 }
+
+.discussion-header {
+  width: 100%;
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #fff;
+  background: #232323;
+  padding: 16px 20px 16px 0;
+  border-bottom: 1px solid #444;
+  text-align: left;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center; // <-- assure l'alignement vertical
+  justify-content: space-between;
+}
+
+.discussion-header span {
+  display: flex;
+  align-items: center;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.burger-btn {
+  display: none;
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2001;
+  background: none;
+  border: none;
+  color: #222;
+  font-size: 2rem;
+}
+
+@media (max-width: 767.98px) {
+  .burger-btn {
+    display: block;
+    position: fixed;
+    top: 64px;
+    left: 0px;
+    z-index: 2001;
+    background: grey;
+  }
+  .discussions-list {
+    display: none;
+    position: fixed;
+    top: 60px; // sous la navbar si besoin
+    left: 0;
+    width: 80vw;
+    max-width: 320px;
+    height: 100vh; // <-- prend toute la hauteur
+    max-height: 100vh; // <-- prend toute la hauteur
+    background: #232323;
+    color: #fff;
+    z-index: 2000;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.25);
+    padding-top: 20px;
+    transition: transform 0.3s;
+    transform: translateX(-100%);
+    overflow-y: auto;
+    border-radius: 0 12px 12px 0;
+  }
+  .discussions-list.mobile-open {
+    display: flex;
+    flex-direction: column;
+    transform: translateX(0);
+  }
+  .discussions-list .discussion-card {
+    background: none;
+    border: none;
+    box-shadow: none;
+    margin-bottom: 0;
+    padding: 16px;
+    border-bottom: 1px solid #444;
+  }
+  .discussion-header span {
+    margin-left: 48px;
+    text-align: left;
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+  }
+}

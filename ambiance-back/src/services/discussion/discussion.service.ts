@@ -73,4 +73,12 @@ export class DiscussionService {
       ])
       .getRawMany();
   }
+
+  async getPublicationIdByDiscussionId(discussionId: number): Promise<{ publicationId: number | null }> {
+    const discussion = await this.discussionRepository.findOne({
+      where: { idDiscussion: discussionId },
+      relations: ['idGroupe', 'idGroupe.publication'],
+    });
+    return { publicationId: discussion?.idGroupe?.publication?.idPublication ?? null };
+  }
 }

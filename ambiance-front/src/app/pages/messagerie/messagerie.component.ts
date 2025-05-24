@@ -12,6 +12,8 @@ export class MessagerieComponent implements OnInit, OnDestroy {
   selectedDiscussion: any = null;
   messages: any[] = [];
   newMessage = '';
+  showMenu = false;
+  isMobile = false;
 
   constructor(private messagerieService: MessagerieService) {}
 
@@ -35,10 +37,18 @@ export class MessagerieComponent implements OnInit, OnDestroy {
         this.messages.push(mappedMsg);
       }
     });
+    this.checkMobile();
+    window.addEventListener('resize', this.checkMobile.bind(this));
   }
 
   ngOnDestroy() {
+    window.removeEventListener('resize', this.checkMobile.bind(this));
     this.messagerieService.disconnect();
+  }
+
+  checkMobile() {
+    this.isMobile = window.innerWidth < 768;
+    if (!this.isMobile) this.showMenu = false;
   }
 
   selectDiscussion(discussion: any) {
@@ -53,5 +63,21 @@ export class MessagerieComponent implements OnInit, OnDestroy {
       this.messagerieService.sendMessage(this.userId, this.selectedDiscussion.idDiscussion, this.newMessage);
       this.newMessage = '';
     }
+  }
+
+  goToPublication(idDiscussion: number) {
+    this.messagerieService.getPublicationIdByDiscussionId(idDiscussion).subscribe({
+      next: (res) => {
+        const publicationId = res?.publicationId;
+        if (publicationId) {
+          window.location.href = `/publication-show/${publicationId}`;
+        } else {
+          alert("Aucune publication liée à cette discussion.");
+        }
+      },
+      error: () => {
+        alert("Erreur lors de la récupération de la publication.");
+      }
+    });
   }
 }
