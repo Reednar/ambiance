@@ -200,9 +200,10 @@ export class PublicationsController {
       },
     },
   })
-  async getPublicationById(@Param('id') id: number, @Req() req: Request) {
+  async getPublicationById(@Param('id') id: number, @Req() req?: Request) {
     this.logger.log(`[${req.method} ${req.url}] Fetching publication with ID: ${id}`);
-
+    const method = req?.method ?? 'UNKNOWN_METHOD';
+    const url = req?.url ?? 'UNKNOWN_URL';
     const pub = await this.publicationsService.findOne(id);
 
     if (!pub) {
@@ -329,7 +330,7 @@ export class PublicationsController {
     const groupe = await this.groupsService.create({
       nomDuGroupe: publication.titre,
       publication: publication,
-      utilisateur: utilisateur, 
+      utilisateur: utilisateur,
     });
 
     // 3. Ajout du créateur comme participant (plus besoin de organisateur)
@@ -498,26 +499,26 @@ export class PublicationsController {
     return participations;
   }
 
-@Post('/accessible-ecoles')
-@ApiOperation({ summary: 'Get accessible school IDs for a user based on listeEcoleIds of publications' })
-async getAccessibleSchoolsPost(
-  @Body('userId') userId: number,
-  @Req() req: Request
-): Promise<{ id: number; nom: string }[]> {
-  this.logger.log(`[${req.method} ${req.url}] Get schools accessible to user ${userId}`);
-  const user = await this.usersService.findEntityById(userId);
-  const idEcoleUser = user?.idEcole;
-  if (!idEcoleUser) {
-    return [];
-  }
-  const publications = await this.publicationsService.findAllWhereEcoleIdInListe(idEcoleUser);
-const uniqueEcoles = new Map<number, string>();
-  for (const pub of publications) {
-    uniqueEcoles.set(pub.idEcole, pub.ecole.nom);
+  @Post('/accessible-ecoles')
+  @ApiOperation({ summary: 'Get accessible school IDs for a user based on listeEcoleIds of publications' })
+  async getAccessibleSchoolsPost(
+    @Body('userId') userId: number,
+    @Req() req: Request
+  ): Promise<{ id: number; nom: string }[]> {
+    this.logger.log(`[${req.method} ${req.url}] Get schools accessible to user ${userId}`);
+    const user = await this.usersService.findEntityById(userId);
+    const idEcoleUser = user?.idEcole;
+    if (!idEcoleUser) {
+      return [];
+    }
+    const publications = await this.publicationsService.findAllWhereEcoleIdInListe(idEcoleUser);
+    const uniqueEcoles = new Map<number, string>();
+    for (const pub of publications) {
+      uniqueEcoles.set(pub.idEcole, pub.ecole.nom);
     }
 
-return Array.from(uniqueEcoles.entries()).map(([id, nom]) => ({ id, nom }));
-}
+    return Array.from(uniqueEcoles.entries()).map(([id, nom]) => ({ id, nom }));
+  }
 
 
 }

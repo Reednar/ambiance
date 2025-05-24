@@ -36,7 +36,7 @@ export class PublicationShowComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
   ) { }
 
-   ngOnInit() {
+  ngOnInit() {
     // Abonne-toi aux changements de l'ID de la route pour chaque navigation
     this.routeSub = this.route.paramMap.subscribe(params => {
       const id = Number(params.get('id'));
@@ -59,7 +59,7 @@ export class PublicationShowComponent implements OnInit, OnDestroy {
     });
   }
 
-   ngOnDestroy() {
+  ngOnDestroy() {
     // Libère l'abonnement pour éviter les fuites de mémoire
     if (this.routeSub) {
       this.routeSub.unsubscribe();

@@ -10,7 +10,7 @@ export class ForgotPasswordComponent {
   message: string = '';
   error: string = '';
 
-  constructor(private usersService: UsersService) {}
+  constructor(private usersService: UsersService) { }
 
   onSubmit() {
     this.message = '';

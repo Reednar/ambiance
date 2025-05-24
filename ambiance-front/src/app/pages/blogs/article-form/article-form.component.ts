@@ -23,7 +23,7 @@ export class ArticleFormComponent implements OnInit, OnChanges {
   tags: { id: number; nom: string }[] = [];
   selectedTags: { id: number, nom: string }[] = [];
 
-  constructor(private blogService: BlogService, private schoolService: EcoleService) {}
+  constructor(private blogService: BlogService, private schoolService: EcoleService) { }
 
   ngOnInit() {
     this.blogService.getAllTags().subscribe(data => {

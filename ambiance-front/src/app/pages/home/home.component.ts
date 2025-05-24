@@ -28,7 +28,7 @@ export class HomeComponent implements AfterViewInit, OnInit {
     private route: ActivatedRoute,
     private usersService: UsersService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Chargement des publications et des catégories
@@ -71,7 +71,7 @@ export class HomeComponent implements AfterViewInit, OnInit {
     this.publicationsService.getAll().subscribe({
       next: (data) => {
         this.publications = data
-           .sort((a: { dateCreation: string | number | Date; }, b: { dateCreation: string | number | Date; }) => new Date(b.dateCreation).getTime() - new Date(a.dateCreation).getTime())
+          .sort((a: { dateCreation: string | number | Date; }, b: { dateCreation: string | number | Date; }) => new Date(b.dateCreation).getTime() - new Date(a.dateCreation).getTime())
           .slice(0, 8);
       },
       error: (err) => {

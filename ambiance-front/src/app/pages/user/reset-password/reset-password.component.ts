@@ -18,7 +18,7 @@ export class ResetPasswordComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private userService: UsersService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.token = this.route.snapshot.queryParamMap.get('token');
@@ -26,23 +26,23 @@ export class ResetPasswordComponent implements OnInit {
       this.error = 'Token manquant dans l’URL';
     }
   }
-  
-onSubmit() {
-  if (!this.token) return;
 
-  this.message = '';
-  this.error = '';
+  onSubmit() {
+    if (!this.token) return;
 
-  this.userService.resetPassword(this.token, this.newPassword)
-    .subscribe({
-      next: res => {
-        this.message = res.message;
-        setTimeout(() => this.router.navigate(['/login']), 2000);
-      },
-      error: err => {
-        this.error = err.error?.message || 'Erreur lors de la réinitialisation';
-      }
-    });
-}
+    this.message = '';
+    this.error = '';
+
+    this.userService.resetPassword(this.token, this.newPassword)
+      .subscribe({
+        next: res => {
+          this.message = res.message;
+          setTimeout(() => this.router.navigate(['/login']), 2000);
+        },
+        error: err => {
+          this.error = err.error?.message || 'Erreur lors de la réinitialisation';
+        }
+      });
+  }
 
 }

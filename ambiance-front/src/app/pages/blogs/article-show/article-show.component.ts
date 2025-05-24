@@ -40,8 +40,6 @@ export class ArticleShowComponent {
     });
   }
 
-
-
   // Récupérer les écoles
   loadOneArticle(idArticle: number): void {
     this.blogService.findOne(idArticle).subscribe({

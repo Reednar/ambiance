@@ -20,7 +20,7 @@ export class ArticleCreateComponent implements OnInit {
     private schoolService: EcoleService,
     private router: Router,
     private messageService: MessageService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     const userId = Number(sessionStorage.getItem('id_utilisateur')) || 0;

@@ -14,7 +14,7 @@
       <hr />
       <p class="card-text fs-5">{{ article.contenu }}</p>
 
-        <!-- Affichage des tags -->
+      <!-- Affichage des tags -->
       <div *ngIf="article.tags && article.tags.length > 0" class="mb-3">
         <strong>Tags :</strong>
         <span *ngFor="let tag of article.tags; let last = last">

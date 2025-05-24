@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private messageService: MessageService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Récupère l'URL où l'utilisateur voulait aller

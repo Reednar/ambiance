@@ -5,10 +5,8 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4" #pdfContent>
 
   <div class="card p-4 h-full flex flex-col">
-      <h5>Sessions</h5>
-      <p-chart class="flex-1"
-        type="bar"
-        [data]="{
+    <h5>Sessions</h5>
+    <p-chart class="flex-1" type="bar" [data]="{
           labels: countDates,
           datasets: [
             {
@@ -17,15 +15,12 @@
               backgroundColor: '#42A5F5'
             }
           ]
-        }"
-      ></p-chart>
+        }"></p-chart>
   </div>
 
   <div class="card p-4 h-full flex flex-col">
-      <h5>Énergie</h5>
-      <p-chart class="flex-1"
-        type="bar"
-        [data]="{
+    <h5>Énergie</h5>
+    <p-chart class="flex-1" type="bar" [data]="{
           labels: countDates,
           datasets: [
             {
@@ -34,15 +29,12 @@
               backgroundColor: '#42A5F5'
             }
           ]
-        }"
-      ></p-chart>
+        }"></p-chart>
   </div>
 
   <div class="card p-4 h-full flex flex-col">
-      <h5>Recette (indicatives en HT)</h5>
-      <p-chart class="flex-1"
-        type="bar"
-        [data]="{
+    <h5>Recette (indicatives en HT)</h5>
+    <p-chart class="flex-1" type="bar" [data]="{
           labels: countDates,
           datasets: [
             {
@@ -51,15 +43,12 @@
               backgroundColor: '#42A5F5'
             }
           ]
-        }"
-      ></p-chart>
+        }"></p-chart>
   </div>
 
   <div class="card p-4 h-full flex flex-col">
-      <h5>Disponibilité des bornes</h5>
-      <p-chart class="flex-1"
-        type="bar"
-        [data]="{
+    <h5>Disponibilité des bornes</h5>
+    <p-chart class="flex-1" type="bar" [data]="{
           labels: countDates,
           datasets: [
             {
@@ -68,8 +57,7 @@
               backgroundColor: '#42A5F5'
             }
           ]
-        }"
-      ></p-chart>
+        }"></p-chart>
   </div>
 
 </div>

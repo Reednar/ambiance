@@ -14,7 +14,6 @@ import { GroupsController } from './controllers/groups/groups.controller';
 import { GroupsModule } from './modules/groups/groups.module';
 import { Groupe } from './entities/groups.entity';
 import { Image } from './entities/images.entity';
-import { ImagesModule } from './modules/images/images.module';
 import { Commentaire } from './entities/commentaires.entity';
 import { CommentairesModule } from './modules/commentaires/commentaires.module';
 import { Participation } from './entities/participation.entity';
@@ -95,7 +94,6 @@ import { DataSource } from 'typeorm';
     PublicationsModule,
     UsersModule,
     GroupsModule,
-    ImagesModule,
     CommentairesModule,
     ParticipationModule,
     AuthModule,

@@ -22,7 +22,7 @@ export class RegisterComponent implements OnInit {
     private userService: UsersService,
     private router: Router,
     private messageService: MessageService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.registerForm = this.fb.group(
@@ -66,56 +66,49 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit(): void {
-  if (this.registerForm.valid) {
-    const formValue = this.registerForm.value;
+    if (this.registerForm.valid) {
+      const formValue = this.registerForm.value;
 
-    const user: Partial<User> = {
-      prenom: formValue.username,
-      nom: formValue.username,
-      pseudo: formValue.username,
-      mail: formValue.email,
-      motDePasse: formValue.password,
-      genre: formValue.genre,
-      dateDeNaissance: formValue.dateDeNaissance,
-      pays: formValue.pays,
-      role: 'user',
-      telephone: '',
-      image: null
-    };
+      const user: Partial<User> = {
+        prenom: formValue.username,
+        nom: formValue.username,
+        pseudo: formValue.username,
+        mail: formValue.email,
+        motDePasse: formValue.password,
+        genre: formValue.genre,
+        dateDeNaissance: formValue.dateDeNaissance,
+        pays: formValue.pays,
+        role: 'user',
+        telephone: '',
+        image: null
+      };
 
-    this.userService.createUser(user).subscribe({
-      next: () => this.router.navigate(['/login']),
-      error: (error) => {
-      console.error('Erreur lors de la création de l\'utilisateur', error);
+      this.userService.createUser(user).subscribe({
+        next: () => this.router.navigate(['/login']),
+        error: (error) => {
+          console.error('Erreur lors de la création de l\'utilisateur', error);
 
-      if (error.error?.message === 'EMAIL_ALREADY_USED') {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'E-mail déjà utilisé',
-          detail: 'Cet e-mail est déjà associé à un compte.'
-        });
+          if (error.error?.message === 'EMAIL_ALREADY_USED') {
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'E-mail déjà utilisé',
+              detail: 'Cet e-mail est déjà associé à un compte.'
+            });
 
-        // Met le champ en erreur rouge
-        this.registerForm.controls['email'].setErrors({ emailUsed: true });
-        this.registerForm.controls['email'].markAsTouched();
-      } else {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erreur serveur',
-          detail: 'Une erreur est survenue. Veuillez réessayer.'
-        });
-      }
+            // Met le champ en erreur rouge
+            this.registerForm.controls['email'].setErrors({ emailUsed: true });
+            this.registerForm.controls['email'].markAsTouched();
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erreur serveur',
+              detail: 'Une erreur est survenue. Veuillez réessayer.'
+            });
+          }
+        }
+      });
+    } else {
+      this.registerForm.markAllAsTouched();
     }
-
-    });
-  } else {
-    this.registerForm.markAllAsTouched();
-  }
-}
-
-
-
-  loginWithGoogle(): void {
-    // Implémentation si nécessaire
   }
 }
