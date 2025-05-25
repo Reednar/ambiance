@@ -30,10 +30,11 @@ export class AppComponent {
   constructor(private primengConfig: PrimeNGConfig, private authService: AuthService, public messageService: MessageService, private userService: UsersService, private cdr: ChangeDetectorRef,
   ) { }
 
-  ngOnInit() {
-    this.authService.isAuthenticated().subscribe(auth => {
+ngOnInit() {
+  this.authService.isAuthenticated().subscribe(auth => {
+    void auth; // indique à TypeScript et ESLint que c’est intentionnel
+  });
 
-    });
     this.userId = sessionStorage.getItem('id_utilisateur') ?? '';
     //  On prend le userId et on regarde s'il est connecté et si son mail est confirmé
     try {

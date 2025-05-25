@@ -24,7 +24,7 @@ export class ArticleCreatedComponent implements OnInit {
   }
 
   loadArticles(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.blogService.findAllByAuthor(Number(sessionStorage.getItem('id_utilisateur')) || 0).subscribe({
         next: (data) => {
           this.articles = data;

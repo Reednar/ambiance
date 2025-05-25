@@ -1,5 +1,11 @@
 import {
-  Controller, Get, Param, Post, Body, Put, Delete,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Body,
+  Put,
+  Delete,
 } from '@nestjs/common';
 import { CategoriesService } from '../../services/categories/categories.service';
 

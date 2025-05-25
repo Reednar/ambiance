@@ -20,7 +20,7 @@ export class EcoleComponent implements OnInit {
   }
   // Récupérer les écoles
   loadEcoles(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.ecoleService.findAllSchools().subscribe({
         next: (data) => {
           this.ecoles = data;

@@ -1,6 +1,4 @@
-import {
-  Controller, Post, Delete, Param, Get,
-} from '@nestjs/common';
+import { Controller, Post, Delete, Param, Get } from '@nestjs/common';
 import { PublicationCategoriesService } from 'src/services/publication-categories/publication-categories.service';
 
 @Controller('publication-categories') // Route de base pour les opérations publication-catégorie
@@ -13,7 +11,10 @@ export class PublicationCategoriesController {
     @Param('IdPublication') IdPublication: string,
     @Param('IdCategorie') IdCategorie: string,
   ) {
-    return this.pcService.addCategoryToPublication(+IdPublication, +IdCategorie);
+    return this.pcService.addCategoryToPublication(
+      +IdPublication,
+      +IdCategorie,
+    );
   }
 
   // Supprime l'association entre une catégorie et une publication
@@ -22,7 +23,10 @@ export class PublicationCategoriesController {
     @Param('IdPublication') IdPublication: string,
     @Param('IdCategorie') IdCategorie: string,
   ) {
-    return this.pcService.removeCategoryFromPublication(+IdPublication, +IdCategorie);
+    return this.pcService.removeCategoryFromPublication(
+      +IdPublication,
+      +IdCategorie,
+    );
   }
 
   // Récupère toutes les catégories associées à une publication donnée

@@ -19,9 +19,6 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from '../../services/users/users.service';
 import { User } from '../../entities/users.entity';
-import bcrypt from 'bcrypt';
-import { AuthGuard } from '@nestjs/passport';
-import { privateDecrypt } from 'crypto';
 import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateUserDto, UserDto } from 'src/dtos/user.dto';
@@ -30,7 +27,7 @@ import * as crypto from 'crypto';
 import { MailService } from 'src/services/mail.service';
 import { AuthService } from 'src/services/auth/auth.service';
 
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
 
 interface RequestWithCookies extends ExpressRequest {
   cookies: { [key: string]: string };
@@ -39,12 +36,14 @@ interface RequestWithCookies extends ExpressRequest {
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService, private readonly mailService: MailService, private readonly authService: AuthService,
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly mailService: MailService,
+    private readonly authService: AuthService,
     private readonly logger: Logger,
-  ) { }
+  ) {}
 
-
-  @Post("findAll")
+  @Post('findAll')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Return all Users if the requester is an admin' })
   @ApiResponse({
@@ -71,8 +70,14 @@ export class UsersController {
       },
     },
   })
-  async findAll(@Body() body: { userId: number }, @Req() req: Request): Promise<UserDto[]> {
-    this.logger.log(`[${req.method} ${req.url}] Fetching all users`, body.userId); // Log de la requête
+  async findAll(
+    @Body() body: { userId: number },
+    @Req() req: Request,
+  ): Promise<UserDto[]> {
+    this.logger.log(
+      `[${req.method} ${req.url}] Fetching all users`,
+      body.userId,
+    ); // Log de la requête
     const user = await this.usersService.findOne(body.userId);
 
     if (!user || user.role !== 'Administrateur') {
@@ -91,20 +96,21 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Post("create")
+  @Post('create')
   @ApiOperation({ summary: 'Create a new User' })
   async create(
-    @Body() body: {
-      prenom: string,
-      nom: string,
-      dateDeNaissance: Date,
-      genre: 'Homme' | 'Femme' | 'Autre',
+    @Body()
+    body: {
+      prenom: string;
+      nom: string;
+      dateDeNaissance: Date;
+      genre: 'Homme' | 'Femme' | 'Autre';
       mail: string;
-      motDePasse: string,
-      telephone: string,
-      pays: string,
+      motDePasse: string;
+      telephone: string;
+      pays: string;
     },
-    @Req() req: Request
+    @Req() req: Request,
   ) {
     this.logger.log(`[${req.method} ${req.url}] Creating a new user`, body);
 
@@ -136,17 +142,18 @@ export class UsersController {
       delete createdUser.confirmationTokenExpires;
 
       return createdUser;
-
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY' && error.message.includes('Mail')) {
         throw new HttpException('EMAIL_ALREADY_USED', HttpStatus.BAD_REQUEST);
       }
 
       this.logger.error('Error during user creation', error);
-      throw new HttpException('INTERNAL_SERVER_ERROR', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'INTERNAL_SERVER_ERROR',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
-
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')
@@ -167,25 +174,26 @@ export class UsersController {
 
     // Vérification que l'utilisateur connecté ne modifie QUE SON propre profil
     if (connectedUserId !== id) {
-      throw new ForbiddenException('Vous ne pouvez modifier que votre propre compte');
+      throw new ForbiddenException(
+        'Vous ne pouvez modifier que votre propre compte',
+      );
     }
 
     if (image) {
       // Convertis directement le buffer en base64 string, en précisant le mimetype envoyé dans updateUserDto
       updateUserDto.image = image.buffer.toString('base64');
-      updateUserDto.imageMimeType = updateUserDto.imageMimeType || image.mimetype; // fallback
+      updateUserDto.imageMimeType =
+        updateUserDto.imageMimeType || image.mimetype; // fallback
     }
 
     return this.usersService.update(id, updateUserDto);
   }
-
 
   @Delete(':id')
   remove(@Param('id') id: number, @Req() req: Request): Promise<void> {
     this.logger.log(`[${req.method} ${req.url}] Removing user with ID: ${id}`);
     return this.usersService.remove(id);
   }
-
 
   @Post('validate')
   @ApiOperation({ summary: 'Validate user account with confirmation token' })
@@ -204,7 +212,10 @@ export class UsersController {
     }
 
     if (user.emailConfirmed) {
-      throw new HttpException('Utilisateur déjà validé', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Utilisateur déjà validé',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     // Vérification expiration du token
@@ -224,7 +235,6 @@ export class UsersController {
     return { message: 'Utilisateur validé avec succès' };
   }
 
-
   @Post('resend-confirmation-email')
   async resendConfirmationEmail(@Body('id') id: number) {
     const user = await this.usersService.findEntityById(id);
@@ -238,7 +248,11 @@ export class UsersController {
     const expirationDate = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
 
     // Mise à jour du user en base
-    await this.usersService.updateConfirmationToken(user.idUtilisateur, token, expirationDate);
+    await this.usersService.updateConfirmationToken(
+      user.idUtilisateur,
+      token,
+      expirationDate,
+    );
 
     // Envoi de l'email
     await this.mailService.sendConfirmationEmail(user.mail, token);
@@ -247,35 +261,37 @@ export class UsersController {
   }
 
   @Post('forgot-password')
-async forgotPassword(@Body('mail') mail: string) {
-  const user = await this.usersService.findOneByMail(mail);
-  if (!user) {
-    throw new BadRequestException('Utilisateur non trouvé');
+  async forgotPassword(@Body('mail') mail: string) {
+    const user = await this.usersService.findOneByMail(mail);
+    if (!user) {
+      throw new BadRequestException('Utilisateur non trouvé');
+    }
+
+    const token = this.authService.generateResetPasswordToken(
+      user.idUtilisateur,
+    );
+    await this.mailService.sendResetPasswordEmail(user.mail, token);
+
+    return { message: 'Email de réinitialisation envoyé' };
   }
 
-  const token = this.authService.generateResetPasswordToken(user.idUtilisateur);
-  await this.mailService.sendResetPasswordEmail(user.mail, token);
+  @Post('reset-password')
+  async resetPassword(@Body() body: { token: string; newPassword: string }) {
+    const { token, newPassword } = body;
 
-  return { message: 'Email de réinitialisation envoyé' };
-}
+    let payload;
+    try {
+      payload = this.authService.verifyResetPasswordToken(token);
+    } catch {
+      throw new BadRequestException('Token invalide ou expiré');
+    }
 
-@Post('reset-password')
-async resetPassword(@Body() body: { token: string, newPassword: string }) {
-  const { token, newPassword } = body;
+    const userId = payload.sub;
+    const salt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS));
+    const hash = await bcrypt.hash(newPassword, salt);
 
-  let payload;
-  try {
-    payload = this.authService.verifyResetPasswordToken(token);
-  } catch {
-    throw new BadRequestException('Token invalide ou expiré');
+    await this.usersService.update(userId, { motDePasse: newPassword });
+
+    return { message: 'Mot de passe réinitialisé avec succès' };
   }
-
-  const userId = payload.sub;
-  const salt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS));
-  const hash = await bcrypt.hash(newPassword, salt);
-
-  await this.usersService.update(userId, { motDePasse: newPassword });
-
-  return { message: 'Mot de passe réinitialisé avec succès' };
-}
 }

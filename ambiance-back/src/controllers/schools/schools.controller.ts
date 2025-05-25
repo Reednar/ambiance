@@ -1,4 +1,12 @@
-import { Controller, Post, Body, NotFoundException, Req, Logger, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  NotFoundException,
+  Req,
+  Logger,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
 import { SchoolsService } from '../../services/schools/schools.service';
 import { School } from '../../entities/schools.entity';
@@ -16,7 +24,7 @@ export class SchoolsController {
     private readonly usersService: UsersService,
     private readonly membresBDEService: MembresBDEService,
     private readonly logger: Logger,
-  ) { }
+  ) {}
 
   /**
    * Mise à jour d'une école existante.
@@ -28,11 +36,15 @@ export class SchoolsController {
   @ApiOperation({ summary: 'Update an existing school' })
   @ApiResponse({ status: 200, description: 'School updated successfully' })
   async updateSchool(
-    @Body() body: { id: number; data: Partial<School> & { allowed_domain?: string[] } },
-    @Req() req: Request
+    @Body()
+    body: { id: number; data: Partial<School> & { allowed_domain?: string[] } },
+    @Req() req: Request,
   ): Promise<School> {
     const { id, data } = body;
-    this.logger.log(`[${req.method} ${req.url}] Updating school with ID: ${id}`, data);
+    this.logger.log(
+      `[${req.method} ${req.url}] Updating school with ID: ${id}`,
+      data,
+    );
 
     // Recherche de l'école par ID
     const school = await this.schoolsService.findOne(id);
@@ -41,7 +53,7 @@ export class SchoolsController {
     }
 
     // Préparation des données de mise à jour
-    let updateData: Partial<School> = { ...data };
+    const updateData: Partial<School> = { ...data };
     if (Array.isArray(data.allowed_domain)) {
       updateData.allowed_domain = data.allowed_domain.join(';');
     }
@@ -58,9 +70,14 @@ export class SchoolsController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Delete a school by ID' })
   @ApiResponse({ status: 200, description: 'School deleted successfully' })
-  async deleteSchool(@Body() body: { id: number }, @Req() req: Request): Promise<void> {
+  async deleteSchool(
+    @Body() body: { id: number },
+    @Req() req: Request,
+  ): Promise<void> {
     const { id } = body;
-    this.logger.log(`[${req.method} ${req.url}] Deleting school with ID: ${id}`);
+    this.logger.log(
+      `[${req.method} ${req.url}] Deleting school with ID: ${id}`,
+    );
 
     const school = await this.schoolsService.findOne(id);
     if (!school) {
@@ -78,7 +95,10 @@ export class SchoolsController {
   @Post('find')
   @ApiOperation({ summary: 'Find a school by ID' })
   @ApiResponse({ status: 200, description: 'School found successfully' })
-  async findSchool(@Body() body: { id: number }, @Req() req: Request): Promise<any> {
+  async findSchool(
+    @Body() body: { id: number },
+    @Req() req: Request,
+  ): Promise<any> {
     const { id } = body;
     this.logger.log(`[${req.method} ${req.url}] Finding school with ID: ${id}`);
 
@@ -88,7 +108,9 @@ export class SchoolsController {
     }
 
     // Conversion de la chaîne allowed_domain en tableau
-    const allowed_domains = this.schoolsService.splitAllowedDomain((school as any).allowed_domain);
+    const allowed_domains = this.schoolsService.splitAllowedDomain(
+      (school as any).allowed_domain,
+    );
     return {
       ...school,
       allowed_domains,
@@ -121,27 +143,43 @@ export class SchoolsController {
     examples: {
       example1: {
         value: {
-          nom: "École Test",
-          site_web: "https://ecole-test.com",
-          telephone: "0123456789",
-          description: "Une école pour tester",
-          contact_email: "contact@ecole-test.com",
-          type_ecole: "publique",
-          rue: "123 Rue de Test",
-          ville: "Paris",
-          code_postal: "75000",
-          image: "url"
-        }
-      }
-    }
+          nom: 'École Test',
+          site_web: 'https://ecole-test.com',
+          telephone: '0123456789',
+          description: 'Une école pour tester',
+          contact_email: 'contact@ecole-test.com',
+          type_ecole: 'publique',
+          rue: '123 Rue de Test',
+          ville: 'Paris',
+          code_postal: '75000',
+          image: 'url',
+        },
+      },
+    },
   })
   async createSchoolProtected(
-    @Body() body: { idUtilisateur: number; nom: string; site_web?: string; telephone?: string; description?: string; ville: string; codePostal: string; rue: string; contact_email: string; type_ecole: string; allowed_domain?: string[] },
+    @Body()
+    body: {
+      idUtilisateur: number;
+      nom: string;
+      site_web?: string;
+      telephone?: string;
+      description?: string;
+      ville: string;
+      codePostal: string;
+      rue: string;
+      contact_email: string;
+      type_ecole: string;
+      allowed_domain?: string[];
+    },
     @Req() req: Request,
   ): Promise<School> {
     const { idUtilisateur, allowed_domain, ...schoolData } = body;
 
-    this.logger.log(`[${req.method} ${req.url}] Creating a new school for user ID: ${idUtilisateur}`, schoolData);
+    this.logger.log(
+      `[${req.method} ${req.url}] Creating a new school for user ID: ${idUtilisateur}`,
+      schoolData,
+    );
 
     // Recherche de l'utilisateur créateur
     const utilisateur = await this.usersService.findEntityById(idUtilisateur);
@@ -211,7 +249,10 @@ export class SchoolsController {
   @Post('getPendingMembers')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get pending BDE members for a school' })
-  @ApiResponse({ status: 200, description: 'Pending members retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Pending members retrieved successfully',
+  })
   @ApiResponse({ status: 404, description: 'School or creator not found' })
   async getPendingMembers(
     @Body() body: { idEcole: number; idCreateur: number },
@@ -219,7 +260,10 @@ export class SchoolsController {
   ): Promise<any[]> {
     const { idEcole, idCreateur } = body;
 
-    this.logger.log(`[${req.method} ${req.url}] Fetching pending members for school ID: ${idEcole}`, body);
+    this.logger.log(
+      `[${req.method} ${req.url}] Fetching pending members for school ID: ${idEcole}`,
+      body,
+    );
 
     // Vérification que le créateur existe
     const creator = await this.usersService.findOne(idCreateur);
@@ -239,15 +283,25 @@ export class SchoolsController {
   @Post('updateMemberStatus')
   @UseGuards(JwtAuthGuard) // Protection avec JWT : l'utilisateur doit être authentifié
   @ApiOperation({ summary: 'Update the status of a BDE member to verified' })
-  @ApiResponse({ status: 200, description: 'Member status updated successfully' })
-  @ApiResponse({ status: 404, description: 'School, creator, or member not found' })
+  @ApiResponse({
+    status: 200,
+    description: 'Member status updated successfully',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'School, creator, or member not found',
+  })
   async updateMemberStatus(
-    @Body() body: { idEcole: number; idCreateur: number; idUtilisateur: number },
+    @Body()
+    body: { idEcole: number; idCreateur: number; idUtilisateur: number },
     @Req() req: Request,
   ): Promise<void> {
     const { idEcole, idCreateur, idUtilisateur } = body;
 
-    this.logger.log(`[${req.method} ${req.url}] Updating member status to verified`, body);
+    this.logger.log(
+      `[${req.method} ${req.url}] Updating member status to verified`,
+      body,
+    );
 
     // Vérification que le créateur existe
     const creator = await this.usersService.findOne(idCreateur);
@@ -267,28 +321,41 @@ export class SchoolsController {
     }
 
     // Vérification que le membre existe dans cette école
-    const member = await this.membresBDEService.findMemberBySchoolAndUser(idEcole, idUtilisateur);
+    const member = await this.membresBDEService.findMemberBySchoolAndUser(
+      idEcole,
+      idUtilisateur,
+    );
     if (!member) {
       throw new NotFoundException('Member not found in this school');
     }
 
     // Mise à jour du statut du membre à "verified"
-    await this.membresBDEService.updateMemberStatus(idEcole, idUtilisateur, 'verified');
+    await this.membresBDEService.updateMemberStatus(
+      idEcole,
+      idUtilisateur,
+      'verified',
+    );
   }
-
 
   @Post('removeMember')
   @UseGuards(JwtAuthGuard) // Protection JWT
   @ApiOperation({ summary: 'Remove a member from the BDE' })
   @ApiResponse({ status: 200, description: 'Member removed successfully' })
-  @ApiResponse({ status: 404, description: 'School, creator, or member not found' })
+  @ApiResponse({
+    status: 404,
+    description: 'School, creator, or member not found',
+  })
   async removeMemberFromBDE(
-    @Body() body: { idEcole: number; idCreateur: number; idUtilisateur: number },
+    @Body()
+    body: { idEcole: number; idCreateur: number; idUtilisateur: number },
     @Req() req: Request,
   ): Promise<void> {
     const { idEcole, idCreateur, idUtilisateur } = body;
 
-    this.logger.log(`[${req.method} ${req.url}] Removing member from BDE`, body);
+    this.logger.log(
+      `[${req.method} ${req.url}] Removing member from BDE`,
+      body,
+    );
 
     // Vérification du créateur
     const creator = await this.usersService.findOne(idCreateur);
@@ -308,7 +375,10 @@ export class SchoolsController {
     }
 
     // Vérification que le membre existe dans cette école
-    const member = await this.membresBDEService.findMemberBySchoolAndUser(idEcole, idUtilisateur);
+    const member = await this.membresBDEService.findMemberBySchoolAndUser(
+      idEcole,
+      idUtilisateur,
+    );
     if (!member) {
       throw new NotFoundException('Member not found in this school');
     }
@@ -316,7 +386,6 @@ export class SchoolsController {
     // Suppression du membre du BDE
     await this.membresBDEService.removeMember(idEcole, idUtilisateur);
   }
-
 
   @Post('getUsersBySchool')
   @UseGuards(JwtAuthGuard) // Protection JWT
@@ -329,7 +398,9 @@ export class SchoolsController {
   ): Promise<User[]> {
     const { idEcole } = body;
 
-    this.logger.log(`[${req.method} ${req.url}] Fetching users for school ID: ${idEcole}`);
+    this.logger.log(
+      `[${req.method} ${req.url}] Fetching users for school ID: ${idEcole}`,
+    );
 
     // Vérification que l'école existe
     const school = await this.schoolsService.findOne(idEcole);
@@ -342,7 +413,6 @@ export class SchoolsController {
     return users;
   }
 
-
   @Post('getMembersBySchool')
   @UseGuards(JwtAuthGuard) // Protection JWT
   @ApiOperation({ summary: 'Get all BDE members for a school' })
@@ -354,7 +424,9 @@ export class SchoolsController {
   ): Promise<MembresBDE[]> {
     const { idEcole } = body;
 
-    this.logger.log(`[${req.method} ${req.url}] Fetching BDE members for school ID: ${idEcole}`);
+    this.logger.log(
+      `[${req.method} ${req.url}] Fetching BDE members for school ID: ${idEcole}`,
+    );
 
     // Vérification que l'école existe
     const school = await this.schoolsService.findOne(idEcole);
@@ -367,11 +439,13 @@ export class SchoolsController {
     return members;
   }
 
-
   @Post('changeCreator')
   @UseGuards(JwtAuthGuard) // Protection JWT
   @ApiOperation({ summary: 'Change the creator of a school' })
-  @ApiResponse({ status: 200, description: 'School creator changed successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'School creator changed successfully',
+  })
   @ApiResponse({ status: 404, description: 'School or user not found' })
   async changeSchoolCreator(
     @Body() body: { idEcole: number; newCreatorId: number },
@@ -379,7 +453,9 @@ export class SchoolsController {
   ): Promise<School> {
     const { idEcole, newCreatorId } = body;
 
-    this.logger.log(`[${req.method} ${req.url}] Changing creator for school ID: ${idEcole} to user ID: ${newCreatorId}`);
+    this.logger.log(
+      `[${req.method} ${req.url}] Changing creator for school ID: ${idEcole} to user ID: ${newCreatorId}`,
+    );
 
     // Vérification que l'école existe
     const school = await this.schoolsService.findOne(idEcole);
@@ -394,10 +470,11 @@ export class SchoolsController {
     }
 
     // Mise à jour du créateur de l'école
-    const updatedSchool = await this.schoolsService.update(idEcole, { createur: newCreator });
+    const updatedSchool = await this.schoolsService.update(idEcole, {
+      createur: newCreator,
+    });
     return updatedSchool;
   }
-
 
   // POST /schools/by-user
   // Récupère l'école associée à un utilisateur via son ID
@@ -405,7 +482,9 @@ export class SchoolsController {
   async findByUserId(@Body('userId') userId: number): Promise<School> {
     const school = await this.schoolsService.findByUserId(userId);
     if (!school) {
-      throw new NotFoundException(`École pour l'utilisateur ${userId} non trouvée`);
+      throw new NotFoundException(
+        `École pour l'utilisateur ${userId} non trouvée`,
+      );
     }
     return school;
   }

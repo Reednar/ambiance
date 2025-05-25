@@ -1,5 +1,12 @@
 import {
-  Controller, Post, Body, Param, UseGuards, NotFoundException, ForbiddenException, Logger
+  Controller,
+  Post,
+  Body,
+  Param,
+  UseGuards,
+  NotFoundException,
+  ForbiddenException,
+  Logger,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { CommentairesService } from '../../services/commentaires/commentaires.service';
@@ -37,7 +44,9 @@ export class CommentairesController {
   @Post('create')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create a new commentaire' })
-  async createCommentaire(@Body() body: { content: string; userId: number; postId: number }) {
+  async createCommentaire(
+    @Body() body: { content: string; userId: number; postId: number },
+  ) {
     this.logger.log('/commentaires/create called');
 
     // Vérifie l'existence de l'utilisateur et de la publication
@@ -57,7 +66,9 @@ export class CommentairesController {
   @ApiOperation({ summary: 'Update an existing commentaire' })
   async updateCommentaire(@Body() body: { id: number; content: string }) {
     this.logger.log('/commentaires/update called');
-    return await this.commentairesService.update(body.id, { contenu: body.content });
+    return await this.commentairesService.update(body.id, {
+      contenu: body.content,
+    });
   }
 
   @Post('delete')
@@ -76,7 +87,9 @@ export class CommentairesController {
 
     // Vérifie que l'utilisateur est bien l'auteur
     if (user.idUtilisateur !== body.userId) {
-      throw new ForbiddenException('Vous ne pouvez supprimer que vos propres commentaires');
+      throw new ForbiddenException(
+        'Vous ne pouvez supprimer que vos propres commentaires',
+      );
     }
 
     return await this.commentairesService.remove(body.id);
@@ -85,13 +98,17 @@ export class CommentairesController {
   @Post('deleteAsAdmin')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Delete a commentaire by ID as an admin' })
-  async deleteCommentaireAsAdmin(@Body() body: { id: number; adminId: number }) {
+  async deleteCommentaireAsAdmin(
+    @Body() body: { id: number; adminId: number },
+  ) {
     this.logger.log('/commentaires/deleteAsAdmin called');
 
     // Vérifie si l'utilisateur est administrateur
     const isAdmin = await this.usersService.isAdmin(body.adminId);
     if (!isAdmin) {
-      throw new ForbiddenException('Accès refusé : Vous devez être administrateur pour supprimer ce commentaire');
+      throw new ForbiddenException(
+        'Accès refusé : Vous devez être administrateur pour supprimer ce commentaire',
+      );
     }
 
     // Vérifie que le commentaire existe
@@ -106,10 +123,15 @@ export class CommentairesController {
   @Post('getByPublication')
   // @UseGuards(JwtAuthGuard) // Cette route est publique pour l’instant
   @ApiOperation({ summary: 'Get all commentaires for a specific publication' })
-  @ApiResponse({ status: 200, description: 'Commentaires retrieved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Commentaires retrieved successfully',
+  })
   @ApiResponse({ status: 404, description: 'Publication not found' })
   async getCommentairesByPublication(@Body() body: { postId: number }) {
-    this.logger.log(`/commentaires/getByPublication called for post ID: ${body.postId}`);
+    this.logger.log(
+      `/commentaires/getByPublication called for post ID: ${body.postId}`,
+    );
 
     // Vérifie que la publication existe
     const publication = await this.publicationsService.findOne(body.postId);

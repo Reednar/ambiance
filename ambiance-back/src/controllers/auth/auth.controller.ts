@@ -19,13 +19,18 @@ const isProd = process.env.NODE_ENV === 'production';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly userService: UsersService
+    private readonly userService: UsersService,
   ) {}
 
   /**
    * Définit les cookies d'authentification (access, refresh, user_id)
    */
-  private setAuthCookies(res: Response, accessToken: string, refreshToken: string, userId: string) {
+  private setAuthCookies(
+    res: Response,
+    accessToken: string,
+    refreshToken: string,
+    userId: string,
+  ) {
     res.cookie('access_token', accessToken, {
       httpOnly: true,
       secure: isProd,
@@ -92,13 +97,13 @@ export class AuthController {
       res,
       loginResponse.access_token,
       loginResponse.refresh_token,
-      loginResponse.idUtilisateur.toString()
+      loginResponse.idUtilisateur.toString(),
     );
 
     // Réponse JSON de succès
     return {
       success: true,
-      userId: loginResponse.idUtilisateur, 
+      userId: loginResponse.idUtilisateur,
       emailConfirmed: loginResponse.emailConfirmed,
     };
   }
@@ -108,15 +113,24 @@ export class AuthController {
    * Rafraîchit le token d'accès à partir du refresh token stocké en cookie
    */
   @Post('refresh')
-  async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  async refresh(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const refreshToken = req.cookies?.refresh_token;
-    if (!refreshToken) throw new UnauthorizedException('Refresh token manquant');
+    if (!refreshToken)
+      throw new UnauthorizedException('Refresh token manquant');
 
     // Récupération des nouveaux tokens
     const newTokens = await this.authService.refreshToken(refreshToken);
 
     // Mise à jour des cookies
-    this.setAuthCookies(res, newTokens.access_token, refreshToken, req.cookies['user_id']);
+    this.setAuthCookies(
+      res,
+      newTokens.access_token,
+      refreshToken,
+      req.cookies['user_id'],
+    );
 
     return { success: true };
   }
@@ -156,9 +170,8 @@ export class AuthController {
       return res.status(200).json({
         authenticated: true,
         userId: payload.sub,
-        emailConfirmed: user.emailConfirmed
+        emailConfirmed: user.emailConfirmed,
       });
-
     } catch (e) {
       console.error('Erreur lors de la vérification du token:', e);
 
@@ -166,11 +179,19 @@ export class AuthController {
       if (refreshToken) {
         try {
           const newTokens = await this.authService.refreshToken(refreshToken);
-          this.setAuthCookies(res, newTokens.access_token, refreshToken, userId);
+          this.setAuthCookies(
+            res,
+            newTokens.access_token,
+            refreshToken,
+            userId,
+          );
 
           return res.status(200).json({ authenticated: true, userId: userId });
         } catch (refreshError) {
-          console.error('Erreur lors du rafraîchissement du token:', refreshError);
+          console.error(
+            'Erreur lors du rafraîchissement du token:',
+            refreshError,
+          );
           return res.status(401).json({ authenticated: false });
         }
       } else {

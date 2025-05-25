@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Ecole } from '../entity/ecole';
-import { User } from '../entity/users';
 import { Article, Tags } from '../entity/article';
 
 @Injectable({
