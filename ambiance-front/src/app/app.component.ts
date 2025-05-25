@@ -35,6 +35,7 @@ export class AppComponent {
 
     });
     this.userId = sessionStorage.getItem('id_utilisateur') ?? '';
+    //  On prend le userId et on regarde s'il est connecté et si son mail est confirmé
     try {
       this.authSubscription = this.authService.isConnected$.subscribe((value) => {
         this.isConnected = value;
@@ -46,6 +47,7 @@ export class AppComponent {
         this.cdr.detectChanges();
       });
 
+      //  Met les jours/mois/.. de primeng en français
       this.primengConfig.setTranslation({
         dayNames: ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
         dayNamesShort: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
@@ -68,6 +70,7 @@ export class AppComponent {
     }
   }
 
+  //  Permet de renvoyer le mail de confirmation à l'utilisateur
   resendConfirmationEmail(event: Event) {
     event.preventDefault();
     this.userService.resendConfirmationEmail(this.userId).subscribe({
