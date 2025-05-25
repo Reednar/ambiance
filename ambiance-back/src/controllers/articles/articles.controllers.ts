@@ -21,7 +21,7 @@ export class ArticlesController {
   constructor(
     private readonly articleService: ArticleService,
     private readonly tagService: TagService,
-    private readonly schoolService: SchoolsService
+    private readonly schoolService: SchoolsService,
   ) {}
 
   /**
@@ -71,13 +71,13 @@ export class ArticlesController {
   > {
     this.logger.log('Fetching all articles with authors and tags');
     const articles = await this.articleService.findAllWithAuthorAndTags();
-    return articles.map(article => ({
+    return articles.map((article) => ({
       id: article.idArticle,
       dateCreation: article.dateCreation,
       utilisateur: article.utilisateur
         ? `${article.utilisateur.prenom} ${article.utilisateur.nom}`
         : null,
-      tags: article.tags ? article.tags.map(tag => tag.nom) : [],
+      tags: article.tags ? article.tags.map((tag) => tag.nom) : [],
       contenu: article.contenu,
       image: article.image,
       nomEcole: article?.ecole?.nom ?? null,
@@ -92,7 +92,7 @@ export class ArticlesController {
   async getAllTags(): Promise<{ id: number; nom: string }[]> {
     this.logger.log('Fetching all tags');
     const tags = await this.tagService.findAll();
-    return tags.map(tag => ({
+    return tags.map((tag) => ({
       id: tag.idTag,
       nom: tag.nom,
     }));
@@ -104,7 +104,7 @@ export class ArticlesController {
   @Post('add-tags')
   @UseGuards(JwtAuthGuard)
   async addTagsToArticle(
-    @Body() body: { articleId: number; tags: string[] }
+    @Body() body: { articleId: number; tags: string[] },
   ): Promise<{ message: string; article: Article }> {
     this.logger.log(`Adding tags to article ${body.articleId}: ${body.tags}`);
     const { articleId, tags } = body;
@@ -117,15 +117,15 @@ export class ArticlesController {
 
     article.tags = article.tags || [];
     for (const tagName of tags) {
-      let tag = await this.tagService.create(tagName);
-      if (!article.tags.find(t => t.idTag === tag.idTag)) {
+      const tag = await this.tagService.create(tagName);
+      if (!article.tags.find((t) => t.idTag === tag.idTag)) {
         article.tags.push(tag);
       }
     }
 
     const updatedArticle = await this.articleService.save(article);
     this.logger.log(`Tags added to article ${articleId}`);
-    return { message: 'Tags ajoutés à l\'article', article: updatedArticle };
+    return { message: "Tags ajoutés à l'article", article: updatedArticle };
   }
 
   /**
@@ -134,9 +134,11 @@ export class ArticlesController {
   @Post('remove-tags')
   @UseGuards(JwtAuthGuard)
   async removeTagsFromArticle(
-    @Body() body: { articleId: number; tags: string[] }
+    @Body() body: { articleId: number; tags: string[] },
   ): Promise<{ message: string; article: Article }> {
-    this.logger.log(`Removing tags from article ${body.articleId}: ${body.tags}`);
+    this.logger.log(
+      `Removing tags from article ${body.articleId}: ${body.tags}`,
+    );
     const { articleId, tags } = body;
 
     const article = await this.articleService.findOne(articleId, ['tags']);
@@ -145,11 +147,13 @@ export class ArticlesController {
       throw new Error('Article not found');
     }
 
-    article.tags = (article.tags || []).filter(tag => !tags.includes(tag.nom));
+    article.tags = (article.tags || []).filter(
+      (tag) => !tags.includes(tag.nom),
+    );
     const updatedArticle = await this.articleService.save(article);
 
     this.logger.log(`Tags removed from article ${articleId}`);
-    return { message: 'Tags retirés de l\'article', article: updatedArticle };
+    return { message: "Tags retirés de l'article", article: updatedArticle };
   }
 
   /**
@@ -158,16 +162,19 @@ export class ArticlesController {
   @Post('create')
   @UseGuards(JwtAuthGuard)
   async createArticle(
-    @Body() body: {
+    @Body()
+    body: {
       titre: string;
       contenu: string;
       idAuteur: number;
       id_ecole?: number;
       image?: string;
       tagIds?: number[];
-    }
+    },
   ): Promise<Article> {
-    this.logger.log(`Creating article with title: ${body.titre} by author: ${body.idAuteur}`);
+    this.logger.log(
+      `Creating article with title: ${body.titre} by author: ${body.idAuteur}`,
+    );
     const utilisateur = await this.articleService.findAuteur(body.idAuteur);
     if (!utilisateur) {
       this.logger.error(`Auteur not found: ${body.idAuteur}`);
@@ -178,7 +185,9 @@ export class ArticlesController {
       throw new Error('Invalid image URL');
     }
 
-    const ecole = body.id_ecole ? await this.schoolService.findOne(body.id_ecole) : null;
+    const ecole = body.id_ecole
+      ? await this.schoolService.findOne(body.id_ecole)
+      : null;
     const articleData: Partial<any> = {
       titre: body.titre,
       contenu: body.contenu,
@@ -197,9 +206,7 @@ export class ArticlesController {
    * Récupère un article avec son auteur et ses informations liées
    */
   @Post('findWithAuthor')
-  async findArticleWithAuthor(
-    @Body() body: { id: number }
-  ): Promise<{
+  async findArticleWithAuthor(@Body() body: { id: number }): Promise<{
     id: number;
     titre: string;
     contenu: string;
@@ -224,7 +231,7 @@ export class ArticlesController {
       utilisateur: article.utilisateur
         ? `${article.utilisateur.prenom} ${article.utilisateur.nom}`
         : null,
-      tags: article.tags ? article.tags.map(tag => tag.nom) : [],
+      tags: article.tags ? article.tags.map((tag) => tag.nom) : [],
       nomEcole: article?.ecole?.nom ?? null,
       idEcole: article?.ecole?.id ?? null,
     };
@@ -234,9 +241,7 @@ export class ArticlesController {
    * Récupère tous les articles d'un auteur donné
    */
   @Post('findAllByAuthor')
-  async findAllByAuthor(
-    @Body() body: { id: number }
-  ): Promise<
+  async findAllByAuthor(@Body() body: { id: number }): Promise<
     Array<{
       id: number;
       titre: string;
@@ -251,7 +256,7 @@ export class ArticlesController {
     this.logger.log(`Finding all articles for author ID: ${body.id}`);
     const articles = await this.articleService.findByAuthorId(body.id);
 
-    return articles.map(article => ({
+    return articles.map((article) => ({
       id: article.idArticle,
       titre: article.titre,
       contenu: article.contenu,
@@ -259,7 +264,7 @@ export class ArticlesController {
       utilisateur: article.utilisateur
         ? `${article.utilisateur.prenom} ${article.utilisateur.nom}`
         : '',
-      tags: article.tags?.map(tag => tag.nom) || [],
+      tags: article.tags?.map((tag) => tag.nom) || [],
       nomEcole: article.ecole?.nom ?? null,
       idEcole: article.ecole?.id ?? null,
     }));

@@ -56,21 +56,17 @@ export class LoginComponent implements OnInit {
 
       // Appelle la méthode de connexion du service AuthService
       this.authService.login({ mail, password }).subscribe(
-        (response) => {
-          // En cas de succès
-          this.loginFailed = false; // reset erreur
-          // Affiche un message de succès à l'utilisateur
+        () => {
+          this.loginFailed = false;
           this.messageService.add({ severity: 'success', summary: 'Connexion réussie', detail: 'Bienvenue !' });
-          // Redirige vers la page souhaitée
           this.router.navigate([this.redirectTo]);
         },
-        (error) => {
-          // En cas d'échec (ex : mauvais mail ou mot de passe)
+        () => {
           this.loginFailed = true;
-          // Affiche un message d'erreur à l'utilisateur
           this.messageService.add({ severity: 'error', summary: 'Échec de la connexion', detail: 'Email ou mot de passe incorrect.' });
         }
       );
+
     }
     // Note : si formulaire invalide, Angular affichera automatiquement les erreurs sur les champs grâce aux validations
   }

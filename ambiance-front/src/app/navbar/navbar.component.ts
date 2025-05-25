@@ -183,7 +183,7 @@ export class NavbarComponent implements AfterViewInit, OnInit, OnDestroy {
 
   // Récupérer les utilisateurs
   loadUsers(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.usersService.getUsers().subscribe({
         next: (data) => {
           this.users = data;
@@ -199,7 +199,7 @@ export class NavbarComponent implements AfterViewInit, OnInit, OnDestroy {
 
   // Récupérer les écoles
   loadEcoles(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.ecoleService.findAllSchools().subscribe({
         next: (data) => {
           this.ecoles = data;

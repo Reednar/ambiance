@@ -1,9 +1,8 @@
 import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { Table } from 'primeng/table';
 import { Categorie, Publication } from '../../entity/publications';
 import { PublicationsService } from '../../service/publications.service';
 import { CategoriesService } from '../../service/categories.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 
 @Component({

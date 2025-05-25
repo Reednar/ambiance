@@ -31,7 +31,7 @@ import { MessagesModule } from './modules/messages/messages.module';
 import { Discussion } from './entities/discussions.entity';
 import { DiscussionService } from './services/discussion/discussion.service';
 import { DiscussionController } from './controllers/discussions/discussions.controller';
-//websocket 
+//websocket
 import { ChatGateway } from './gateways/chat.gateway';
 import { ChatModule } from './modules/chat/chat.module';
 import { MessageService } from './services/messages/messages.service';
@@ -42,12 +42,11 @@ import { School } from './entities/schools.entity';
 import { MembresBDE } from './entities/membresBDE.entity';
 import { MembresBDEService } from './services/membresBDE/membresBDE.service';
 import { Tag } from './entities/tag.entity';
-import { Article } from './entities/articles.entity'; 
+import { Article } from './entities/articles.entity';
 import { ArticlesModule } from './modules/articles/articles.modules';
 import { ArticlesController } from './controllers/articles/articles.controllers';
 import { ArticleService } from './services/articles/articles.services';
 import { DataSource } from 'typeorm';
-
 
 @Module({
   controllers: [
@@ -87,7 +86,7 @@ import { DataSource } from 'typeorm';
         School,
         MembresBDE,
         Tag,
-        Article,      
+        Article,
       ], // Ajouter les entités ici
       synchronize: false, // Permet de manipuler les entités de la base de données avec les fichiers entity.ts en temps réel
     }),

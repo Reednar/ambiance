@@ -31,9 +31,9 @@ export class AppComponent {
   ) { }
 
   ngOnInit() {
-    this.authService.isAuthenticated().subscribe(auth => {
+    // L'appel déclenche la vérification/initialisation de l'authentification (effet de bord voulu)
+    this.authService.isAuthenticated().subscribe();
 
-    });
     this.userId = sessionStorage.getItem('id_utilisateur') ?? '';
     //  On prend le userId et on regarde s'il est connecté et si son mail est confirmé
     try {
@@ -73,7 +73,7 @@ export class AppComponent {
   //  Permet de renvoyer le mail de confirmation à l'utilisateur
   resendConfirmationEmail(event: Event) {
     event.preventDefault();
-    this.userService.resendConfirmationEmail(this.userId).subscribe({
+    this.userService.resendConfirmationEmail(sessionStorage.getItem('id_utilisateur') ?? '').subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',

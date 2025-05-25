@@ -3,13 +3,16 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';  // Pour manipuler les JWT
+import * as jwt from 'jsonwebtoken'; // Pour manipuler les JWT
 
 @Injectable()
 export class AuthService {
   private readonly refreshTokens = new Set<string>(); // Stockage en mémoire pour les tokens
 
-  constructor(private readonly jwtService: JwtService, private readonly UsersService: UsersService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly UsersService: UsersService,
+  ) {}
   private secret = process.env.JWT_SECRET || 'secretkey';
 
   /**
@@ -22,7 +25,10 @@ export class AuthService {
       throw new UnauthorizedException('Mail invalide');
     }
 
-    const isPasswordValid = await bcrypt.compare(user.password, Visitor.motDePasse);
+    const isPasswordValid = await bcrypt.compare(
+      user.password,
+      Visitor.motDePasse,
+    );
     if (!isPasswordValid) {
       throw new UnauthorizedException('Mot de passe invalide');
     }
@@ -38,14 +44,17 @@ export class AuthService {
       access_token: accessToken,
       refresh_token: refreshToken,
       idUtilisateur: Visitor.idUtilisateur,
-      emailConfirmed: Visitor.emailConfirmed
+      emailConfirmed: Visitor.emailConfirmed,
     };
   }
 
   async refreshToken(token: string) {
     try {
       const payload = this.jwtService.verify(token);
-      const newAccessToken = this.jwtService.sign({ userId: payload.sub }, { expiresIn: '15m' });
+      const newAccessToken = this.jwtService.sign(
+        { userId: payload.sub },
+        { expiresIn: '15m' },
+      );
       return { access_token: newAccessToken };
     } catch (error) {
       throw new UnauthorizedException('Refresh token invalide');
@@ -72,21 +81,17 @@ export class AuthService {
   async verifyToken(token: string): Promise<any> {
     try {
       // Vérifie la signature et l'expiration du token avec la clé secrète
-      const decoded = await this.jwtService.verifyAsync(token);  // Utilisation de verifyAsync pour les tokens JWT
-      return decoded;  // Retourne le payload du token si valide
+      const decoded = await this.jwtService.verifyAsync(token); // Utilisation de verifyAsync pour les tokens JWT
+      return decoded; // Retourne le payload du token si valide
     } catch (error) {
       // Si le token est invalide ou expiré, lance une exception
       throw new UnauthorizedException('Token invalide ou expiré');
     }
   }
 
-    generateResetPasswordToken(userId: number): string {
+  generateResetPasswordToken(userId: number): string {
     // Génère un JWT valable 24h
-    return jwt.sign(
-      { sub: userId },
-      this.secret,
-      { expiresIn: '24h' }
-    );
+    return jwt.sign({ sub: userId }, this.secret, { expiresIn: '24h' });
   }
 
   verifyResetPasswordToken(token: string): any {

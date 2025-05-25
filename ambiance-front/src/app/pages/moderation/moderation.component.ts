@@ -54,9 +54,9 @@ export class ModerationComponent implements OnInit, OnDestroy {
     });
   }
 
-  onUpdate(user: User): void {
-    // Ici tu peux ouvrir un modal ou une autre logique pour la mise à jour
-  }
+  // onUpdate(user: User): void {
+  //   // Ici tu peux ouvrir un modal ou une autre logique pour la mise à jour
+  // }
 
   onDelete(id: number): void {
     if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {

@@ -34,7 +34,7 @@ export class BlogComponent implements OnInit {
 
   // Récupérer les écoles
   loadEcoles(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.ecoleService.findAllSchools().subscribe({
         next: (data) => {
           this.ecoles = data;
@@ -50,7 +50,7 @@ export class BlogComponent implements OnInit {
 
   // Récupérer les écoles
   loadArticles(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.blogService.list().subscribe({
         next: (data) => {
           this.articles = data;

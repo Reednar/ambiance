@@ -77,7 +77,11 @@ describe('PublicationsController', () => {
   });
 
   it('should throw NotFoundException if publication does not exist', async () => {
-    await expect(controller.getPublicationById(2)).rejects.toThrow(NotFoundException);
-    await expect(controller.getPublicationById(2)).rejects.toThrow('publication not found');
+    await expect(controller.getPublicationById(2)).rejects.toThrow(
+      NotFoundException,
+    );
+    await expect(controller.getPublicationById(2)).rejects.toThrow(
+      'publication not found',
+    );
   });
 });

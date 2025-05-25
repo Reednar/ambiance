@@ -10,7 +10,7 @@ import { MessageService } from 'primeng/api';
   templateUrl: './article-show.component.html',
   styleUrl: './article-show.component.scss'
 })
-export class ArticleShowComponent {
+export class ArticleShowComponent implements OnInit {
   article?: Article;
   routeSub: any;
   isLoading: boolean = true;

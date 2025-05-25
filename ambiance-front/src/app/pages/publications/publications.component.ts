@@ -140,39 +140,75 @@ export class PublicationsComponent implements OnInit {
 
   // Appliquer les filtres en fonction des catégories sélectionnées
   applyFilters(): void {
-    let startDate: Date | undefined;
-    let endDate: Date | undefined;
-    if (this.rangeDates?.length === 2) {
-      [startDate, endDate] = this.rangeDates;
-    }
+  let startDate: Date | undefined;
+  let endDate: Date | undefined;
 
-
-    this.filteredPublications = this.publications.filter(pub => {
-
-      // Filtre catégories (existant)
-      const matchesCategory =
-        this.selectedCategories.size === 0 ||
-        pub.categories?.some(cat => this.selectedCategories.has(cat.id));
-
-      // Filtre dates (existant)
-      let matchesDate = true;
-      if (startDate && endDate) {
-        const eventDate = new Date(pub.dateEvenement);
-        matchesDate = eventDate >= startDate && eventDate <= endDate;
-      }
-
-      // Filtre écoles — on vérifie si pub.listeEcoleIds contient au moins une des écoles sélectionnées
-      let matchesSchools = true;
-      if (this.selectedSchools.size > 0) {
-        if (!pub.idEcole) {
-          matchesSchools = false; // exclure si pub.idEcole n'existe pas
-        } else {
-          matchesSchools = this.selectedSchools.has(pub.idEcole);
-        }
-      }
-      return matchesCategory && matchesDate && matchesSchools;
-    });
+  if (this.rangeDates?.length === 2) {
+    [startDate, endDate] = this.rangeDates;
   }
+
+  this.filteredPublications = this.publications.filter(pub =>
+    this.isMatchingCategory(pub) &&
+    this.isMatchingDate(pub, startDate, endDate) &&
+    this.isMatchingSchool(pub)
+  );
+}
+
+private isMatchingCategory(pub: Publication): boolean {
+  return (
+    this.selectedCategories.size === 0 ||
+    pub.categories?.some(cat => this.selectedCategories.has(cat.id))
+  );
+}
+
+private isMatchingDate(pub: Publication, start?: Date, end?: Date): boolean {
+  if (!start || !end) return true;
+
+  const eventDate = new Date(pub.dateEvenement);
+  return eventDate >= start && eventDate <= end;
+}
+
+private isMatchingSchool(pub: Publication): boolean {
+  if (this.selectedSchools.size === 0) return true;
+  if (!pub.idEcole) return false;
+
+  return this.selectedSchools.has(pub.idEcole);
+}
+
+  // applyFilters(): void {
+  //   let startDate: Date | undefined;
+  //   let endDate: Date | undefined;
+  //   if (this.rangeDates?.length === 2) {
+  //     [startDate, endDate] = this.rangeDates;
+  //   }
+
+
+  //   this.filteredPublications = this.publications.filter(pub => {
+
+  //     // Filtre catégories (existant)
+  //     const matchesCategory =
+  //       this.selectedCategories.size === 0 ||
+  //       pub.categories?.some(cat => this.selectedCategories.has(cat.id));
+
+  //     // Filtre dates (existant)
+  //     let matchesDate = true;
+  //     if (startDate && endDate) {
+  //       const eventDate = new Date(pub.dateEvenement);
+  //       matchesDate = eventDate >= startDate && eventDate <= endDate;
+  //     }
+
+  //     // Filtre écoles — on vérifie si pub.listeEcoleIds contient au moins une des écoles sélectionnées
+  //     let matchesSchools = true;
+  //     if (this.selectedSchools.size > 0) {
+  //       if (!pub.idEcole) {
+  //         matchesSchools = false; // exclure si pub.idEcole n'existe pas
+  //       } else {
+  //         matchesSchools = this.selectedSchools.has(pub.idEcole);
+  //       }
+  //     }
+  //     return matchesCategory && matchesDate && matchesSchools;
+  //   });
+  // }
 
   getSelectedCategories(): any[] {
     return this.categories.filter(cat => this.selectedCategories.has(cat.idCategorie));
@@ -198,9 +234,9 @@ export class PublicationsComponent implements OnInit {
     this.userJoinedEvents.add(eventId);
   }
 
-  goToChat(eventId: number): void {
-    // Rediriger l'utilisateur vers la page de chat de l'événement
-  }
+  // goToChat(eventId: number): void {
+  //   // Rediriger l'utilisateur vers la page de chat de l'événement
+  // }
 
   hasJoined(postId: number): boolean {
     return this.publicationsJoined.some(post => post.idPublication === postId);

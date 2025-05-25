@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './publications-create-form.component.html',
   styleUrls: ['./publications-create-form.component.scss']
 })
+
 export class PublicationsCreateFormComponent implements OnInit {
   step: number = 1; // Étape actuelle du formulaire (multi-step)
   submitted: boolean = false; // Indique si le formulaire a été soumis (pour validation)
@@ -147,64 +148,129 @@ export class PublicationsCreateFormComponent implements OnInit {
 
   // Soumission finale du formulaire
   submit(): void {
-    this.submitted = true;
+  this.submitted = true;
 
-    // Vérifier la validité des étapes et la présence d'un fichier
-    if (!this.isStep1Valid() || !this.isStep2Valid() || !this.selectedFile) {
-      console.warn('Formulaire incomplet ou fichier manquant');
-      return;
-    }
-
-    // Préparer les données dans un FormData pour envoi multipart/form-data
-    const formPayload = new FormData();
-    for (const [key, value] of Object.entries(this.formData)) {
-      if (key === 'categories') {
-        // Sérialiser la liste des catégories
-        formPayload.append(key, JSON.stringify(value));
-      } else if (typeof value === 'boolean') {
-        // Convertir les booléens en string
-        formPayload.append(key, value.toString());
-      } else if (
-        typeof value === 'string' ||
-        typeof value === 'number' ||
-        value instanceof Blob
-      ) {
-        formPayload.append(key, value.toString());
-      } else if (value !== null && value !== undefined) {
-        // Sérialiser tout objet JSON
-        formPayload.append(key, JSON.stringify(value));
-      } else {
-        console.warn(`FormData key '${key}' has unsupported type`, value);
-      }
-    }
-
-    // Ajouter le fichier image sélectionné
-    if (this.selectedFile) {
-      formPayload.append('image', this.selectedFile);
-    }
-
-    // Envoyer les données au service
-    this.publicationsService.create(formPayload).subscribe({
-      next: (res) => {
-        // Afficher un message de succès
-        this.messageService.add({ severity: 'success', summary: 'Publication créée', detail: 'La publication a bien été créée.' });
-
-        // Rediriger vers la page de détail de la publication créée
-        if (res && res.publication.idPublication) {
-          const idPublication = res.publication.idPublication;
-          this.router.navigate([`/publication-show/${idPublication}`], {
-            queryParams: { messageShown: 'true' },
-          })
-        } else {
-          console.error('Aucun ID de publication trouvé dans la réponse');
-        }
-      },
-      error: (err) => {
-        console.error('❌ Erreur création publication', err);
-        this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue lors de la création de la publication.' });
-      },
-    });
+  if (!this.isFormValid()) {
+    console.warn('Formulaire incomplet ou fichier manquant');
+    return;
   }
+
+  const formPayload = this.buildFormData();
+
+  this.publicationsService.create(formPayload).subscribe({
+    next: (res) => this.handleSuccess(res),
+    error: (err) => this.handleError(err),
+  });
+}
+
+private isFormValid(): boolean {
+  return this.isStep1Valid() && this.isStep2Valid() && !!this.selectedFile;
+}
+
+private buildFormData(): FormData {
+  const formPayload = new FormData();
+
+  for (const [key, value] of Object.entries(this.formData)) {
+    this.appendFormValue(formPayload, key, value);
+  }
+
+  if (this.selectedFile) {
+    formPayload.append('image', this.selectedFile);
+  }
+
+  return formPayload;
+}
+
+private appendFormValue(formData: FormData, key: string, value: any): void {
+  if (key === 'categories') {
+    formData.append(key, JSON.stringify(value));
+  } else if (typeof value === 'boolean') {
+    formData.append(key, value.toString());
+  } else if (typeof value === 'string' || typeof value === 'number' || value instanceof Blob) {
+    formData.append(key, value.toString());
+  } else if (value !== null && value !== undefined) {
+    formData.append(key, JSON.stringify(value));
+  } else {
+    console.warn(`FormData key '${key}' has unsupported type`, value);
+  }
+}
+
+private handleSuccess(res: any): void {
+  this.messageService.add({ severity: 'success', summary: 'Publication créée', detail: 'La publication a bien été créée.' });
+
+  if (res?.publication?.idPublication) {
+    this.router.navigate([`/publication-show/${res.publication.idPublication}`], {
+      queryParams: { messageShown: 'true' },
+    });
+  } else {
+    console.error('Aucun ID de publication trouvé dans la réponse');
+  }
+}
+
+private handleError(err: any): void {
+  console.error('❌ Erreur création publication', err);
+  this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue lors de la création de la publication.' });
+}
+
+  // submit(): void {
+  //   this.submitted = true;
+
+  //   // Vérifier la validité des étapes et la présence d'un fichier
+  //   if (!this.isStep1Valid() || !this.isStep2Valid() || !this.selectedFile) {
+  //     console.warn('Formulaire incomplet ou fichier manquant');
+  //     return;
+  //   }
+
+  //   // Préparer les données dans un FormData pour envoi multipart/form-data
+  //   const formPayload = new FormData();
+  //   for (const [key, value] of Object.entries(this.formData)) {
+  //     if (key === 'categories') {
+  //       // Sérialiser la liste des catégories
+  //       formPayload.append(key, JSON.stringify(value));
+  //     } else if (typeof value === 'boolean') {
+  //       // Convertir les booléens en string
+  //       formPayload.append(key, value.toString());
+  //     } else if (
+  //       typeof value === 'string' ||
+  //       typeof value === 'number' ||
+  //       value instanceof Blob
+  //     ) {
+  //       formPayload.append(key, value.toString());
+  //     } else if (value !== null && value !== undefined) {
+  //       // Sérialiser tout objet JSON
+  //       formPayload.append(key, JSON.stringify(value));
+  //     } else {
+  //       console.warn(`FormData key '${key}' has unsupported type`, value);
+  //     }
+  //   }
+
+  //   // Ajouter le fichier image sélectionné
+  //   if (this.selectedFile) {
+  //     formPayload.append('image', this.selectedFile);
+  //   }
+
+  //   // Envoyer les données au service
+  //   this.publicationsService.create(formPayload).subscribe({
+  //     next: (res) => {
+  //       // Afficher un message de succès
+  //       this.messageService.add({ severity: 'success', summary: 'Publication créée', detail: 'La publication a bien été créée.' });
+
+  //       // Rediriger vers la page de détail de la publication créée
+  //       if (res && res.publication.idPublication) {
+  //         const idPublication = res.publication.idPublication;
+  //         this.router.navigate([`/publication-show/${idPublication}`], {
+  //           queryParams: { messageShown: 'true' },
+  //         })
+  //       } else {
+  //         console.error('Aucun ID de publication trouvé dans la réponse');
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.error('❌ Erreur création publication', err);
+  //       this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue lors de la création de la publication.' });
+  //     },
+  //   });
+  // }
 
   // Gestion de la saisie dans le champ ville pour autocomplétion
   onCityInput(event: any): void {
@@ -251,24 +317,41 @@ export class PublicationsCreateFormComponent implements OnInit {
   }
 
   // HostListener pour gérer la fermeture des suggestions quand on clique hors du champ ville
-  @HostListener('document:click', ['$event'])
-  onContainerClick(event: MouseEvent): void {
-    if (this.inputVille != undefined)
-      var clickedInside = this.inputVille.nativeElement.contains(event.target);
-    if (!clickedInside) {
-      this.suggestedCities = [];
-    }
-  }
+  // @HostListener('document:click', ['$event'])
+  // onContainerClick(event: MouseEvent): void {
+  //   if (this.inputVille != undefined)
+  //     var clickedInside = this.inputVille.nativeElement.contains(event.target);
+  //   if (!clickedInside) {
+  //     this.suggestedCities = [];
+  //   }
+  // }
 
-  // HostListener similaire pour fermer suggestions rues
+  // // HostListener similaire pour fermer suggestions rues
+  // @HostListener('document:click', ['$event'])
+  // onContainerClickStreet(event: MouseEvent): void {
+  //   if (this.inputRue != undefined)
+  //     var clickedInside = this.inputRue.nativeElement.contains(event.target);
+  //   if (!clickedInside) {
+  //     this.suggestedStreets = [];
+  //   }
+  // }
+
   @HostListener('document:click', ['$event'])
-  onContainerClickStreet(event: MouseEvent): void {
-    if (this.inputRue != undefined)
-      var clickedInside = this.inputRue.nativeElement.contains(event.target);
-    if (!clickedInside) {
-      this.suggestedStreets = [];
-    }
+onContainerClick(event: MouseEvent): void {
+  const clickedInside = this.inputVille?.nativeElement.contains(event.target);
+  if (!clickedInside) {
+    this.suggestedCities = [];
   }
+}
+
+@HostListener('document:click', ['$event'])
+onContainerClickStreet(event: MouseEvent): void {
+  const clickedInside = this.inputRue?.nativeElement.contains(event.target);
+  if (!clickedInside) {
+    this.suggestedStreets = [];
+  }
+}
+
 
   // Gestion de la saisie dans le champ rue pour autocomplétion
   onStreetInput(event: any): void {

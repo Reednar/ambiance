@@ -58,11 +58,11 @@
   }
   
 
-
 .profile-pic-wrapper {
   position: relative;
-  width: 250px;
-  height: 250px;
+  width: 100%;
+  max-width: 250px;
+  aspect-ratio: 1 / 1; /* Garde un carré responsive */
 
   .profile-pic-img {
     width: 100%;
@@ -73,19 +73,18 @@
     background-color: #f0f0f0;
   }
 
-.profile-pic-btn {
-  position: absolute;
-  bottom: 5px;  /* petit padding depuis le bord */
-  right: 5px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-  background-color: white;
-  z-index: 10;
-  transform: none;
-}
+  .profile-pic-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    background-color: white;
+    z-index: 10;
+  }
 
-.profile-pic.no-image .profile-pic-btn {
-  background-color: #f0f0f0; /* gris clair */
-  border-color: #bbb;        /* bordure grise */
-  color: #666;               /* icône plus douce */
-}
+  .profile-pic.no-image .profile-pic-btn {
+    background-color: #f0f0f0;
+    border-color: #bbb;
+    color: #666;
+  }
 }

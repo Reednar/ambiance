@@ -5,6 +5,7 @@ import * as nodemailer from 'nodemailer';
 @Injectable()
 export class MailService {
   private transporter;
+  private frontendUrl: string;
 
   constructor(private configService: ConfigService) {
     this.transporter = nodemailer.createTransport({
@@ -14,16 +15,19 @@ export class MailService {
         pass: this.configService.get<string>('MAIL_PASS'),
       },
     });
+
+    this.frontendUrl =
+      this.configService.get<string>('FRONTEND_URL') || 'http://localhost:4200';
   }
 
   async sendConfirmationEmail(to: string, token: string) {
-  const confirmationUrl = `http://localhost:4200?token=${token}`;
+    const confirmationUrl = `${this.frontendUrl}?token=${token}`;
 
-  const mailOptions = {
-    from: `"Ambiance: " <${this.configService.get<string>('MAIL_USER')}>`,
-    to,
-    subject: 'Confirme ton compte',
-    html: `
+    const mailOptions = {
+      from: `"Ambiance: " <${this.configService.get<string>('MAIL_USER')}>`,
+      to,
+      subject: 'Confirme ton compte',
+      html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd;">
         <h2 style="color: #333;">Bienvenue chez Ambiance !</h2>
         <p style="font-size: 16px; color: #555;">
@@ -43,20 +47,19 @@ export class MailService {
         </p>
       </div>
     `,
-  };
+    };
 
-  return this.transporter.sendMail(mailOptions);
-}
+    return this.transporter.sendMail(mailOptions);
+  }
 
+  async sendResetPasswordEmail(to: string, token: string) {
+    const resetUrl = `${this.frontendUrl}/reset-password?token=${token}`;
 
-async sendResetPasswordEmail(to: string, token: string) {
-  const resetUrl = `http://localhost:4200/reset-password?token=${token}`;
-
-  const mailOptions = {
-    from: `"Ambiance: " <${this.configService.get<string>('MAIL_USER')}>`,
-    to,
-    subject: 'Réinitialisation de ton mot de passe',
-    html: `
+    const mailOptions = {
+      from: `"Ambiance: " <${this.configService.get<string>('MAIL_USER')}>`,
+      to,
+      subject: 'Réinitialisation de ton mot de passe',
+      html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd;">
         <h2 style="color: #333;">Réinitialisation de mot de passe</h2>
         <p style="font-size: 16px; color: #555;">
@@ -76,9 +79,8 @@ async sendResetPasswordEmail(to: string, token: string) {
         </p>
       </div>
     `,
-  };
+    };
 
-  return this.transporter.sendMail(mailOptions);
-}
-
+    return this.transporter.sendMail(mailOptions);
+  }
 }

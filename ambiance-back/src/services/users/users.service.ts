@@ -4,14 +4,14 @@ import { Repository } from 'typeorm';
 import { User } from '../../entities/users.entity'; // Update this line
 import { toUserDto } from 'src/controllers/users/mappers.users';
 import { UpdateUserDto, UserDto } from 'src/dtos/user.dto';
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) { }
+  ) {}
 
   async findAll(): Promise<UserDto[]> {
     const users = await this.userRepository.find();
@@ -70,15 +70,19 @@ export class UsersService {
       telephone: updateDto.telephone ?? user.telephone,
       pays: updateDto.pays ?? user.pays,
       emailConfirmed: updateDto.emailConfirmed ?? user.emailConfirmed,
-      confirmationToken: (updateDto.emailConfirmed === true) ? null : (updateDto.confirmationToken ?? user.confirmationToken),
-      confirmationTokenExpires: (updateDto.emailConfirmed === true) ? null : (updateDto.confirmationTokenExpires ?? user.confirmationTokenExpires),
+      confirmationToken:
+        updateDto.emailConfirmed === true
+          ? null
+          : (updateDto.confirmationToken ?? user.confirmationToken),
+      confirmationTokenExpires:
+        updateDto.emailConfirmed === true
+          ? null
+          : (updateDto.confirmationTokenExpires ??
+            user.confirmationTokenExpires),
     });
     const updatedUser = await this.userRepository.save(user);
     return toUserDto(updatedUser);
   }
-
-
-
 
   async remove(id: number): Promise<void> {
     await this.userRepository.delete(id);
@@ -114,12 +118,14 @@ export class UsersService {
     });
   }
 
-  async updateConfirmationToken(userId: number, token: string, expiresAt: Date): Promise<void> {
+  async updateConfirmationToken(
+    userId: number,
+    token: string,
+    expiresAt: Date,
+  ): Promise<void> {
     await this.userRepository.update(userId, {
       confirmationToken: token,
       confirmationTokenExpires: expiresAt,
     });
   }
-
-
 }

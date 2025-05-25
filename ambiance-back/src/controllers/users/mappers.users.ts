@@ -1,6 +1,6 @@
 // src/users/mappers/user.mapper.ts
-import { UserDto } from "src/dtos/user.dto";
-import { User } from "src/entities/users.entity";
+import { UserDto } from 'src/dtos/user.dto';
+import { User } from 'src/entities/users.entity';
 
 export function toUserDto(user: User): UserDto {
   const {
@@ -15,7 +15,7 @@ export function toUserDto(user: User): UserDto {
     telephone,
     pays,
     image,
-    imageMimeType
+    imageMimeType,
   } = user;
 
   let imageBase64: string | null = null;
@@ -36,6 +36,6 @@ export function toUserDto(user: User): UserDto {
     telephone,
     pays,
     image: imageBase64,
-    imageMimeType
+    imageMimeType,
   };
 }

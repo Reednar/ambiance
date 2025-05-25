@@ -33,11 +33,16 @@ export class GroupsController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Return all groups if the requester is an admin' })
   async getGroupes(@Body() body: { userId: number }, @Req() req: Request) {
-    this.logger.log(`[${req.method} ${req.url}] Fetching all groups`, body.userId);
+    this.logger.log(
+      `[${req.method} ${req.url}] Fetching all groups`,
+      body.userId,
+    );
 
     const utilisateur = await this.UsersService.findOne(body.userId);
     if (!utilisateur || utilisateur.role !== 'Administrateur') {
-      throw new NotFoundException('Accès refusé : Seuls les administrateurs peuvent accéder à cette ressource.');
+      throw new NotFoundException(
+        'Accès refusé : Seuls les administrateurs peuvent accéder à cette ressource.',
+      );
     }
 
     return await this.GroupsService.findAll();
@@ -48,19 +53,26 @@ export class GroupsController {
    */
   @Post('create')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Create a group and add the user who created the group' })
+  @ApiOperation({
+    summary: 'Create a group and add the user who created the group',
+  })
   async createGroup(
-    @Body() body: { nomDuGroupe: string; utilisateurId: number; idPublication: number },
+    @Body()
+    body: { nomDuGroupe: string; utilisateurId: number; idPublication: number },
     @Req() req: Request,
   ) {
     this.logger.log(`[${req.method} ${req.url}] Creating a new group`, body);
 
-    const utilisateur = await this.UsersService.findEntityById(body.utilisateurId);
+    const utilisateur = await this.UsersService.findEntityById(
+      body.utilisateurId,
+    );
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
 
-    const publication = await this.PublicationsService.findOne(body.idPublication);
+    const publication = await this.PublicationsService.findOne(
+      body.idPublication,
+    );
     if (!publication) {
       throw new NotFoundException('Publication non trouvée');
     }
@@ -71,7 +83,10 @@ export class GroupsController {
       utilisateur,
     });
 
-    await this.GroupsService.addUserToGroup(newGroup.idGroupe, utilisateur.idUtilisateur);
+    await this.GroupsService.addUserToGroup(
+      newGroup.idGroupe,
+      utilisateur.idUtilisateur,
+    );
     return newGroup;
   }
 
@@ -85,14 +100,21 @@ export class GroupsController {
     @Body() body: { idPublication: number; IdUtilisateur: number },
     @Req() req: Request,
   ) {
-    this.logger.log(`[${req.method} ${req.url}] Adding user to group by publication`, body);
+    this.logger.log(
+      `[${req.method} ${req.url}] Adding user to group by publication`,
+      body,
+    );
 
-    const groupe = await this.GroupsService.getGroupeByPublicationId(body.idPublication);
+    const groupe = await this.GroupsService.getGroupeByPublicationId(
+      body.idPublication,
+    );
     if (!groupe) {
       throw new NotFoundException('Groupe lié à la publication non trouvé');
     }
 
-    const utilisateur = await this.UsersService.findEntityById(body.IdUtilisateur);
+    const utilisateur = await this.UsersService.findEntityById(
+      body.IdUtilisateur,
+    );
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
@@ -115,7 +137,10 @@ export class GroupsController {
     @Body() body: { IdGroupe: number; IdUtilisateur: number; senderId: number },
     @Req() req: Request,
   ) {
-    this.logger.log(`[${req.method} ${req.url}] Removing user from group`, body);
+    this.logger.log(
+      `[${req.method} ${req.url}] Removing user from group`,
+      body,
+    );
 
     const groupe = await this.GroupsService.findOne(body.IdGroupe);
     if (!groupe) {
@@ -132,12 +157,20 @@ export class GroupsController {
       throw new NotFoundException('Utilisateur (sender) non trouvé');
     }
 
-    const isOrganisateur = await this.GroupsService.isOrganisateur(body.IdGroupe, body.senderId);
+    const isOrganisateur = await this.GroupsService.isOrganisateur(
+      body.IdGroupe,
+      body.senderId,
+    );
     if (!isOrganisateur) {
-      throw new NotFoundException('Accès refusé : Seul l\'organisateur du groupe peut supprimer un utilisateur.');
+      throw new NotFoundException(
+        "Accès refusé : Seul l'organisateur du groupe peut supprimer un utilisateur.",
+      );
     }
 
-    await this.GroupsService.removeUserFromGroup(body.IdGroupe, body.IdUtilisateur);
+    await this.GroupsService.removeUserFromGroup(
+      body.IdGroupe,
+      body.IdUtilisateur,
+    );
     return { message: 'Utilisateur retiré du groupe' };
   }
 
@@ -147,8 +180,14 @@ export class GroupsController {
   @Post('changeOrganisateur')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Change the organisateur of a group' })
-  async changeOrganisateur(@Body() body: { IdGroupe: number; IdUtilisateur: number }, @Req() req: Request) {
-    this.logger.log(`[${req.method} ${req.url}] Changing group organisateur`, body);
+  async changeOrganisateur(
+    @Body() body: { IdGroupe: number; IdUtilisateur: number },
+    @Req() req: Request,
+  ) {
+    this.logger.log(
+      `[${req.method} ${req.url}] Changing group organisateur`,
+      body,
+    );
 
     const groupe = await this.GroupsService.findOne(body.IdGroupe);
     if (!groupe) {
@@ -160,7 +199,10 @@ export class GroupsController {
       throw new NotFoundException('Utilisateur non trouvé');
     }
 
-    await this.GroupsService.changeOrganisateur(body.IdGroupe, body.IdUtilisateur);
+    await this.GroupsService.changeOrganisateur(
+      body.IdGroupe,
+      body.IdUtilisateur,
+    );
     return { message: 'Organisateur modifié' };
   }
 
@@ -170,8 +212,14 @@ export class GroupsController {
   @Post('userGroups')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get groups where the user participates' })
-  async getUserGroups(@Body() body: { IdUtilisateur: number }, @Req() req: Request) {
-    this.logger.log(`[${req.method} ${req.url}] Fetching groups for user`, body.IdUtilisateur);
+  async getUserGroups(
+    @Body() body: { IdUtilisateur: number },
+    @Req() req: Request,
+  ) {
+    this.logger.log(
+      `[${req.method} ${req.url}] Fetching groups for user`,
+      body.IdUtilisateur,
+    );
 
     const utilisateur = await this.UsersService.findOne(body.IdUtilisateur);
     if (!utilisateur) {
@@ -187,8 +235,14 @@ export class GroupsController {
   @Post('groupUsers')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get users in a specific group' })
-  async getUsersInGroup(@Body() body: { IdGroupe: number }, @Req() req: Request) {
-    this.logger.log(`[${req.method} ${req.url}] Fetching users in group`, body.IdGroupe);
+  async getUsersInGroup(
+    @Body() body: { IdGroupe: number },
+    @Req() req: Request,
+  ) {
+    this.logger.log(
+      `[${req.method} ${req.url}] Fetching users in group`,
+      body.IdGroupe,
+    );
 
     const groupe = await this.GroupsService.findOne(body.IdGroupe);
     if (!groupe) {
