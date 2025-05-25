@@ -1,3 +1,4 @@
+//  Objet École
 export interface Ecole {
   id: number;
   nom: string;

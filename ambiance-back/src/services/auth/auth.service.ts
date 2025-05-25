@@ -10,6 +10,7 @@ export class AuthService {
   private readonly refreshTokens = new Set<string>(); // Stockage en mémoire pour les tokens
 
   constructor(private readonly jwtService: JwtService, private readonly UsersService: UsersService) {}
+  private secret = process.env.JWT_SECRET || 'secretkey';
 
   /**
    * Méthode de login qui, après vérification des identifiants,
@@ -37,6 +38,7 @@ export class AuthService {
       access_token: accessToken,
       refresh_token: refreshToken,
       idUtilisateur: Visitor.idUtilisateur,
+      emailConfirmed: Visitor.emailConfirmed
     };
   }
 
@@ -75,6 +77,23 @@ export class AuthService {
     } catch (error) {
       // Si le token est invalide ou expiré, lance une exception
       throw new UnauthorizedException('Token invalide ou expiré');
+    }
+  }
+
+    generateResetPasswordToken(userId: number): string {
+    // Génère un JWT valable 24h
+    return jwt.sign(
+      { sub: userId },
+      this.secret,
+      { expiresIn: '24h' }
+    );
+  }
+
+  verifyResetPasswordToken(token: string): any {
+    try {
+      return jwt.verify(token, this.secret);
+    } catch (err) {
+      throw new Error('Token invalide ou expiré');
     }
   }
 }

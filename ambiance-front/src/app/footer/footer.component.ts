@@ -1,5 +1,4 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
-import Swiper from 'swiper';
+import { Component} from '@angular/core';
 
 @Component({
   selector: 'app-footer',

@@ -5,48 +5,50 @@
     </div>
 
     <!-- Section des événements à venir -->
-<div *ngIf="publicationsAVenir.length > 0">
-    <div class="commande-card">
-      <div *ngFor="let pub of publicationsAVenir; let last = last" class="produit">
-        <div class="produit-ligne">
-          <div class="livraison livraison-rapide">
-            A lieu le {{ pub.dateEvenement | date:'dd/MM/yyyy HH:mm' }} à {{ pub.ville }}
-            <p [ngClass]="{'rouge': !pub.paiementEffectue, 'vert': pub.paiementEffectue}" style="float: right;">
-              Paiement: {{ pub.paiementEffectue ? 'A réglé' : 'Non réglé' }}
-            </p>
-          </div>
-          <div class="produit-contenu">
-            <img [src]="pub.image || 'assets/images/backgrounds/bde.png'" alt="{{ pub.titre }}">
-            <div class="details">
-                <p><strong>{{ pub.titre }}</strong> - {{ pub.description.length > 50 ? pub.description.slice(0, 80) + '...' : pub.description }}</p>
-              <p><strong>Lieu :</strong> {{ pub.rue }}, {{ pub.ville }}</p>
-              <p><strong>Durée :</strong> Duree</p>
+    <div *ngIf="publicationsAVenir.length > 0">
+        <div class="commande-card">
+            <div *ngFor="let pub of publicationsAVenir; let last = last" class="produit">
+                <div class="produit-ligne">
+                    <div class="livraison livraison-rapide">
+                        A lieu le {{ pub.dateEvenement | date:'dd/MM/yyyy HH:mm' }} à {{ pub.ville }}
+                        <p [ngClass]="{'rouge': !pub.paiementEffectue, 'vert': pub.paiementEffectue}"
+                            style="float: right;">
+                            Paiement: {{ pub.paiementEffectue ? 'A réglé' : 'Non réglé' }}
+                        </p>
+                    </div>
+                    <div class="produit-contenu">
+                        <img [src]="pub.image || 'assets/images/backgrounds/bde.png'" alt="{{ pub.titre }}">
+                        <div class="details">
+                            <p><strong>{{ pub.titre }}</strong> - {{ pub.description.length > 50 ?
+                                pub.description.slice(0, 80) + '...' : pub.description }}</p>
+                            <p><strong>Lieu :</strong> {{ pub.rue }}, {{ pub.ville }}</p>
+                            <p><strong>Durée :</strong> Duree</p>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="jaune">Voir le chat</button>
+                        <button class="jaune">Consulter les détails de l'événement</button>
+                        <button class="rouge" *ngIf="!pub.paiementEffectue">Payer pour l'événement</button>
+                        <button class="jaune">Poser une question sur l'événement</button>
+                    </div>
+                </div>
+                <!-- Ajouter un hr sauf pour la dernière publication -->
+                <hr *ngIf="!last" style="color:black">
             </div>
-          </div>
-          <div class="actions">
-            <button class="jaune">Voir le chat</button>
-            <button class="jaune">Consulter les détails de l'événement</button>
-            <button class="rouge" *ngIf="!pub.paiementEffectue">Payer pour l'événement</button>
-            <button class="jaune">Poser une question sur l'événement</button>
-          </div>
         </div>
-        <!-- Ajouter un hr sauf pour la dernière publication -->
-        <hr *ngIf="!last" style="color:black">
-      </div>
     </div>
-  </div>
-  
-  <!-- Message si aucune publication à venir -->
-  <div *ngIf="publicationsAVenir.length === 0">
-    <p>Vous ne participez à aucun événement à venir.</p>
-  </div>
-  
-  <!-- Section des événements passés -->
-  <div *ngIf="publicationsPassees.length > 0" class="commande-header">
-    <p><strong>{{ publicationsPassees.length }} événement(s) effectué(s)</strong></p>
-  </div>
-  
-    
+
+    <!-- Message si aucune publication à venir -->
+    <div *ngIf="publicationsAVenir.length === 0">
+        <p>Vous ne participez à aucun événement à venir.</p>
+    </div>
+
+    <!-- Section des événements passés -->
+    <div *ngIf="publicationsPassees.length > 0" class="commande-header">
+        <p><strong>{{ publicationsPassees.length }} événement(s) effectué(s)</strong></p>
+    </div>
+
+
     <!-- Boucle pour chaque publication passée -->
     <div *ngFor="let pub of publicationsPassees" class="commande-card">
         <div class="commande-info">
@@ -72,7 +74,7 @@
             </div>
         </div>
     </div>
-    
+
 </div>
 
 <div class="articles-container" style="background-color: #0d1d2d !important; min-height: 500px; padding-bottom: 70px;">

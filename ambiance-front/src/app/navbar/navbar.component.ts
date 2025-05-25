@@ -32,6 +32,7 @@ export class NavbarComponent implements AfterViewInit, OnInit, OnDestroy {
   navbarOpen = false;
   items: MenuItem[] = [];
   isConnected = false;
+  emailConfirmed = false;
   private authSubscription!: Subscription;
   publications: Publication[] = [];
   ecoles: Ecole[] = [];
@@ -55,7 +56,7 @@ export class NavbarComponent implements AfterViewInit, OnInit, OnDestroy {
     private messageService: MessageService,
     private ecoleService: EcoleService
 
-  ) {}
+  ) { }
 
   ngAfterViewInit(): void {
     new Swiper('.swiper', {
@@ -77,24 +78,29 @@ export class NavbarComponent implements AfterViewInit, OnInit, OnDestroy {
     });
   }
 
-async ngOnInit() {
-  try {
-    this.authSubscription = this.authService.isConnected$.subscribe((value) => {
-    this.isConnected = value;
-    this.updateMenuItems();
-    this.cdr.detectChanges();
-    });
-    // Attendre que les données soient chargées avant de les passer à `initialize()`
-    await this.loadPublications();
-    await this.loadUsers();
-    await this.loadEcoles();
+  async ngOnInit() {
+    try {
+      this.authSubscription = this.authService.isConnected$.subscribe((value) => {
+        this.isConnected = value;
+        this.updateMenuItems();
+        this.cdr.detectChanges();
+      });
 
-    // Une fois que les données sont prêtes, initialiser le service de recherche
-    this.searchService.initialize(this.publications, this.users, this.ecoles);
-  } catch (error) {
-    console.error('Erreur lors du chargement des données', error);
+      this.authSubscription = this.authService.emailConfirmed$.subscribe((value) => {
+        this.emailConfirmed = value;
+        this.cdr.detectChanges();
+      });
+      // Attendre que les données soient chargées avant de les passer à `initialize()`
+      await this.loadPublications();
+      await this.loadUsers();
+      await this.loadEcoles();
+
+      // Une fois que les données sont prêtes, initialiser le service de recherche
+      this.searchService.initialize(this.publications, this.users, this.ecoles);
+    } catch (error) {
+      console.error('Erreur lors du chargement des données', error);
+    }
   }
-}
 
 
   ngOnDestroy(): void {
@@ -110,49 +116,49 @@ async ngOnInit() {
   updateMenuItems(): void {
     this.items = this.isConnected
       ? [
-          {
-            label: 'Déconnexion',
-            icon: 'pi pi-sign-out',
-            command: () => this.logout()
-          }
-        ]
+        {
+          label: 'Déconnexion',
+          icon: 'pi pi-sign-out',
+          command: () => this.logout()
+        }
+      ]
       : [
-          {
-            label: 'Connexion',
-            icon: 'pi pi-sign-in',
-            routerLink: '/login'
-          },
-          {
-            label: 'Inscription',
-            icon: 'pi pi-user-plus',
-            routerLink: '/register'
-          }
-        ];
+        {
+          label: 'Connexion',
+          icon: 'pi pi-sign-in',
+          routerLink: '/login'
+        },
+        {
+          label: 'Inscription',
+          icon: 'pi pi-user-plus',
+          routerLink: '/register'
+        }
+      ];
   }
 
   logout(event?: Event): void {
     if (event) {
       event.preventDefault();
     }
-  
+
     this.authService.logout().subscribe({
       next: () => {
         this.updateMenuItems();
-        this.messageService.add({ 
-          severity: 'success', 
-          summary: 'Succès', 
-          detail: 'Déconnexion réussie !', 
-          life: 3000 
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: 'Déconnexion réussie !',
+          life: 3000
         });
         this.router.navigate(['/login']);
       },
       error: (err) => {
         console.error('Erreur lors de la déconnexion:', err);
-        this.messageService.add({ 
-          severity: 'error', 
-          summary: 'Erreur', 
-          detail: 'La déconnexion a échoué.', 
-          life: 3000 
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: 'La déconnexion a échoué.',
+          life: 3000
         });
       }
     });
@@ -160,55 +166,55 @@ async ngOnInit() {
 
 
   // Récupérer les publications
-loadPublications(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    this.publicationsService.getAll().subscribe({
-      next: (data) => {
-        this.publications = data;
-        resolve();  // Résoudre la Promise une fois les données récupérées
-      },
-      error: (err) => {
-        console.error('Erreur chargement publications :', err);
-        reject(err);  // Rejeter la Promise en cas d'erreur
-      }
+  loadPublications(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.publicationsService.getAll().subscribe({
+        next: (data) => {
+          this.publications = data;
+          resolve();  // Résoudre la Promise une fois les données récupérées
+        },
+        error: (err) => {
+          console.error('Erreur chargement publications :', err);
+          reject(err);  // Rejeter la Promise en cas d'erreur
+        }
+      });
     });
-  });
-}
+  }
 
-// Récupérer les utilisateurs
-loadUsers(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    this.usersService.getUsers().subscribe({
-      next: (data) => {
-        this.users = data;
-        resolve();  // Résoudre la Promise une fois les données récupérées
-      },
-      error: (err) => {
-        console.error('Erreur lors de la récupération des utilisateurs', err);
-       resolve();  // Rejeter la Promise en cas d'erreur
-      }
+  // Récupérer les utilisateurs
+  loadUsers(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.usersService.getUsers().subscribe({
+        next: (data) => {
+          this.users = data;
+          resolve();  // Résoudre la Promise une fois les données récupérées
+        },
+        error: (err) => {
+          console.error('Erreur lors de la récupération des utilisateurs', err);
+          resolve();  // Rejeter la Promise en cas d'erreur
+        }
+      });
     });
-  });
-}
+  }
 
-// Récupérer les écoles
-loadEcoles(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    this.ecoleService.findAllSchools().subscribe({
-      next: (data) => {
-        this.ecoles = data;
-        resolve();  // Résoudre la Promise une fois les données récupérées
-      },
-      error: (err) => {
-        console.error('Erreur lors de la récupération des écoles', err);
-       resolve();  // Rejeter la Promise en cas d'erreur
-      }
+  // Récupérer les écoles
+  loadEcoles(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.ecoleService.findAllSchools().subscribe({
+        next: (data) => {
+          this.ecoles = data;
+          resolve();  // Résoudre la Promise une fois les données récupérées
+        },
+        error: (err) => {
+          console.error('Erreur lors de la récupération des écoles', err);
+          resolve();  // Rejeter la Promise en cas d'erreur
+        }
+      });
     });
-  });
-}
+  }
 
 
- onSearch(): void {
+  onSearch(): void {
     this.results = this.searchService.search(this.searchTerm);
     this.showResults = true;  // Montrer les résultats après la recherche
   }
@@ -219,7 +225,7 @@ loadEcoles(): Promise<void> {
   }
 
   onLinkClickNavbar() {
-      this.navbarOpen = false;
+    this.navbarOpen = false;
   }
 
   // Clic en dehors de l'input pour cacher les résultats

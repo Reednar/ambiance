@@ -18,7 +18,7 @@ export class ArticleUpdateComponent implements OnInit {
     private blogService: BlogService,
     private router: Router,
     private messageService: MessageService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.articleId = Number(this.route.snapshot.paramMap.get('id'));
@@ -35,15 +35,15 @@ export class ArticleUpdateComponent implements OnInit {
   }
 
   onSubmit(updatedArticle: any): void {
-  const dataToSend = {
-    id: this.articleId,
-    ...updatedArticle
-  };
+    const dataToSend = {
+      id: this.articleId,
+      ...updatedArticle
+    };
 
-  this.blogService.updateArticle(dataToSend).subscribe(() => {
-    this.messageService.add({ severity: 'success', summary: 'Article mis à jour', detail: 'La publication a bien été modifiée.' });
-    this.router.navigate(['/article', this.articleId]);
-  });
-}
+    this.blogService.updateArticle(dataToSend).subscribe(() => {
+      this.messageService.add({ severity: 'success', summary: 'Article mis à jour', detail: 'La publication a bien été modifiée.' });
+      this.router.navigate(['/article', this.articleId]);
+    });
+  }
 
 }

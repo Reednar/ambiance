@@ -1,52 +1,32 @@
 <!-- login.component.html -->
-<div class="min-h-screen d-flex align-items-center justify-content-center px-3" style="padding-top: 100px; padding-bottom: 20px;">
+<div class="min-h-screen d-flex align-items-center justify-content-center px-3"
+  style="padding-top: 100px; padding-bottom: 20px;">
   <div class="card shadow-lg border-0 rounded-4 p-2 p-sm-3 w-100" style="max-width: 500px;">
     <h2 class="text-center mb-4 fw-bold text-white" style="padding-top: 10px;">Connexion</h2>
     <!-- <p-toast></p-toast> -->
 
     <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
       <!-- Email Field -->
-<div class="mb-4">
-  <label for="mail" class="form-label fw-semibold">Email</label>
-  <input type="email"
-         id="mail"
-         class="form-control form-control-lg rounded-3"
-         [ngClass]="{'is-invalid': loginFailed}"
-         formControlName="mail"
-         placeholder="exemple@mail.com">
-</div>
+      <div class="mb-4">
+        <label for="mail" class="form-label fw-semibold">Email</label>
+        <input type="email" id="mail" class="form-control form-control-lg rounded-3"
+          [ngClass]="{'is-invalid': loginFailed}" formControlName="mail" placeholder="exemple@mail.com">
+      </div>
 
-<!-- Password Field -->
-<div class="mb-4">
-  <label for="password" class="form-label fw-semibold">Mot de passe</label>
-  <input type="password"
-         id="password"
-         class="form-control form-control-lg rounded-3"
-         [ngClass]="{'is-invalid': loginFailed}"
-         formControlName="password"
-         placeholder="••••••••">
-  <div *ngIf="loginFailed" class="invalid-feedback d-block">
-    Email ou mot de passe incorrect.
-  </div>
-</div>
+      <!-- Password Field -->
+      <div class="mb-4">
+        <label for="password" class="form-label fw-semibold">Mot de passe</label>
+        <input type="password" id="password" class="form-control form-control-lg rounded-3"
+          [ngClass]="{'is-invalid': loginFailed}" formControlName="password" placeholder="••••••••">
+        <div *ngIf="loginFailed" class="invalid-feedback d-block">
+          Email ou mot de passe incorrect.
+        </div>
+      </div>
 
 
       <!-- Submit Button -->
-      <button type="submit"
-              class="btn btn-primary btn-lg w-100 mb-3 shadow-sm">
+      <button type="submit" class="btn btn-primary btn-lg w-100 mb-3 shadow-sm">
         <i class="pi pi-sign-in me-2"></i>Se connecter
-      </button>
-
-      <!-- Separator -->
-      <div class="text-center text-muted my-3">
-        <span class="px-2">OU</span>
-        <hr>
-      </div>
-
-      <!-- Google Button -->
-      <button type="button"
-              class="btn btn-outline-secondary btn-lg w-100 mb-2 shadow-sm">
-        <i class="pi pi-google me-2"></i>Se connecter avec Google
       </button>
 
       <!-- Forgot Password -->

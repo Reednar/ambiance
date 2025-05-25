@@ -15,36 +15,36 @@ export class ArticleCreatedComponent implements OnInit {
   totalPages: number = 0;
   articles: Article[] = [];
   constructor(
-      private blogService: BlogService
-    ) { }
+    private blogService: BlogService
+  ) { }
 
-    ngOnInit(): void {
+  ngOnInit(): void {
     this.userId = sessionStorage.getItem('id_utilisateur') ?? '';
     this.loadArticles();
   }
 
-    loadArticles(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    this.blogService.findAllByAuthor(Number(sessionStorage.getItem('id_utilisateur')) || 0).subscribe({
-      next: (data) => {
-        this.articles = data;
-        this.updatePageData()
-        resolve();
-      },
-      error: (err) => {
-        console.error('Erreur lors de la récupération des écoles', err);
-       resolve();  // Rejeter la Promise en cas d'erreur
-      }
+  loadArticles(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.blogService.findAllByAuthor(Number(sessionStorage.getItem('id_utilisateur')) || 0).subscribe({
+        next: (data) => {
+          this.articles = data;
+          this.updatePageData()
+          resolve();
+        },
+        error: (err) => {
+          console.error('Erreur lors de la récupération des écoles', err);
+          resolve();  // Rejeter la Promise en cas d'erreur
+        }
+      });
     });
-  });
-}
+  }
 
-updatePageData(): void {
-  this.totalPages = Math.ceil(this.articles.length / this.pageSize); // <-- à ajouter
-  const startIndex = (this.currentPage - 1) * this.pageSize;
-  const endIndex = startIndex + this.pageSize;
-  this.paginatedArticles = this.articles.slice(startIndex, endIndex);
-}
+  updatePageData(): void {
+    this.totalPages = Math.ceil(this.articles.length / this.pageSize); // <-- à ajouter
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedArticles = this.articles.slice(startIndex, endIndex);
+  }
 
 
   prevPage(): void {
@@ -68,30 +68,17 @@ updatePageData(): void {
     }
   }
 
-  // deleteArticle(id: number): void {
-  // if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
-  //   this.blogService.delete(id).subscribe({
-  //     next: () => {
-  //       this.articles = this.articles.filter(article => article.idArticle !== id);
-  //       this.updatePageData();
-  //     },
-  //     error: err => {
-  //       console.error('Erreur lors de la suppression de l’article', err);
-  //     }
-  //   });
-  // }
-
   deleteArticle(id: number): void {
-  if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
-    // Appel au service pour supprimer l'article
-    this.blogService.delete(id).subscribe({
-      next: () => {
-        // Rafraîchir la liste après suppression
-        this.loadArticles();
-      },
-      error: err => console.error('Erreur lors de la suppression', err)
-    });
+    if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
+      // Appel au service pour supprimer l'article
+      this.blogService.delete(id).subscribe({
+        next: () => {
+          // Rafraîchir la liste après suppression
+          this.loadArticles();
+        },
+        error: err => console.error('Erreur lors de la suppression', err)
+      });
+    }
   }
-}
 
 }

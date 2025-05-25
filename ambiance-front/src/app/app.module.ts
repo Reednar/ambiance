@@ -5,8 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './pages/home/home.component';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-// import { AuthInterceptor } from '../app/service/auth.interceptor';
+import { HttpClientModule } from '@angular/common/http';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -21,7 +20,7 @@ import { TagModule } from 'primeng/tag';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DropdownModule } from 'primeng/dropdown';
 import { StepsModule } from 'primeng/steps';
-import { ToastModule } from 'primeng/toast';  // Assurez-vous que ce module est importé pour les toasts
+import { ToastModule } from 'primeng/toast';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarComponent } from './pages/calendar/calendar.component';
 import { RegisterComponent } from './pages/user/register/register.component';
@@ -41,11 +40,6 @@ import { MessageModule } from 'primeng/message';
 import { PublicationsCreateFormComponent } from './pages/publications-create-form/publications-create-form.component';
 import { ProfileComponent } from './pages/user/profile/profile.component';
 import { PublicationShowComponent } from './pages/publication-show/publication-show.component';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import { PickListModule } from 'primeng/picklist';
-
-// Import de la locale française
-import localeFr from '@angular/common/locales/fr';
 import { EcoleComponent } from './pages/ecole/ecole.component';
 import { BlogComponent } from './pages/blogs/blog/blog.component';
 import { ArticleCreateComponent } from './pages/blogs/article-create.component';
@@ -53,8 +47,11 @@ import { ArticleShowComponent } from './pages/blogs/article-show/article-show.co
 import { ArticleCreatedComponent } from './pages/blogs/article-created/article-created.component';
 import { ArticleFormComponent } from './pages/blogs/article-form/article-form.component';
 import { ArticleUpdateComponent } from './pages/blogs/article-update.component';
+import { ForgotPasswordComponent } from './pages/user/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './pages/user/reset-password/reset-password.component';
 
-// Enregistrer la locale française
+// Import et enregistrement de la locale française
+import localeFr from '@angular/common/locales/fr';
 registerLocaleData(localeFr);
 
 @NgModule({
@@ -79,7 +76,9 @@ registerLocaleData(localeFr);
     ArticleShowComponent,
     ArticleCreatedComponent,
     ArticleFormComponent,
-    ArticleUpdateComponent
+    ArticleUpdateComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,
@@ -95,7 +94,7 @@ registerLocaleData(localeFr);
     InputTextModule,
     InputTextareaModule,
     TagModule,
-    ToastModule,  // Assurez-vous d'importer ToastModule ici
+    ToastModule,
     StepsModule,
     ButtonModule,
     DropdownModule,
@@ -115,8 +114,8 @@ registerLocaleData(localeFr);
       provide: LOCALE_ID,
       useValue: 'fr-FR',
     },
-    MessageService  // Assurez-vous d'ajouter le MessageService ici dans les providers
+    MessageService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class AppModule {}
+export class AppModule { }

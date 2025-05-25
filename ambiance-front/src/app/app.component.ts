@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
 import { AuthService } from './service/authent.service';
-import { catchError, map } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { MessageService } from 'primeng/api';
+import { UsersService } from './service/users.service';
 
 interface Claim {
   claim: string;
@@ -20,32 +21,73 @@ export class AppComponent {
   username: string | undefined;
   role: string | undefined;
   roles: any;
-  perimeter : any;
-  constructor(private primengConfig: PrimeNGConfig, private authService: AuthService, public messageService: MessageService) {}
+  perimeter: any;
+  emailConfirmed: boolean = false;
+  isConnected: boolean = false;
+  private authSubscription!: Subscription;
+  userId: string = "";
 
-ngOnInit() {
-  this.authService.isAuthenticated().subscribe(authenticated => {
-    if (authenticated) {
-    } else {
-    }
-  });
+  constructor(private primengConfig: PrimeNGConfig, private authService: AuthService, public messageService: MessageService, private userService: UsersService, private cdr: ChangeDetectorRef,
+  ) { }
 
+  ngOnInit() {
+    this.authService.isAuthenticated().subscribe(auth => {
+
+    });
+    this.userId = sessionStorage.getItem('id_utilisateur') ?? '';
+    //  On prend le userId et on regarde s'il est connecté et si son mail est confirmé
+    try {
+      this.authSubscription = this.authService.isConnected$.subscribe((value) => {
+        this.isConnected = value;
+        this.cdr.detectChanges();
+      });
+
+      this.authSubscription = this.authService.emailConfirmed$.subscribe((value) => {
+        this.emailConfirmed = value;
+        this.cdr.detectChanges();
+      });
+
+      //  Met les jours/mois/.. de primeng en français
       this.primengConfig.setTranslation({
-      dayNames: ["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"],
-      dayNamesShort: ["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"],
-      dayNamesMin: ["Di","Lu","Ma","Me","Je","Ve","Sa"],
-      monthNames: [
-        "Janvier","Février","Mars","Avril","Mai","Juin",
-        "Juillet","Août","Septembre","Octobre","Novembre","Décembre"
-      ],
-      monthNamesShort: [
-        "Jan","Fév","Mar","Avr","Mai","Jun",
-        "Jul","Aoû","Sep","Oct","Nov","Déc"
-      ],
-      today: 'Aujourd\'hui',
-      clear: 'Effacer',
-      dateFormat: 'dd/mm/yy',
-      firstDayOfWeek: 1
+        dayNames: ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
+        dayNamesShort: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+        dayNamesMin: ["Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa"],
+        monthNames: [
+          "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+          "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+        ],
+        monthNamesShort: [
+          "Jan", "Fév", "Mar", "Avr", "Mai", "Jun",
+          "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"
+        ],
+        today: 'Aujourd\'hui',
+        clear: 'Effacer',
+        dateFormat: 'dd/mm/yy',
+        firstDayOfWeek: 1
+      });
+    } catch (error) {
+      console.error('Erreur lors du chargement des données', error);
+    }
+  }
+
+  //  Permet de renvoyer le mail de confirmation à l'utilisateur
+  resendConfirmationEmail(event: Event) {
+    event.preventDefault();
+    this.userService.resendConfirmationEmail(this.userId).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: 'Mail de confirmation renvoyé !',
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: 'Erreur lors de l’envoi du mail',
+        });
+      },
     });
   }
 }

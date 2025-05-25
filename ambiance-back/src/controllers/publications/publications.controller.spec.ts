@@ -29,6 +29,23 @@ describe('PublicationsController', () => {
                   participantMax: 10,
                   participantMin: 2,
                   typePost: 'activité',
+                  placeHandicape: null,
+                  rampe: null,
+                  ascenseur: null,
+                  utilisateurId: 5,
+                  idEcole: 3,
+                  listeEcoleIds: [1, 2, 3],
+                  ecole: { nom: 'École ABC' },
+                  image: Buffer.from('fakeimage'),
+                  imageMimeType: 'image/png',
+                  publicationCategories: [
+                    {
+                      categorie: {
+                        idCategorie: 1,
+                        nom: 'Cinéma',
+                      },
+                    },
+                  ],
                 };
               }
               return null;
@@ -46,17 +63,21 @@ describe('PublicationsController', () => {
   });
 
   it('should return a publication if it exists', async () => {
+    // On ne passe plus de paramètre req, car il est optionnel
     const publication = await controller.getPublicationById(1);
+
     expect(publication).toBeDefined();
     expect(publication.idPublication).toBe(1);
+    expect(publication.titre).toBe('Cinéma');
+    expect(publication.categories.length).toBe(1);
+    expect(publication.categories[0].nom).toBe('Cinéma');
+    expect(publication.idUtilisateur).toBe(5);
+    expect(publication.nomEcole).toBe('École ABC');
+    expect(publication.image).toMatch(/^data:image\/png;base64,/);
   });
 
   it('should throw NotFoundException if publication does not exist', async () => {
-    try {
-      await controller.getPublicationById(2);
-    } catch (e) {
-      expect(e).toBeInstanceOf(NotFoundException);
-      expect(e.message).toBe('publication not found');
-    }
+    await expect(controller.getPublicationById(2)).rejects.toThrow(NotFoundException);
+    await expect(controller.getPublicationById(2)).rejects.toThrow('publication not found');
   });
 });

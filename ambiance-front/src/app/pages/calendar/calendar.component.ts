@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import frLocale from '@fullcalendar/core/locales/fr'; 
+import frLocale from '@fullcalendar/core/locales/fr';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { GroupsService } from '../../service/groups.service';
 import { PublicationsService } from '../../service/publications.service';
@@ -25,7 +25,7 @@ export class CalendarComponent implements OnInit {
   publicationsPassees: Publication[] = [];
   publicationsAVenir: Publication[] = [];
 
-  constructor(private publicationsService: PublicationsService, private groupsService: GroupsService) {}
+  constructor(private publicationsService: PublicationsService, private groupsService: GroupsService) { }
 
   ngOnInit() {
     this.userId = Number(sessionStorage.getItem('id_utilisateur') ?? '');
@@ -50,19 +50,19 @@ export class CalendarComponent implements OnInit {
 
   chargerPublications(): void {
     const maintenant = new Date();
-  
+
     // Convertir les dates en Date
     this.publicationsPassees = this.publications.filter(pub => {
       const pubDate = new Date(pub.dateEvenement);
       return pubDate < maintenant;
     });
-  
+
     this.publicationsAVenir = this.publications.filter(pub => {
       const pubDate = new Date(pub.dateEvenement);
       return pubDate >= maintenant;
     });
   }
-  
+
   mapPublicationsToEvents() {
     this.events = this.publications.map(pub => ({
       title: pub.titre,
@@ -70,7 +70,7 @@ export class CalendarComponent implements OnInit {
       id: pub.idPublication
     }));
   }
-  
+
   calendarOptions: any = {
     plugins: [dayGridPlugin],
     initialView: 'dayGridMonth',
@@ -88,19 +88,19 @@ export class CalendarComponent implements OnInit {
       right: 'dayGridMonth,dayGridWeek,dayGridDay',
     },
     titleFormat: { year: 'numeric', month: 'long' },
-  
-    eventContent: function(arg: any) {
+
+    eventContent: function (arg: any) {
       const anchor = document.createElement('a');
       anchor.href = '/publication-show/ ' + encodeURIComponent(arg.event.id);
       anchor.innerText = arg.event.title;
       anchor.style.textDecoration = 'underline';
       anchor.style.color = 'blue';
       anchor.style.cursor = 'pointer';
-  
+
       return { domNodes: [anchor] };
     }
   };
-  
+
 
   ngAfterViewInit(): void {
     new Swiper('.swiper', {

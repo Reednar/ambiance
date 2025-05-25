@@ -10,13 +10,13 @@ import { Subject } from 'rxjs';
   templateUrl: './moderation.component.html',
   styleUrls: ['./moderation.component.scss']
 })
-export class ModerationComponent implements OnInit, OnDestroy { 
+export class ModerationComponent implements OnInit, OnDestroy {
   posts: Publication[] = [];
   users: User[] = [];
   postCountByDate: { [date: string]: number } = {};
   private destroy$ = new Subject<void>();
 
-  constructor(private PublicationsService: PublicationsService, private usersService: UsersService) {}
+  constructor(private PublicationsService: PublicationsService, private usersService: UsersService) { }
 
   ngOnInit(): void {
     this.fetchPosts();
@@ -53,7 +53,7 @@ export class ModerationComponent implements OnInit, OnDestroy {
       this.users = this.users.filter(user => user.idUtilisateur !== id);
     });
   }
-  
+
   onUpdate(user: User): void {
     // Ici tu peux ouvrir un modal ou une autre logique pour la mise à jour
   }

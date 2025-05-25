@@ -11,7 +11,8 @@
             <small class="text-muted"><i class="bi bi-geo-alt"></i> {{ ecole.ville }}</small>
           </p>
           <div class="mt-auto d-flex gap-2">
-            <a [routerLink]="['/articles']" [queryParams]="{ ecole: ecole.id }" target="_blank" class="btn btn-outline-primary btn-sm w-50">Voir les articles</a>
+            <a [routerLink]="['/articles']" [queryParams]="{ ecole: ecole.id }" target="_blank"
+              class="btn btn-outline-primary btn-sm w-50">Voir les articles</a>
             <a [routerLink]="['/publications']" [queryParams]="{ ecole: ecole.id }" class="btn btn-primary btn-sm w-50">
               Voir les publications
             </a>

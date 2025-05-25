@@ -3,6 +3,7 @@
     <div aria-labelledby="offcanvas_mobile_header_01"
         class="offcanvas-lg mobile-nav-offcanvas offcanvas-start d-lg-none sf-hidden" id="offcanvas_mobile_header_01"
         tabindex="-1"></div>
+    <!-- Carousel     -->
     <main>
         <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="10000">
             <div class="carousel-inner">
@@ -45,6 +46,8 @@
                     class="carousel-indicator-item" aria-label="Go to slide 2"></span>
             </div>
         </div>
+
+        <!-- liste top 4 des catégories -->
         <section class="section bg-gray-100" style="background-color: #0d1d2d !important;">
             <div class="container">
                 <div class="row justify-content-center section-heading">
@@ -56,7 +59,7 @@
                     <div class="col-6 col-lg-3">
                         <div class="hover-scale">
                             <div class="hover-scale-in"><a [routerLink]="['/publications']"
-                                    [queryParams]="{ category: 4 }"> <img alt="" class="img-fluid"
+                                    [queryParams]="{ category: 4 }"> <img alt="sport" class="img-fluid"
                                         src="assets/images/categories/sport.png" title="" />
                                 </a>
                             </div>
@@ -71,7 +74,7 @@
                     <div class="col-6 col-lg-3">
                         <div class="hover-scale">
                             <div class="hover-scale-in"><a [routerLink]="['/publications']"
-                                    [queryParams]="{ category: 2 }"><img alt="" class="img-fluid"
+                                    [queryParams]="{ category: 2 }"><img alt="musique" class="img-fluid"
                                         src="assets/images/categories/musique.png" title="" /></a>
                             </div>
                             <div class="text-center mx-2 mx-sm-4 mt-n5 position-relative z-index-1 bg-body shadow p-4">
@@ -85,7 +88,7 @@
                     <div class="col-6 col-lg-3">
                         <div class="hover-scale">
                             <div class="hover-scale-in"><a [routerLink]="['/publications']"
-                                    [queryParams]="{ category: 5 }"><img alt="" class="img-fluid"
+                                    [queryParams]="{ category: 5 }"><img alt="cine" class="img-fluid"
                                         src="assets/images/categories/cine.png" title="" /></a>
                             </div>
                             <div class="text-center mx-2 mx-sm-4 mt-n5 position-relative z-index-1 bg-body shadow p-4">
@@ -99,7 +102,7 @@
                     <div class="col-6 col-lg-3">
                         <div class="hover-scale">
                             <div class="hover-scale-in"><a [routerLink]="['/publications']"
-                                    [queryParams]="{ category: 6 }"><img alt="" class="img-fluid"
+                                    [queryParams]="{ category: 6 }"><img alt="voyage" class="img-fluid"
                                         src="assets/images/categories/voyage.png" title="" /></a>
                             </div>
                             <div class="text-center mx-2 mx-sm-4 mt-n5 position-relative z-index-1 bg-body shadow p-4">
@@ -113,11 +116,13 @@
                 </div>
             </div>
         </section>
+
+        <!-- Liste des 8 dernières annonces mises en lignes -->
         <section class="section">
             <div class="container">
                 <div class="row justify-content-center section-heading">
                     <div class="col-lg-6 text-center">
-                        <p class="fs-6 m-0">10/04/2025
+                        <p class="fs-6 m-0">10/04/2025</p>
                         <h3 class="h2 mt-2">Dernières annonces mises en lignes</h3>
                     </div>
                 </div>
@@ -129,10 +134,12 @@
                             <div class="product-card-2">
                                 <div class="product-card-image">
                                     <div class="product-wishlist">
-                                        <a class="btn btn-outline-dark" style="color: black !important;">{{ publication.prix }}€</a>
+                                        <a class="btn btn-outline-dark" style="color: black !important;">{{
+                                            publication.prix }}€</a>
                                     </div>
                                     <div class="product-media">
-                                        <a routerLink="#"><img alt="" class="img-fluid" [src]="publication.image" /></a>
+                                        <a routerLink="#"><img alt="publicationImage" class="img-fluid"
+                                                [src]="publication.image" /></a>
                                     </div>
                                 </div>
                                 <div class="product-card-info">
@@ -144,18 +151,21 @@
                                         HH\'h\'mm' }}</div>
                                     <div class="rating-star text">
                                         <!-- Première catégorie -->
-                                        <span *ngIf="publication.categories.length > 0" class="badge bg-info" style="margin-top: 15px;  background-color: #080808da !important">
-                                        {{ publication.categories[0].nom }}
+                                        <span *ngIf="publication.categories.length > 0" class="badge bg-info"
+                                            style="margin-top: 15px;  background-color: #080808da !important">
+                                            {{ publication.categories[0].nom }}
                                         </span>
 
                                         <!-- Deuxième catégorie -->
-                                        <span *ngIf="publication.categories.length > 1" class="badge bg-info" style="margin-top: 15px;  background-color:  #080808da !important">
-                                        {{ publication.categories[1].nom }}
+                                        <span *ngIf="publication.categories.length > 1" class="badge bg-info"
+                                            style="margin-top: 15px;  background-color:  #080808da !important">
+                                            {{ publication.categories[1].nom }}
                                         </span>
 
                                         <!-- Badge "3 ..." si plus de 2 catégories -->
-                                        <span *ngIf="publication.categories.length > 2" class="badge bg-info" style="margin-top: 15px; background-color:  #080808da !important;">
-                                        ...
+                                        <span *ngIf="publication.categories.length > 2" class="badge bg-info"
+                                            style="margin-top: 15px; background-color:  #080808da !important;">
+                                            ...
                                         </span>
                                     </div>
                                 </div>
@@ -174,7 +184,8 @@
                 <div class="row g-3">
                     <div class="col-lg-4">
                         <div class="position-relative hover-scale">
-                            <div class="hover-scale-in"><img alt="" class="w-100" src="assets/image_9.jpg" title="" />
+                            <div class="hover-scale-in"><img alt="ecole1" class="w-100" src="assets/image_9.jpg"
+                                    title="" />
                             </div>
                             <div
                                 class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center top-0 left-0">
@@ -190,7 +201,8 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="position-relative hover-scale">
-                            <div class="hover-scale-in"><img alt="" class="w-100" src="assets/image_10.jpg" title="" />
+                            <div class="hover-scale-in"><img alt="ecole2" class="w-100" src="assets/image_10.jpg"
+                                    title="" />
                             </div>
                             <div
                                 class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center top-0 left-0">
@@ -206,7 +218,8 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="position-relative hover-scale">
-                            <div class="hover-scale-in"><img alt="" class="w-100" src="assets/image_11.jpg" title="" />
+                            <div class="hover-scale-in"><img alt="ecole3" class="w-100" src="assets/image_11.jpg"
+                                    title="" />
                             </div>
                             <div
                                 class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center top-0 left-0">
@@ -238,7 +251,7 @@
                 <div class="row">
                     <div class="col-lg-4 my-3">
                         <div class="hover-scale text-center">
-                            <div class="hover-scale-in position-relative"><a routerLink="#"><img alt=""
+                            <div class="hover-scale-in position-relative"><a routerLink="#"><img alt="blog1"
                                         class="img-fluid" src="assets/image_12.jpg" title="" /></a>
                                 <div
                                     class="position-absolute top-0 start-0 mt-3 ms-3 bg-white d-flex flex-column align-items-center px-3 py-2">
@@ -254,7 +267,7 @@
                     </div>
                     <div class="col-lg-4 my-3">
                         <div class="hover-scale text-center">
-                            <div class="hover-scale-in position-relative"><a routerLink="#"><img alt=""
+                            <div class="hover-scale-in position-relative"><a routerLink="#"><img alt="blog2"
                                         class="img-fluid" src="assets/image_13.jpg" title="" /></a>
                                 <div
                                     class="position-absolute top-0 start-0 mt-3 ms-3 bg-white d-flex flex-column align-items-center px-3 py-2">
@@ -269,7 +282,7 @@
                     </div>
                     <div class="col-lg-4 my-3">
                         <div class="hover-scale text-center">
-                            <div class="hover-scale-in position-relative"><a routerLink="#"><img alt=""
+                            <div class="hover-scale-in position-relative"><a routerLink="#"><img alt="blog3"
                                         class="img-fluid" src="assets/image_14.jpg" title="" /></a>
                                 <div
                                     class="position-absolute top-0 start-0 mt-3 ms-3 bg-white d-flex flex-column align-items-center px-3 py-2">

@@ -1,20 +1,24 @@
 <div class="container pt-5 pt-md-4 pt-lg-2" style="min-height: 600px; padding-bottom: 20px;">
   <div class="row justify-content-center">
     <div class="col-lg-10 testStyle">
-
       <div class="card p-4 shadow-sm">
         <div class="row align-items-center">
           <!-- Partie gauche (image + pseudo) -->
           <div class="col-md-4 text-center">
-            <div class="profile-pic mb-3">
-              <img 
-                [src]="user.profileImageUrl || 'https://via.placeholder.com/150'" 
-                class="rounded-circle img-fluid shadow-sm" 
-                alt="Photo de profil" 
-                style="width: 150px; height: 150px; object-fit: cover;"
-              />
+            <div class="profile-pic mb-3 d-inline-block">
+              <div class="profile-pic-wrapper position-relative">
+                <img
+                  [src]="previewImage || user.image || 'https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-blank-avatar-modern-vector-png-image_40962406.jpg'"
+                  class="profile-pic-img rounded-circle shadow-sm" alt="Photo de profil" />
+                <button type="button" class="btn btn-sm btn-light rounded-circle profile-pic-btn"
+                  (click)="fileInput.click()" title="Changer l'image">
+                  <i class="bi bi-upload"></i>
+                </button>
+                <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" hidden />
+              </div>
             </div>
-            <h4 class="fw-bold">{{ user.username }}</h4>
+            <h4 class="fw-bold">{{ user.pseudo }}</h4>
+
           </div>
 
           <!-- Partie droite (infos modifiables) -->
@@ -23,73 +27,47 @@
               <div class="row g-3">
                 <div class="col-sm-6">
                   <label class="form-label">Prénom</label>
-                  <input 
-                    type="text" 
-                    class="form-control editable" 
-                    pInputText 
-                    [(ngModel)]="user.firstName" 
-                    name="firstName" 
-                    required
-                  />
+                  <input type="text" class="form-control editable" pInputText [(ngModel)]="user.prenom" name="prenom"
+                    required />
                 </div>
                 <div class="col-sm-6">
                   <label class="form-label">Nom</label>
-                  <input 
-                    type="text" 
-                    class="form-control editable" 
-                    pInputText 
-                    [(ngModel)]="user.lastName" 
-                    name="lastName" 
-                    required
-                  />
+                  <input type="text" class="form-control editable" pInputText [(ngModel)]="user.nom" name="nom"
+                    required />
                 </div>
                 <div class="col-sm-6">
                   <label class="form-label">Date de naissance</label>
-                  <input 
-                    type="date" 
-                    class="form-control editable" 
-                    [(ngModel)]="user.birthDate" 
-                    name="birthDate" 
-                    required
-                  />
+                  <input type="date" class="form-control editable" [(ngModel)]="user.dateDeNaissance"
+                    name="dateDeNaissance" required />
                 </div>
                 <div class="col-sm-6">
-                  <label class="form-label">Ville</label>
-                  <input 
-                    type="text" 
-                    class="form-control editable" 
-                    pInputText 
-                    [(ngModel)]="user.city" 
-                    name="city" 
-                    required
-                  />
+                  <label class="form-label">Téléphone</label>
+                  <input type="text" class="form-control editable"
+                    [ngClass]="{'is-invalid': user.telephone && !isValidPhone(user.telephone)}" pInputText
+                    [(ngModel)]="user.telephone" name="telephone" />
+                  <div *ngIf="user.telephone && !isValidPhone(user.telephone)" class="text-danger small mt-1">
+                    Format invalide (ex: 06 12 34 56 78 ou +33612345678).
+                  </div>
                 </div>
+
                 <div class="col-12">
-                  <label class="form-label">École</label>
-                  <input 
-                    type="text" 
-                    class="form-control editable" 
-                    pInputText 
-                    [(ngModel)]="user.school" 
-                    name="school"
-                  />
+                  <label class="form-label">Email</label>
+                  <input type="text" class="form-control editable" pInputText readonly [(ngModel)]="user.mail"
+                    name="mail" />
                 </div>
               </div>
 
               <div class="d-flex justify-content-end mt-4">
-                <button 
-                  type="submit" 
-                  class="btn btn-success" 
-                  [disabled]="!profileForm.form.valid">
+                <button type="submit" class="btn btn-success"
+                  [disabled]="!profileForm.form.valid || (user.telephone && !isValidPhone(user.telephone))">
                   Sauvegarder
                 </button>
+
               </div>
             </form>
           </div>
-
         </div>
       </div>
-
     </div>
   </div>
 </div>

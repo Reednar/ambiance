@@ -18,7 +18,10 @@ import { ArticleShowComponent } from './pages/blogs/article-show/article-show.co
 import { ArticleCreateComponent } from './pages/blogs/article-create.component';
 import { ArticleCreatedComponent } from './pages/blogs/article-created/article-created.component';
 import { ArticleUpdateComponent } from './pages/blogs/article-update.component';
+import { ForgotPasswordComponent } from './pages/user/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './pages/user/reset-password/reset-password.component';
 
+// Déclaration des routes avec les bons droits
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'publications', component: PublicationsComponent },
@@ -37,10 +40,9 @@ const routes: Routes = [
   { path: 'article-create', component: ArticleCreateComponent, canActivate: [AuthGuard]  },
   { path: 'article-created', component: ArticleCreatedComponent, canActivate: [AuthGuard]  },
   { path: 'article/:id', component: ArticleShowComponent },
-  { path: 'article-update/:id', component: ArticleUpdateComponent }
-
-
-
+  { path: 'article-update/:id', component: ArticleUpdateComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
 ];
 
 @NgModule({
