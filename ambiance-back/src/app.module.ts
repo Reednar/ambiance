@@ -29,24 +29,19 @@ import { PublicationCategoriesController } from './controllers/publication-categ
 import { Message } from './entities/messages.entity';
 import { MessagesModule } from './modules/messages/messages.module';
 import { Discussion } from './entities/discussions.entity';
-import { DiscussionService } from './services/discussion/discussion.service';
 import { DiscussionController } from './controllers/discussions/discussions.controller';
 //websocket
-import { ChatGateway } from './gateways/chat.gateway';
 import { ChatModule } from './modules/chat/chat.module';
-import { MessageService } from './services/messages/messages.service';
 import { DiscussionModule } from './modules/discussions/discussions.module';
 import { SchoolsModule } from './modules/schools/schools.module';
 import { SchoolsController } from './controllers/schools/schools.controller';
 import { School } from './entities/schools.entity';
 import { MembresBDE } from './entities/membresBDE.entity';
-import { MembresBDEService } from './services/membresBDE/membresBDE.service';
 import { Tag } from './entities/tag.entity';
 import { Article } from './entities/articles.entity';
 import { ArticlesModule } from './modules/articles/articles.modules';
-import { ArticlesController } from './controllers/articles/articles.controllers';
-import { ArticleService } from './services/articles/articles.services';
 import { DataSource } from 'typeorm';
+import { PaiementsModule } from './modules/paiements/paiements.module';
 
 @Module({
   controllers: [
@@ -89,6 +84,9 @@ import { DataSource } from 'typeorm';
         Article,
       ], // Ajouter les entités ici
       synchronize: false, // Permet de manipuler les entités de la base de données avec les fichiers entity.ts en temps réel
+      extra: {
+        connectionLimit: 5, // Limite le nombre de connexions simultanées pour éviter l'erreur
+      },
     }),
     PublicationsModule,
     UsersModule,
@@ -103,14 +101,15 @@ import { DataSource } from 'typeorm';
     ChatModule,
     SchoolsModule,
     ArticlesModule,
-    // Mettre les autres modules ici
+    PaiementsModule,
   ],
   providers: [AppService, Logger],
 })
 export class AppModule implements OnApplicationShutdown {
-  constructor(private dataSource: DataSource) {}
+  constructor(private readonly dataSource: DataSource) {}
 
-  async onApplicationShutdown(signal?: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async onApplicationShutdown(_signal?: string) {
     await this.dataSource.destroy();
   }
 }

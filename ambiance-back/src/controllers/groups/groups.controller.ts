@@ -97,7 +97,7 @@ export class GroupsController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Add a user to a group by publication' })
   async addUserToGroup(
-    @Body() body: { idPublication: number; IdUtilisateur: number },
+    @Body() body: { idPublication: number; idUtilisateur: number },
     @Req() req: Request,
   ) {
     this.logger.log(
@@ -105,6 +105,9 @@ export class GroupsController {
       body,
     );
 
+    console.log(
+      'iduser : ' + body.idUtilisateur + ' et iud pub = ' + body.idPublication,
+    );
     const groupe = await this.GroupsService.getGroupeByPublicationId(
       body.idPublication,
     );
@@ -113,7 +116,7 @@ export class GroupsController {
     }
 
     const utilisateur = await this.UsersService.findEntityById(
-      body.IdUtilisateur,
+      body.idUtilisateur,
     );
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
@@ -250,5 +253,22 @@ export class GroupsController {
     }
 
     return await this.GroupsService.findUsersByGroup(body.IdGroupe);
+  }
+
+  @Post('has-joined')
+  async hasUserJoinedPublicationGroup(
+    @Body()
+    body: {
+      idUtilisateur: number;
+      idPublication: number;
+    },
+  ): Promise<{ hasJoined: boolean }> {
+    const { idUtilisateur, idPublication } = body;
+    console.log(idUtilisateur + ' ' + idPublication);
+    const hasJoined = await this.GroupsService.hasUserJoinedPublicationGroup(
+      idUtilisateur,
+      idPublication,
+    );
+    return { hasJoined };
   }
 }

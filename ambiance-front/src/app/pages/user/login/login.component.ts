@@ -41,9 +41,12 @@ export class LoginComponent implements OnInit {
     });
 
     // Si l'utilisateur est déjà connecté, on le redirige immédiatement
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate([this.redirectTo]);
-    }
+    this.authService.isAuthenticated().subscribe(status => {
+      if (status.authenticated) {
+        this.router.navigate([this.redirectTo]);
+      }
+    });
+
   }
 
   /**

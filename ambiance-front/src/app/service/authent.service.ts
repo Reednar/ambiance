@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, of, tap, throwError } from 'rxjs';
-import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
@@ -13,40 +12,48 @@ export class AuthService {
   private apiUrl = `${environment.baseUrl}/auth`;
 
   // Comportement observable indiquant si l'utilisateur est connecté (true/false)
-  private isConnected = new BehaviorSubject<boolean>(this.isLoggedIn());
+  private isConnected = new BehaviorSubject<boolean>(false);
   isConnected$ = this.isConnected.asObservable();
 
   // Comportement observable indiquant si l'email de l'utilisateur est confirmé
-  private emailConfirmed = new BehaviorSubject<boolean>(this.isLoggedIn());
+  private emailConfirmed = new BehaviorSubject<boolean>(false);
   emailConfirmed$ = this.emailConfirmed.asObservable();
 
+  // constructor(private http: HttpClient, private router: Router) {
+  //   // Au démarrage du service, vérifie l'authentification
+  //   this.isAuthenticated();
+  // }
+
   constructor(private http: HttpClient, private router: Router) {
-    // Au démarrage du service, vérifie l'authentification
-    this.isAuthenticated();
+    this.isAuthenticated().subscribe(status => {
+      // status ici est { authenticated: boolean; emailConfirmed: boolean }
+      this.isConnected.next(status.authenticated);
+      this.emailConfirmed.next(status.emailConfirmed)
+    });
   }
 
   /**
    * Vérifie si un utilisateur est connecté en vérifiant la validité du token JWT stocké dans les cookies.
    * @returns true si token présent et valide, sinon false
-   */
-  isLoggedIn(): boolean {
-    const token = this.getToken();
-    if (token) {
-      const parts = token.split('.');
-      if (parts.length !== 3) {
-        return false;  // Token invalide (doit avoir 3 parties)
-      }
+  //  */
+  // isLoggedIn(): boolean {
+  //   const token = this.getToken();
+  //   if (token) {
+  //     const parts = token.split('.');
+  //     if (parts.length !== 3) {
+  //       return false;  // Token invalide (doit avoir 3 parties)
+  //     }
 
-      try {
-        const decodedToken: any = jwtDecode(token);
-        const expirationDate = decodedToken.exp * 1000; // Converti en millisecondes
-        return expirationDate > Date.now();  // Vrai si non expiré
-      } catch (error) {
-        return false;  // Erreur de décodage = token invalide
-      }
-    }
-    return false;  // Pas de token = pas connecté
-  }
+  //     try {
+  //       const decodedToken: any = jwtDecode(token);
+  //       const expirationDate = decodedToken.exp * 1000; // Converti en millisecondes
+  //       return expirationDate > Date.now();  // Vrai si non expiré
+  //     } catch (error) {
+  //       return false;  // Erreur de décodage = token invalide
+  //     }
+  //   }
+  //   return false;  // Pas de token = pas connecté
+  // }
 
   /**
    * Effectue la connexion en envoyant les identifiants (mail + password) au backend.

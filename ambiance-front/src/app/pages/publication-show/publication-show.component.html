@@ -2,7 +2,7 @@
   <div *ngIf="publication" class="card shadow-lg border-0" style="margin-top: 100px;">
     <div class="row g-0">
       <div class="col-md-6">
-        <img [src]="publication.image" alt="Image de l'événement"
+        <img [src]="publication.image" alt="image"
           class="img-fluid rounded-start h-100 w-100 object-fit-cover publication-img zoom-effect"
           onerror="this.onerror=null;this.src='assets/no-image.jpg';" />
       </div>
@@ -32,21 +32,30 @@
             </div>
           </div>
           <div class="mt-3">
-            <button *ngIf="!isUserRegistered" class="btn btn-success" (click)="joinEvent()">
-              Rejoindre l'événement
-            </button>
+            <!-- Si l'utilisateur n'a pas encore rejoint l'événement -->
+            <div *ngIf="!userJoinEvent">
+              <!-- Cas 1 : Événement gratuit -->
+              <button *ngIf="publication && publication.prix !== undefined && publication.prix == 0" data-bs-toggle="modal" data-bs-target="#freeJoinModal" class="btn btn-success" (click)="checkIfUserLoggedIn()" [disabled]="!isConnected">
+                Rejoindre l'événement (Gratuit)
+              </button>
 
-            <button *ngIf="!isUserRegistered" class="btn btn-primary ms-2" (click)="joinChat()">
-              Rejoindre le chat
-            </button>
+              <!-- Cas 2 : Événement payant -->
+              <button *ngIf="publication && publication.prix !== undefined && publication.prix > 0" class="btn btn-success"
+                      data-bs-toggle="modal" data-bs-target="#exampleModal"
+                      (click)="checkIfUserLoggedIn()" [disabled]="!isConnected">
+                Rejoindre l'événement
+              </button>
+            </div>
 
-            <button *ngIf="isUserRegistered" class="btn btn-secondary" (click)="viewChat()">
+
+            <button *ngIf="userJoinEvent" class="btn btn-secondary" (click)="viewChat()">
               Voir le chat
             </button>
 
-            <button *ngIf="isUserRegistered" class="btn btn-info ms-2" (click)="leaveEvent()">
+            <!-- <button *ngIf="userJoinEvent" class="btn btn-info ms-2" (click)="leaveEvent()">
               Quitter l'événement
-            </button>
+            </button> -->
+
           </div>
           <a [href]="publication.lien" target="_blank" class="btn btn-outline-primary mt-3">
             Se rendre sur le lien
@@ -57,5 +66,47 @@
   </div>
   <div style="padding-top: 100px;">
     <p-toast></p-toast>
+  </div>
+
+  <!-- Modal -->
+<div *ngIf="isConnected" class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Rejoindre l'événement</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Vous êtes sur le point de rejoindre l'événement "{{ publication.titre }}".<br />
+        Vous devez payer {{ publication.prix }} € pour participer à cet événement.<br />
+        Êtes-vous sûr de vouloir continuer ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" (click)="checkout(publication)">Payer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal pour événement gratuit -->
+
+</div>
+<div *ngIf="isConnected" class="modal fade" id="freeJoinModal" tabindex="-1" aria-labelledby="freeJoinModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="freeJoinModalLabel">Rejoindre l'événement gratuit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        Vous êtes sur le point de rejoindre l'événement gratuit "{{ publication.titre }}".<br />
+        Aucun paiement n'est requis.<br />
+        Souhaitez-vous confirmer votre participation ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="joinFreeEvent()">Confirmer</button>
+      </div>
+    </div>
   </div>
 </div>
