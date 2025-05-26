@@ -21,6 +21,7 @@ node {
         string(credentialsId: 'MAIL_USER', variable: 'MAIL_USER'),
         string(credentialsId: 'MAIL_PASS', variable: 'MAIL_PASS'),
         string(credentialsId: 'SALT_ROUNDS', variable: 'SALT_ROUNDS'),
+        string(credentialsId: 'STRIPE_SECRET_KEY', variable: 'STRIPE_SECRET_KEY'),
 
     ]) {
 
@@ -100,6 +101,7 @@ FRONTEND_URL=${FRONTEND_URL}
 MAIL_USER=${MAIL_USER}
 MAIL_PASS=${MAIL_PASS}
 SALT_ROUNDS=${SALT_ROUNDS}
+STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
 
 EOF
             """
