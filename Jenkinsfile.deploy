@@ -19,7 +19,8 @@ node {
         string(credentialsId: 'JWT_SECRET', variable: 'JWT_SECRET'),
         string(credentialsId: 'FRONTEND_URL', variable: 'FRONTEND_URL'),
         string(credentialsId: 'MAIL_USER', variable: 'MAIL_USER'),
-        string(credentialsId: 'MAIL_PASS', variable: 'MAIL_PASS')
+        string(credentialsId: 'MAIL_PASS', variable: 'MAIL_PASS'),
+        string(credentialsId: 'SALT_ROUNDS', variable: 'SALT_ROUNDS'),
 
     ]) {
 
@@ -98,6 +99,7 @@ JWT_SECRET=${JWT_SECRET}
 FRONTEND_URL=${FRONTEND_URL}
 MAIL_USER=${MAIL_USER}
 MAIL_PASS=${MAIL_PASS}
+SALT_ROUNDS=${SALT_ROUNDS}
 
 EOF
             """

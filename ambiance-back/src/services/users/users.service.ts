@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from '../../entities/users.entity'; // Update this line
 import { toUserDto } from 'src/controllers/users/mappers.users';
 import { UpdateUserDto, UserDto } from 'src/dtos/user.dto';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
