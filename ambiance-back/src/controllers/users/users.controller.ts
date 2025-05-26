@@ -27,7 +27,7 @@ import * as crypto from 'crypto';
 import { MailService } from 'src/services/mail.service';
 import { AuthService } from 'src/services/auth/auth.service';
 
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 interface RequestWithCookies extends ExpressRequest {
   cookies: { [key: string]: string };
@@ -118,8 +118,13 @@ export class UsersController {
 
     try {
       // Hash du mot de passe
-      const salt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUNDS));
+      const saltRoundsEnv = process.env.SALT_ROUNDS;
+      if (!saltRoundsEnv || isNaN(Number(saltRoundsEnv))) {
+        throw new Error('SALT_ROUNDS is not defined or is not a valid number');
+      }
+      const salt = await bcrypt.genSalt(parseInt(saltRoundsEnv));
       const hash = await bcrypt.hash(futureUser.motDePasse, salt);
+
       futureUser.motDePasse = hash;
 
       // Génération token confirmation + expiration 24h
@@ -130,11 +135,30 @@ export class UsersController {
       futureUser.confirmationTokenExpires = expirationDate;
       futureUser.emailConfirmed = false;
 
+      // Log des données à insérer
+      console.log('futureUser to insert:', JSON.stringify(futureUser, null, 2));
+
       // Création en base
       const createdUser = await this.usersService.create(futureUser);
 
       // Envoi mail de confirmation (optionnel : tu peux aussi le faire dans un service à part)
-      await this.mailService.sendConfirmationEmail(createdUser.mail, token);
+      try {
+        await this.mailService.sendConfirmationEmail(createdUser.mail, token);
+      } catch (mailError) {
+        // Log complet de l'erreur d'envoi de mail
+        console.error('Error sending confirmation email:', {
+          message: mailError?.message,
+          stack: mailError?.stack,
+          code: mailError?.code,
+          error: mailError,
+        });
+        // Optionnel : supprimer l'utilisateur créé si l'email échoue
+        await this.usersService.remove(createdUser.idUtilisateur);
+        throw new HttpException(
+          'USER_CREATED_BUT_EMAIL_FAILED',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
 
       // Ne pas renvoyer mot de passe, token etc.
       delete createdUser.motDePasse;
@@ -143,11 +167,29 @@ export class UsersController {
 
       return createdUser;
     } catch (error) {
+      // Log complet de l'erreur pour debug
+      console.error('Error during user creation:', {
+        message: error?.message,
+        stack: error?.stack,
+        code: error?.code,
+        error,
+      });
       if (error.code === 'ER_DUP_ENTRY' && error.message.includes('Mail')) {
         throw new HttpException('EMAIL_ALREADY_USED', HttpStatus.BAD_REQUEST);
       }
+      if (error.response === 'USER_CREATED_BUT_EMAIL_FAILED') {
+        throw new HttpException(
+          'Utilisateur créé mais l\'envoi de l\'email a échoué. Contactez un administrateur.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
 
-      this.logger.error('Error during user creation', error);
+      this.logger.error('Error during user creation', {
+        message: error?.message,
+        stack: error?.stack,
+        code: error?.code,
+        error,
+      });
       throw new HttpException(
         'INTERNAL_SERVER_ERROR',
         HttpStatus.INTERNAL_SERVER_ERROR,
