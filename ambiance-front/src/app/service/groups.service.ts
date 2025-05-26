@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 export class GroupsService {
   private url = `${environment.baseUrl}/groups`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) { }
 
   // POST /groups/findAll
   findAll(userId: number): Observable<any> {
@@ -22,9 +22,12 @@ export class GroupsService {
   }
 
   // POST /groups/addUser
-  addUserToGroup(data: { IdGroupe: number; IdUtilisateur: number }): Observable<any> {
-    return this.http.post(`${this.url}/addUser`, data);
+  addUserToGroup(data: { idPublication: number; idUtilisateur: number }): Observable<any> {
+    return this.http.post(`${this.url}/addUser`, data, {
+      withCredentials: true
+    });
   }
+
 
   // POST /groups/removeUser
   removeUserFromGroup(data: { IdGroupe: number; IdUtilisateur: number; senderId: number }): Observable<any> {
@@ -45,4 +48,10 @@ export class GroupsService {
   getUsersInGroup(IdGroupe: number): Observable<any> {
     return this.http.post(`${this.url}/groupUsers`, { IdGroupe });
   }
+
+  // POST /groups/addUser
+  hasJoined(data: { idPublication: number; idUtilisateur: number }): Observable<any> {
+    return this.http.post(`${this.url}/has-joined`, data);
+  }
+
 }

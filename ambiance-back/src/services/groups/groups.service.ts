@@ -38,7 +38,10 @@ export class GroupsService {
     await this.groupeRepository.delete(id);
   }
 
-  async addUserToGroup(idGroupe: number, idUtilisateur: number): Promise<Participation> {
+  async addUserToGroup(
+    idGroupe: number,
+    idUtilisateur: number,
+  ): Promise<Participation> {
     const groupe = await this.groupeRepository.findOneBy({ idGroupe });
     const utilisateur = await this.userRepository.findOneBy({ idUtilisateur });
 
@@ -54,7 +57,9 @@ export class GroupsService {
     return await this.participationRepository.save(participation);
   }
 
-  async addParticipation(participation: Partial<Participation>): Promise<Participation> {
+  async addParticipation(
+    participation: Partial<Participation>,
+  ): Promise<Participation> {
     // Si on reçoit déjà les objets, inutile de les rechercher à nouveau
     const groupe = participation.idGroupe;
     const utilisateur = participation.idUtilisateur;
@@ -66,28 +71,39 @@ export class GroupsService {
     const newParticipation = new Participation();
     newParticipation.idGroupe = groupe;
     newParticipation.idUtilisateur = utilisateur;
-    
+
     newParticipation.idPaiement = participation.idPaiement;
     return await this.participationRepository.save(newParticipation);
   }
 
-  async removeUserFromGroup(idGroupe: number, idUtilisateur: number): Promise<void> {
+  async removeUserFromGroup(
+    idGroupe: number,
+    idUtilisateur: number,
+  ): Promise<void> {
     const participation = await this.participationRepository
       .createQueryBuilder('participation')
       .where('participation.idGroupe = :idGroupe', { idGroupe })
-      .andWhere('participation.idUtilisateur = :idUtilisateur', { idUtilisateur })
+      .andWhere('participation.idUtilisateur = :idUtilisateur', {
+        idUtilisateur,
+      })
       .getOne();
     if (!participation) {
       throw new Error('Participation not found');
     }
 
-    await this.participationRepository.delete({ idParticipation: participation.idParticipation });
+    await this.participationRepository.delete({
+      idParticipation: participation.idParticipation,
+    });
   }
 
-  async changeOrganisateur(idGroupe: number, idUtilisateur: number): Promise<void> {
+  async changeOrganisateur(
+    idGroupe: number,
+    idUtilisateur: number,
+  ): Promise<void> {
     const groupe = await this.groupeRepository.findOneBy({ idGroupe });
     const utilisateur = await this.userRepository.findOneBy({ idUtilisateur });
-    if (!groupe || !utilisateur) throw new Error('Groupe or Utilisateur not found');
+    if (!groupe || !utilisateur)
+      throw new Error('Groupe or Utilisateur not found');
     groupe.utilisateur = utilisateur;
     await this.groupeRepository.save(groupe);
   }
@@ -95,16 +111,26 @@ export class GroupsService {
   async findGroupsByUser(IdUtilisateur: number): Promise<Groupe[]> {
     return await this.groupeRepository
       .createQueryBuilder('groupe')
-      .innerJoin('Participation', 'participation', 'participation.idGroupe = groupe.idGroupe')
+      .innerJoin(
+        'Participation',
+        'participation',
+        'participation.idGroupe = groupe.idGroupe',
+      )
       .where('participation.idUtilisateur = :IdUtilisateur', { IdUtilisateur })
       .getMany();
   }
 
-  async findUsersByGroup(IdGroupe: number): Promise<{ nom: string; prenom: string; pseudo: string }[]> {
+  async findUsersByGroup(
+    IdGroupe: number,
+  ): Promise<{ nom: string; prenom: string; pseudo: string }[]> {
     return await this.userRepository
       .createQueryBuilder('user')
       .select(['user.nom', 'user.prenom', 'user.pseudo'])
-      .innerJoin('Participation', 'participation', 'participation.idUtilisateur = user.idUtilisateur')
+      .innerJoin(
+        'Participation',
+        'participation',
+        'participation.idUtilisateur = user.idUtilisateur',
+      )
       .where('participation.idGroupe = :IdGroupe', { IdGroupe })
       .getRawMany();
   }
@@ -133,6 +159,20 @@ export class GroupsService {
       .where('groupe.idPublication = :publicationId', { publicationId })
       .getOne();
   }
-  
-  
+
+  async hasUserJoinedPublicationGroup(
+    idUtilisateur: number,
+    idPublication: number,
+  ): Promise<boolean> {
+    const participation = await this.participationRepository
+      .createQueryBuilder('participation')
+      .innerJoin('participation.idGroupe', 'groupe')
+      .where('groupe.idPublication = :idPublication', { idPublication })
+      .andWhere('participation.idUtilisateur = :idUtilisateur', {
+        idUtilisateur,
+      })
+      .getOne();
+
+    return !!participation; // true si une participation existe
+  }
 }
