@@ -71,6 +71,7 @@ export class DiscussionService {
         'groupe.NomDuGroupe AS nomGroupe',
         'discussion.idDiscussion AS idDiscussion',
       ])
+      .distinct(true)
       .getRawMany();
   }
 
