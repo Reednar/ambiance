@@ -49,6 +49,7 @@ import { ArticleFormComponent } from './pages/blogs/article-form/article-form.co
 import { ArticleUpdateComponent } from './pages/blogs/article-update.component';
 import { ForgotPasswordComponent } from './pages/user/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './pages/user/reset-password/reset-password.component';
+import { MessagerieComponent } from './pages/messagerie/messagerie.component';
 
 // Import et enregistrement de la locale française
 import localeFr from '@angular/common/locales/fr';
@@ -78,7 +79,9 @@ registerLocaleData(localeFr);
     ArticleFormComponent,
     ArticleUpdateComponent,
     ForgotPasswordComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent, 
+    MessagerieComponent
+
   ],
   imports: [
     BrowserModule,

@@ -23,8 +23,8 @@ async function bootstrap() {
 
   // Configuration CORS pour accepter les cookies côté frontend
   app.enableCors({
-    //origin: 'http://localhost:4200',
-    origin: process.env.FRONTEND_URL,
+    origin: 'http://localhost:4200',
+    //origin: process.env.FRONTEND_URL,
     credentials: true, // Très important pour que les cookies soient envoyés
   });
 
