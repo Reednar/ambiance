@@ -30,7 +30,7 @@
             </ul>
           </li>
 
-          <li class="nav-item"><a class="nav-link" routerLink="#" (click)="onLinkClickNavbar()">Messagerie</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/messagerie" (click)="onLinkClickNavbar()">Messagerie</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/calendar" (click)="onLinkClickNavbar()">Calendrier</a>
           </li>
           <li class="nav-item"><a class="nav-link" routerLink="/ecoles" (click)="onLinkClickNavbar()">Écoles</a></li>
@@ -92,6 +92,7 @@
               <li *ngIf="isConnected"><a class="dropdown-item" routerLink="/profile">Voir son profil</a></li>
               <li *ngIf="!isConnected"><a class="dropdown-item" routerLink="/login">Connexion</a></li>
               <li *ngIf="!isConnected"><a class="dropdown-item" routerLink="/register">Inscription</a></li>
+              
             </ul>
           </li>
         </div>

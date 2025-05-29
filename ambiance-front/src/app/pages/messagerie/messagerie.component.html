@@ -1,0 +1,64 @@
+<div class="messagerie-page">
+  <div class="row justify-content-center section-heading">
+    <div class="col-lg-6 text-center">
+      <h3 class="h2 mt-2 text-white"></h3>
+    </div>
+  </div>
+  <div class="messagerie-container">
+    <!-- Conteneur gauche : 30% -->
+          <button class="burger-btn d-md-none" (click)="showMenu = !showMenu">
+            <i class="bi bi-list"></i>
+          </button>
+
+    <div class="discussions-list" [class.mobile-open]="showMenu" [class.d-none]="!showMenu && isMobile">
+      <h4>Mes discussions :</h4>
+      <div *ngFor="let d of discussions" class="discussion-card"
+        [class.selected]="selectedDiscussion?.idDiscussion === d.idDiscussion"
+        (click)="selectDiscussion(d); showMenu = false">
+        <div class="card-title">{{ d.nomGroupe }}</div>
+        <div class="card-id">#{{ d.idDiscussion }}</div>
+      </div>
+      <div *ngIf="discussions.length === 0" class="no-discussion-list">
+        <em>Aucune discussion disponible</em>
+      </div>
+    </div>
+    <!-- Conteneur droit : 70% -->
+    <div class="messages-section">
+      <ng-container *ngIf="selectedDiscussion; else noDiscussion">
+        <br class="d-none d-md-block">
+        <div class="discussion-header d-flex justify-content-between align-items-center">
+
+          <span>{{ selectedDiscussion.nomGroupe }}</span>
+          <button class="btn btn-outline-light btn-sm"
+                  style="margin-left:auto"
+                  (click)="goToPublication(selectedDiscussion.idDiscussion)">
+            publication
+          </button>
+        </div>
+        
+        <div class="messages-history">
+          <div *ngFor="let m of messages" 
+               class="message-bubble-container"
+               [ngClass]="{'mine': m.user_IdUtilisateur === userId, 'other': m.user_IdUtilisateur !== userId}">
+            <div class="message-author">{{ m.user_Prenom }}</div>
+            <div class="message-bubble">
+              {{ m.message_contenu }}
+              <div class="message-date">{{ m.message_date_envoi | date:'short' }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="send-message mb-3">
+          <textarea class="form-control" rows="3" placeholder="Écrire un message..." [(ngModel)]="newMessage"></textarea>
+          <button class="btn btn-primary mt-2" (click)="sendMessage()" >Envoyer</button>
+
+        </div>
+      </ng-container>
+      <ng-template #noDiscussion>
+        <div class="no-discussion">
+          <em>Sélectionnez une discussion</em>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+</div>
