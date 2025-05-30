@@ -18,9 +18,10 @@ import { Logger } from '@nestjs/common';
 
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:4200', process.env.FRONTEND_URL],
-    credentials: true
-  }
+    credentials: true,
+    
+  },
+  path: '/api/socket.io'
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
