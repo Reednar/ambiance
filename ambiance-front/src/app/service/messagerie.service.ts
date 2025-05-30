@@ -12,8 +12,12 @@ export class MessagerieService {
   constructor(private http: HttpClient) {}
 
   connect(userId: number) {
-    var liveCHatUrl = this.socketUrl.split("/api")[0]
-    this.socket = io(liveCHatUrl, { query: { userId } });
+    var liveCHatUrl = this.socketUrl.split("/api")[0];
+    console.log("Connecting to live chat at: " + liveCHatUrl);
+    this.socket = io(liveCHatUrl, {
+      query: { userId },
+      transports: ['websocket']
+    });
   }
 
   disconnect() {
