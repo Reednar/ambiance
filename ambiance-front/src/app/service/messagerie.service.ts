@@ -12,7 +12,7 @@ export class MessagerieService {
   constructor(private http: HttpClient) {}
 
   connect(userId: number) {
-    const liveChatUrl = this.apiUrl.split('/api')[0]; // => 'http://localhost:3008'
+    const liveChatUrl = "https://ambiance-ensitech.me/api/".split('/api')[0]; // => 'http://localhost:3008'
     console.log("Connecting to live chat at: " + liveChatUrl);
     this.socket = io(liveChatUrl, {
       query: { userId },
