@@ -22,6 +22,7 @@ export class ProfileComponent implements OnInit {
     pays: '',
     image: '',
     emailConfirmed: false,
+    groups: []
   };
 
   previewImage: string | null = null;

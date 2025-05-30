@@ -1,4 +1,4 @@
-import { Module,Logger } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SchoolsService } from '../../services/schools/schools.service';
 import { MembresBDEService } from '../../services/membresBDE/membresBDE.service';
@@ -8,10 +8,11 @@ import { School } from '../../entities/schools.entity';
 import { MembresBDE } from '../../entities/membresBDE.entity';
 import { User } from '../../entities/users.entity';
 import { AuthModule } from '../auth/auth.module';
+import { Groupe } from '../../entities/groups.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([School, MembresBDE, User]),AuthModule],
-  providers: [SchoolsService, MembresBDEService,UsersService,Logger],
+  imports: [TypeOrmModule.forFeature([School, MembresBDE, User, Groupe]), AuthModule],
+  providers: [SchoolsService, MembresBDEService, UsersService, Logger],
   controllers: [SchoolsController],
   exports: [SchoolsService, MembresBDEService],
 })

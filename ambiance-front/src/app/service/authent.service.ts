@@ -73,7 +73,6 @@ export class AuthService {
         // Si connexion réussie, on met à jour les états et stocke l'ID utilisateur
         if (response.success) {
           sessionStorage.setItem('id_utilisateur', response.userId);
-          console.log("id user : " + sessionStorage.getItem('id_utilisateur'))
           this.isConnected.next(true);
           this.emailConfirmed.next(response.emailConfirmed === true);
         }

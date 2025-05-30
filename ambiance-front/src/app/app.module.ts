@@ -49,6 +49,9 @@ import { ArticleFormComponent } from './pages/blogs/article-form/article-form.co
 import { ArticleUpdateComponent } from './pages/blogs/article-update.component';
 import { ForgotPasswordComponent } from './pages/user/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './pages/user/reset-password/reset-password.component';
+import { AgGridModule } from 'ag-grid-angular';
+import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+import { UsersService } from './service/users.service';
 
 // Import et enregistrement de la locale française
 import localeFr from '@angular/common/locales/fr';
@@ -78,7 +81,7 @@ registerLocaleData(localeFr);
     ArticleFormComponent,
     ArticleUpdateComponent,
     ForgotPasswordComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
   ],
   imports: [
     BrowserModule,
@@ -103,10 +106,10 @@ registerLocaleData(localeFr);
     FullCalendarModule,
     HttpClientModule,
     MenuModule,
-    OverlayModule,
     OverlayPanelModule,
     MessageModule,
     MessagesModule,
+    AgGridModule
   ],
   bootstrap: [AppComponent],
   providers: [
@@ -114,8 +117,14 @@ registerLocaleData(localeFr);
       provide: LOCALE_ID,
       useValue: 'fr-FR',
     },
-    MessageService
+    MessageService,
+    UsersService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+    // Enregistrement des modules AG Grid
+    ModuleRegistry.registerModules([AllCommunityModule]);
+  }
+}

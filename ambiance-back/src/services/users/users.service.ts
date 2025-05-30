@@ -1,17 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/users.entity'; // Update this line
 import { toUserDto } from 'src/controllers/users/mappers.users';
 import { UpdateUserDto, UserDto } from 'src/dtos/user.dto';
 import * as bcrypt from 'bcrypt';
+import { Groupe } from 'src/entities/groups.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+    @InjectRepository(Groupe)
+    private readonly groupeRepository: Repository<Groupe>, // Assurez-vous d'importer l'entité Groupe
+  ) { }
 
   async findAll(): Promise<UserDto[]> {
     const users = await this.userRepository.find();
@@ -85,6 +88,20 @@ export class UsersService {
   }
 
   async remove(id: number): Promise<void> {
+    const user = await this.userRepository.findOneBy({ idUtilisateur: id });
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+    // Supprimer les relations avec les groupes
+    const groupes = await this.groupeRepository.find({
+      where: { utilisateur: { idUtilisateur: id } },
+    });
+
+    if (groupes.length > 0) {
+      throw new BadRequestException(
+        'Impossible de supprimer l’utilisateur car il est associé à des groupes.',
+      );
+    }
     await this.userRepository.delete(id);
   }
 
