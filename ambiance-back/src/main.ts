@@ -6,6 +6,7 @@ import { winstonLoggerOptions } from './logger/logger';
 import * as cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
 import * as bodyParser from 'body-parser';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 
 dotenv.config(); // en tout début
 
@@ -27,7 +28,7 @@ async function bootstrap() {
     origin: process.env.FRONTEND_URL,
     credentials: true, // Très important pour que les cookies soient envoyés
   });
-
+ app.useWebSocketAdapter(new IoAdapter(app));
   // Préfixe global pour les routes
   app.setGlobalPrefix('api');
 
