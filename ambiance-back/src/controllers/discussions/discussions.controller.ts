@@ -56,4 +56,13 @@ export class DiscussionController {
     this.logger.log(`[${req.method} ${req.url}] Fetching message history for discussion`, body.discussionId);
     return this.messageService.findMessagesByDiscussion(body.discussionId);
   }
+
+  @Post('publication-id')
+  @ApiOperation({ summary: 'Get publication id by discussion id' })
+  async getPublicationIdByDiscussionId(@Body() body: { discussionId: number }, @Req() req: Request) {
+    this.logger.log(`[${req.method} ${req.url}] Fetching publicationId for discussionId: ${body.discussionId}`);
+    return this.discussionService.getPublicationIdByDiscussionId(body.discussionId);
+  }
+
+  
 }

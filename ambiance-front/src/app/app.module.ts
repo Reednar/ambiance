@@ -52,6 +52,7 @@ import { ResetPasswordComponent } from './pages/user/reset-password/reset-passwo
 import { AgGridModule } from 'ag-grid-angular';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import { UsersService } from './service/users.service';
+import { MessagerieComponent } from './pages/messagerie/messagerie.component';
 
 // Import et enregistrement de la locale française
 import localeFr from '@angular/common/locales/fr';
@@ -81,7 +82,8 @@ registerLocaleData(localeFr);
     ArticleFormComponent,
     ArticleUpdateComponent,
     ForgotPasswordComponent,
-    ResetPasswordComponent,
+    ResetPasswordComponent, 
+    MessagerieComponent
   ],
   imports: [
     BrowserModule,

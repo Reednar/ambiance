@@ -14,11 +14,13 @@ import { User } from '../entities/users.entity';
 import { Discussion } from '../entities/discussions.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
+import { Logger } from '@nestjs/common';
 @WebSocketGateway({ cors: true })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
+
+  private readonly logger = new Logger(ChatGateway.name);
 
   constructor(
     private readonly messageService: MessageService,
@@ -43,10 +45,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // Ajouter l'utilisateur dans les rooms correspondant à ses groupes
       discussions.forEach((discussion) => {
         client.join(`room-${discussion.idDiscussion}`);
+        this.logger.log(`User ${userId} joined room-${discussion.idDiscussion}`);
       });
 
     } catch (error) {
-      console.error('Erreur lors de la connexion :', error.message);
+      this.logger.error('Erreur lors de la connexion : ' + error.message);
       client.disconnect();
     }
   }
@@ -66,7 +69,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const isMember = discussions.some((discussion) => discussion.idDiscussion === payload.discussionId);
 
       if (!isMember) {
-        console.error("Vous n'appartenez pas à ce groupe.");
+        this.logger.error("Vous n'appartenez pas à ce groupe.");
       }
 
       // Sauvegarder le message en base de données
@@ -77,8 +80,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
       // Diffuser le message aux membres de la room
       this.server.to(`room-${payload.discussionId}`).emit('receiveMessage', savedMessage);
+      this.logger.log('Message envoyé : ' + JSON.stringify(savedMessage));
     } catch (error) {
-      console.error('Erreur lors de l’envoi du message :', error.message);
+      this.logger.error('Erreur lors de l’envoi du message : ' + error.message);
       client.emit('errorMessage', { message: error.message });
     }
   }
