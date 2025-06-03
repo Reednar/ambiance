@@ -149,8 +149,7 @@
                                     <ng-container *ngFor="let category of publication?.categories?.slice(0, 2)">
                                         <span class="badge bg-secondary me-1">{{ category.nom }}</span>
                                     </ng-container>
-                                    <span *ngIf="publication?.categories?.length > 2"
-                                        class="badge bg-secondary">...</span>
+                                    <span *ngIf="publication?.categories && publication.categories.length > 2" class="badge bg-secondary">...</span>
                                 </div>
 
                                 <div class="mt-auto">
