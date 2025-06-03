@@ -75,6 +75,28 @@
               Sélectionnez au moins une catégorie.
             </small>
           </div>
+
+          <div class="mb-3">
+            <div class="dropdown">
+              <a class="btn btn-outline-primary dropdown-toggle w-100 text-start" href="#" id="ecolesDropdown"
+                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ selectedEcolesLabel || 'Sélectionner des écoles' }}
+              </a>
+              <ul class="dropdown-menu w-100" aria-labelledby="ecolesDropdown">
+                <li *ngFor="let ecole of ecoles" (click)="$event.stopPropagation()">
+                  <label class="dropdown-item m-0 d-flex align-items-center">
+                    <input type="checkbox" [(ngModel)]="ecole.selected" name="ecole-{{ecole.id}}"
+                      (change)="updateSelectedEcoles()" class="me-2" />
+                    {{ ecole.nom }}
+                  </label>
+                </li>
+              </ul>
+            </div>
+            <small *ngIf="submitted && selectedEcoles.length === 0" class="text-danger">
+              Sélectionnez au moins une école.
+            </small>
+          </div>
+
         </ng-container>
         <ng-container *ngIf="step === 2" style="min-height: 600px;">
           <div style="min-height: 700px !important;">
