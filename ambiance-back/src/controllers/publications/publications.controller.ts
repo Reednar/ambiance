@@ -22,6 +22,7 @@ import { PublicationCategoriesService } from 'src/services/publication-categorie
 import { GroupsService } from 'src/services/groups/groups.service';
 import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
 import { School } from 'src/entities/schools.entity';
+import { SchoolsService } from 'src/services/schools/schools.service';
 
 @ApiTags('publications')
 @Controller('publications')
@@ -32,6 +33,7 @@ export class PublicationsController {
     private publicationCategoriesService: PublicationCategoriesService,
     private groupsService: GroupsService,
     private readonly logger: Logger,
+    private readonly schoolsService: SchoolsService,
   ) {}
 
   @Get('test') //endpoint (endpoit ALWAYS before controller endpoint)
@@ -349,6 +351,7 @@ export class PublicationsController {
       utilisateurId: number;
       categories: number[] | string;
       idEcole?: number;
+      ListeEcoleIds?: string;
     },
     @UploadedFile() image: Express.Multer.File,
     @Req() req: Request,
@@ -360,6 +363,8 @@ export class PublicationsController {
     const utilisateur = await this.usersService.findEntityById(
       body.utilisateurId,
     );
+
+    const ecole = await this.schoolsService.findByUserId(body.utilisateurId);
     if (!utilisateur) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
@@ -370,6 +375,8 @@ export class PublicationsController {
 
     const publicationData = {
       ...body,
+      idEcole: utilisateur.idEcole,
+      nomEcole: ecole.nom,
       utilisateur,
       placeHandicape:
         body.placeHandicape === 'true' || body.placeHandicape === true,
@@ -605,9 +612,10 @@ export class PublicationsController {
       await this.publicationsService.findAllWhereEcoleIdInListe(idEcoleUser);
     const uniqueEcoles = new Map<number, string>();
     for (const pub of publications) {
-      uniqueEcoles.set(pub.idEcole, pub.ecole.nom);
+      if (pub.ecole) {
+        uniqueEcoles.set(pub.idEcole, pub.ecole.nom);
+      }
     }
-
     return Array.from(uniqueEcoles.entries()).map(([id, nom]) => ({ id, nom }));
   }
 }
