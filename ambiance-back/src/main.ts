@@ -6,6 +6,7 @@ import { winstonLoggerOptions } from './logger/logger';
 import * as cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
 import * as bodyParser from 'body-parser';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 
 dotenv.config(); // en tout début
 
@@ -23,11 +24,11 @@ async function bootstrap() {
 
   // Configuration CORS pour accepter les cookies côté frontend
   app.enableCors({
-    origin: 'http://localhost:4200',
-    //origin: process.env.FRONTEND_URL,
+    //origin: 'http://localhost:4200',
+    origin: process.env.FRONTEND_URL,
     credentials: true, // Très important pour que les cookies soient envoyés
   });
-
+ app.useWebSocketAdapter(new IoAdapter(app));
   // Préfixe global pour les routes
   app.setGlobalPrefix('api');
 

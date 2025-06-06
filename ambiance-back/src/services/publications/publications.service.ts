@@ -8,15 +8,22 @@ import { User } from 'src/entities/users.entity';
 @Injectable()
 export class PublicationsService {
   constructor(
-    @InjectRepository(Publication) private readonly publicationRepository: Repository<Publication>,
-    @InjectRepository(Participation) private readonly participationRepository: Repository<Participation>,
-    @InjectRepository(Groupe) private readonly groupeRepository: Repository<Groupe>,
-    @InjectRepository(User) private readonly userRepository: Repository<User>
-  ) { }
+    @InjectRepository(Publication)
+    private readonly publicationRepository: Repository<Publication>,
+    @InjectRepository(Participation)
+    private readonly participationRepository: Repository<Participation>,
+    @InjectRepository(Groupe)
+    private readonly groupeRepository: Repository<Groupe>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+  ) {}
 
   async findAll(): Promise<Publication[]> {
     return await this.publicationRepository.find({
-      relations: ['publicationCategories', 'publicationCategories.categorie', 'ecole'],
+      relations: [
+        'publicationCategories',
+        'publicationCategories.categorie',
+        'ecole',
+      ],
     });
   }
 
@@ -27,13 +34,15 @@ export class PublicationsService {
     });
   }
 
-
   async create(publication: Partial<Publication>): Promise<Publication> {
     const newPublication = this.publicationRepository.create(publication);
     return await this.publicationRepository.save(newPublication);
   }
 
-  async update(id: number, updateData: Partial<Publication>): Promise<Publication> {
+  async update(
+    id: number,
+    updateData: Partial<Publication>,
+  ): Promise<Publication> {
     await this.publicationRepository.update(id, updateData);
     return this.findOne(id);
   }
@@ -58,23 +67,24 @@ export class PublicationsService {
       .where('user.idUtilisateur = :utilisateurId', { utilisateurId })
       .getMany();
     // Étape 2 : Récupérer les id des groupes où l'utilisateur participe
-    const groupeIds = participations.map(participation => participation.idGroupe.idGroupe);
+    const groupeIds = participations.map(
+      (participation) => participation.idGroupe.idGroupe,
+    );
 
     // Étape 3 : Trouver les publications des groupes où l'utilisateur participe
     if (groupeIds.length > 0) {
       const groupes = await this.groupeRepository.find({
-        where: { idGroupe: In(groupeIds) },  // Utilise "In" pour chercher plusieurs IDs
-        relations: ['publication'],  // Charger la publication associée à chaque groupe
+        where: { idGroupe: In(groupeIds) }, // Utilise "In" pour chercher plusieurs IDs
+        relations: ['publication'], // Charger la publication associée à chaque groupe
       });
 
       // Récupérer les publications
-      const publications = groupes.map(groupe => groupe.publication);
+      const publications = groupes.map((groupe) => groupe.publication);
       return publications;
     } else {
       return []; // Aucun groupe trouvé
     }
   }
-
 
   async findParticipationsByUser(utilisateurId: number): Promise<any[]> {
     const d = await this.participationRepository
@@ -99,7 +109,7 @@ export class PublicationsService {
         'publication.typePost',
       ])
       .getRawMany(); // Récupérer les résultats
-    return d
+    return d;
   }
 
   async findBySchool(idEcole: number): Promise<Publication[]> {
@@ -113,10 +123,14 @@ export class PublicationsService {
     return this.publicationRepository
       .createQueryBuilder('publication')
       .leftJoinAndSelect('publication.ecole', 'ecole')
-      .where("publication.listeEcoleIds = :id", { id: `${idEcole}` })
-      .orWhere("publication.listeEcoleIds LIKE :start", { start: `${idEcole};%` })
-      .orWhere("publication.listeEcoleIds LIKE :middle", { middle: `%;${idEcole};%` })
-      .orWhere("publication.listeEcoleIds LIKE :end", { end: `%;${idEcole}` })
+      .where('publication.listeEcoleIds = :id', { id: `${idEcole}` })
+      .orWhere('publication.listeEcoleIds LIKE :start', {
+        start: `${idEcole};%`,
+      })
+      .orWhere('publication.listeEcoleIds LIKE :middle', {
+        middle: `%;${idEcole};%`,
+      })
+      .orWhere('publication.listeEcoleIds LIKE :end', { end: `%;${idEcole}` })
       .getMany();
   }
 

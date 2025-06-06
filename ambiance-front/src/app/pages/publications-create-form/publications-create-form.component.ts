@@ -4,6 +4,8 @@ import { CategoriesService } from '../../service/categories.service';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { EcoleService } from '../../service/ecole.service';
+import { Ecole } from '../../entity/ecole';
 
 @Component({
   selector: 'app-publications-create-form',
@@ -43,13 +45,20 @@ export class PublicationsCreateFormComponent implements OnInit {
     categories: [], // Liste des IDs des catégories sélectionnées
     lien: '',
     utilisateurId: '',
+    listeEcoleIds: '',
   };
 
+ecoles: (Ecole & { selected?: boolean })[] = [];
+
+  // ecoles: Ecole[] = [];
+selectedEcoles: Ecole[] = [];
+selectedEcolesLabel: string = '';
   constructor(
     private publicationsService: PublicationsService,
     private categoriesService: CategoriesService,
     private messageService: MessageService,
     private router: Router,
+    private ecoleService: EcoleService,
     private http: HttpClient
   ) { }
 
@@ -58,6 +67,7 @@ export class PublicationsCreateFormComponent implements OnInit {
     this.userId = sessionStorage.getItem('id_utilisateur') ?? '';
     this.formData.utilisateurId = this.userId;
     this.loadCategories(); // Charger les catégories disponibles
+    this.loadEcoles(); // Charger les écoles disponibles
   }
 
   // Charger toutes les catégories depuis le service
@@ -74,6 +84,21 @@ export class PublicationsCreateFormComponent implements OnInit {
     });
   }
 
+  loadEcoles(): Promise<void> {
+    return new Promise((resolve) => {
+      this.ecoleService.findAllSchools().subscribe({
+        next: (data: any) => {
+          this.ecoles = data;
+          resolve(); 
+        },
+        error: (err: any) => {
+          console.error('Erreur lors de la récupération des écoles', err);
+          resolve();
+        }
+      });
+    });
+  }
+  
   // Gestion de la sélection d'un fichier dans l'input
   onFileSelected(event: any): void {
     this.selectedFile = event.target.files[0];
@@ -146,6 +171,16 @@ export class PublicationsCreateFormComponent implements OnInit {
     }
   }
 
+  updateSelectedEcoles(): void {
+  this.selectedEcoles = this.ecoles.filter(e => e.selected);
+  if (this.selectedEcoles.length > 0) {
+    this.selectedEcolesLabel = this.selectedEcoles.map(e => e.nom).join(', ');
+    this.formData.listeEcoleIds = this.selectedEcoles.map(e => e.id).join(';');
+
+  } else {
+    this.selectedEcolesLabel = '';
+  }
+}
   // Soumission finale du formulaire
   submit(): void {
   this.submitted = true;

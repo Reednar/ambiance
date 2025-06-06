@@ -24,7 +24,7 @@
                 </div>
                 <div class="carousel-item">
                     <div class="bg-no-repeat bg-cover bg-right-center px-8"
-                        style="background-image:url('assets/images/backgrounds/bde.png')">
+                        style="background-image:url('assets/groupe.png')">
                         <div class="container">
                             <div class="row min-vh-100 align-items-center py-12">
                                 <div class="col-lg-8 col-xl-6 pt-8 pt-lg-12">
@@ -120,71 +120,62 @@
         <!-- Liste des 8 dernières annonces mises en lignes -->
         <section class="section">
             <div class="container">
-                <div class="row justify-content-center section-heading">
+                <div class="row justify-content-center mb-4">
                     <div class="col-lg-6 text-center">
-                        <p class="fs-6 m-0">10/04/2025</p>
-                        <h3 class="h2 mt-2">Dernières annonces mises en lignes</h3>
+                        <p>10/04/2025</p>
+                        <h3>Dernières annonces mises en ligne</h3>
                     </div>
                 </div>
-                <div class="row g-2 g-md-3">
-                    <div class="col-6 col-md-4 col-lg-3" *ngFor="let publication of publications">
-                        <a [routerLink]="['/publication-show', publication.idPublication]"
-                            class="text-decoration-none text-dark">
 
-                            <div class="product-card-2">
-                                <div class="product-card-image">
-                                    <div class="product-wishlist">
-                                        <a class="btn btn-outline-dark" style="color: black !important;">{{
-                                            publication.prix }}€</a>
-                                    </div>
-                                    <div class="product-media">
-                                        <a routerLink="#"><img alt="publicationImage" class="img-fluid"
-                                                [src]="publication.image" /></a>
-                                    </div>
-                                </div>
-                                <div class="product-card-info">
-                                    <h6 class="product-title">{{ publication.titre }}</h6>
-                                    <div class="product-price"><span class="text-primary"
-                                            style="color: white !important;">{{ publication.ville }}</span>
-                                    </div>
-                                    <div class="product-title"> {{ publication.dateEvenement | date:'dd/MM/yyyy :
-                                        HH\'h\'mm' }}</div>
-                                    <div class="rating-star text">
-                                        <!-- Première catégorie -->
-                                        <span *ngIf="publication.categories.length > 0" class="badge bg-info"
-                                            style="margin-top: 15px;  background-color: #080808da !important">
-                                            {{ publication.categories[0].nom }}
-                                        </span>
+                <div class="row g-4">
+                    <div class="col-12 col-sm-6 col-lg-4"  *ngFor="let publication of publications?.slice(0, 6)">
+                        <div class="card h-100">
+                            <div class="position-relative">
+                                <img [src]="publication.image" class="card-img-top" alt="publicationImage"
+                                    onerror="this.onerror=null;this.src='assets/no-image.jpg';"
+                                    style="height: 250px; object-fit: cover;">
+                                <span class="badge bg-dark position-absolute top-0 end-0 m-2">{{ publication.prix
+                                    }}€</span>
+                            </div>
 
-                                        <!-- Deuxième catégorie -->
-                                        <span *ngIf="publication.categories.length > 1" class="badge bg-info"
-                                            style="margin-top: 15px;  background-color:  #080808da !important">
-                                            {{ publication.categories[1].nom }}
-                                        </span>
+                            <div class="card-body d-flex flex-column">
+                                <h5>{{ publication.titre }}</h5>
+                                <p class="text-muted mb-1">
+                                    {{ publication.ville }} — {{ publication.dateEvenement | date:'dd/MM/yyyy :
+                                    HH\'h\'mm' }}
+                                </p>
 
-                                        <!-- Badge "3 ..." si plus de 2 catégories -->
-                                        <span *ngIf="publication.categories.length > 2" class="badge bg-info"
-                                            style="margin-top: 15px; background-color:  #080808da !important;">
-                                            ...
-                                        </span>
-                                    </div>
+                                <div class="mb-2">
+                                    <ng-container *ngFor="let category of publication?.categories?.slice(0, 2)">
+                                        <span class="badge bg-secondary me-1">{{ category.nom }}</span>
+                                    </ng-container>
+                                    <span *ngIf="publication?.categories && publication.categories.length > 2" class="badge bg-secondary">...</span>
                                 </div>
 
-                                <div class="product-note">
-                                    {{ publication.nombreParticipants }} / {{ publication.participantMax }}
+                                <div class="mt-auto">
+                                    <a [routerLink]="['/publication-show', publication.idPublication]"
+                                        class="btn btn-outline-primary w-100">
+                                        Voir l'annonce
+                                    </a>
                                 </div>
                             </div>
-                        </a>
+
+                            <div class="card-footer text-end">
+                                <small class="text-muted">{{ publication.nombreParticipants }} / {{
+                                    publication.participantMax }} participants</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
+
         <section>
             <div class="container">
                 <div class="row g-3">
                     <div class="col-lg-4">
                         <div class="position-relative hover-scale">
-                            <div class="hover-scale-in"><img alt="ecole1" class="w-100" src="assets/image_9.jpg"
+                            <div class="hover-scale-in"><img alt="ecole1" class="w-100" src="assets/ensitech.png"
                                     title="" />
                             </div>
                             <div
@@ -192,7 +183,8 @@
                                 <div class="text-center bg-body px-4 py-3">
                                     <h6 class="text-uppercase fw-300 text-primary mb-3">NOUVEL INSTITUT</h6>
                                     <h3 class="fw-600 h4">Ensitech</h3>
-                                    <div class="pt-2"><a class="btn btn-mode btn-sm" routerLink="#">Voir leurs
+                                    <div class="pt-2"><a class="btn btn-mode btn-sm" [routerLink]="['/publications']"
+                                            [queryParams]="{ ecole: 6 }">Voir leurs
                                             événements</a>
                                     </div>
                                 </div>
@@ -201,15 +193,16 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="position-relative hover-scale">
-                            <div class="hover-scale-in"><img alt="ecole2" class="w-100" src="assets/image_10.jpg"
+                            <div class="hover-scale-in"><img alt="ecole2" class="w-100" src="assets/epitech.png"
                                     title="" />
                             </div>
                             <div
                                 class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center top-0 left-0">
                                 <div class="text-center bg-body px-4 py-3">
                                     <h6 class="text-uppercase fw-300 text-primary mb-3">NOUVEL INSTITUT</h6>
-                                    <h3 class="fw-600 h4">École 2600</h3>
-                                    <div class="pt-2"><a class="btn btn-mode btn-sm" routerLink="#">Voir leurs
+                                    <h3 class="fw-600 h4">Épitech 2600</h3>
+                                    <div class="pt-2"><a class="btn btn-mode btn-sm" [routerLink]="['/publications']"
+                                            [queryParams]="{ ecole: 9 }">Voir leurs
                                             événements</a>
                                     </div>
                                 </div>
@@ -218,15 +211,16 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="position-relative hover-scale">
-                            <div class="hover-scale-in"><img alt="ecole3" class="w-100" src="assets/image_11.jpg"
+                            <div class="hover-scale-in"><img alt="ecole3" class="w-100" src="assets/sorbonne.png"
                                     title="" />
                             </div>
                             <div
                                 class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center top-0 left-0">
                                 <div class="text-center bg-body px-4 py-3">
                                     <h6 class="text-uppercase fw-300 text-primary mb-3">NOUVEL INSTITUT</h6>
-                                    <h3 class="fw-600 h4">IPSSI</h3>
-                                    <div class="pt-2"><a class="btn btn-mode btn-sm" routerLink="#">Voir leurs
+                                    <h3 class="fw-600 h4">La Sorbonne</h3>
+                                    <div class="pt-2"><a class="btn btn-mode btn-sm" [routerLink]="['/publications']"
+                                            [queryParams]="{ ecole: 7 }">Voir leurs
                                             événements</a>
                                     </div>
                                 </div>
@@ -251,47 +245,47 @@
                 <div class="row">
                     <div class="col-lg-4 my-3">
                         <div class="hover-scale text-center">
-                            <div class="hover-scale-in position-relative"><a routerLink="#"><img alt="blog1"
-                                        class="img-fluid" src="assets/image_12.jpg" title="" /></a>
+                            <div class="hover-scale-in position-relative"><a [routerLink]="['/article', 19]"><img alt="blog1"
+                                        class="img-fluid" src="https://www.ensitech.eu/wp-content/uploads/2024/09/Entree-eleves-Cergy-1024x576.jpg" title="" style="height: 300px; width: 400px;"/></a>
                                 <div
                                     class="position-absolute top-0 start-0 mt-3 ms-3 bg-white d-flex flex-column align-items-center px-3 py-2">
-                                    <span class="h4 text-dark m-0">25</span> <small>MAR</small>
+                                    <span class="h4 text-dark m-0">25</span> <small style="color: black;">MAR</small>
                                 </div>
                             </div>
                             <div class="px-3 py-4 mx-3 mx-lg-5 bg-body mt-n6 position-relative">
                                 <h5><a class="text-reset" routerLink="#">Ensitech</a></h5>
-                                <p class="m-0">Un club de jeu vidéo à ouvert, vous pouvez dès maintenant vous y rendre
+                                <p class="m-0">Découverte d'Ensitech
                                 </p>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4 my-3">
                         <div class="hover-scale text-center">
-                            <div class="hover-scale-in position-relative"><a routerLink="#"><img alt="blog2"
-                                        class="img-fluid" src="assets/image_13.jpg" title="" /></a>
+                            <div class="hover-scale-in position-relative"><a [routerLink]="['/article', 24]"><img alt="blog2"
+                                        class="img-fluid" src="https://les-roussillous.ecollege.haute-garonne.fr/lectureFichiergw.do?ID_FICHIER=1389453500336" title=""  style="height: 300px; width: 400px;"/></a>
                                 <div
                                     class="position-absolute top-0 start-0 mt-3 ms-3 bg-white d-flex flex-column align-items-center px-3 py-2">
-                                    <span class="h4 text-dark m-0">25</span> <small>MAR</small>
+                                    <span class="h4 text-dark m-0">25</span> <small style="color: black;">MARS</small>
                                 </div>
                             </div>
                             <div class="px-3 py-4 mx-3 mx-lg-5 bg-body mt-n6 position-relative">
-                                <h5><a class="text-reset" routerLink="#">Ensitech</a></h5>
-                                <p class="m-0">Bilel a viré vimard, on est sauvé</p>
+                                <h5><a class="text-reset" routerLink="#">IUT Sénart-Fontainebleau</a></h5>
+                                <p class="m-0">Annonce des calendriers des conseils de classe</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4 my-3">
                         <div class="hover-scale text-center">
-                            <div class="hover-scale-in position-relative"><a routerLink="#"><img alt="blog3"
-                                        class="img-fluid" src="assets/image_14.jpg" title="" /></a>
+                            <div class="hover-scale-in position-relative"><a [routerLink]="['/article', 23]"><img alt="blog3"
+                                        class="img-fluid" src="https://www.ac-normandie.fr/sites/ac_normandie/files/2021-12/csti-kangourou-mathematiques-jpg-22987.jpg" title=""  style="height: 300px; width: 400px;"/></a>
                                 <div
                                     class="position-absolute top-0 start-0 mt-3 ms-3 bg-white d-flex flex-column align-items-center px-3 py-2">
-                                    <span class="h4 text-dark m-0">25</span> <small>MAR</small>
+                                    <span class="h4 text-dark m-0">20</span> <small style="color: black;">MAI</small>
                                 </div>
                             </div>
                             <div class="px-3 py-4 mx-3 mx-lg-5 bg-body mt-n6 position-relative">
-                                <h5><a class="text-reset" routerLink="#">Ensitech</a></h5>
-                                <p class="m-0">Date de création de bancs pour l'école</p>
+                                <h5><a class="text-reset" >Université Paris 8 Vincennes-Saint-Denis</a></h5>
+                                <p class="m-0">Concours Kangourou : Mathématiques</p>
                             </div>
                         </div>
                     </div>

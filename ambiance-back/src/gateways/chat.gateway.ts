@@ -15,7 +15,14 @@ import { Discussion } from '../entities/discussions.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Logger } from '@nestjs/common';
-@WebSocketGateway({ cors: true })
+
+@WebSocketGateway({
+  cors: {
+    credentials: true,
+    
+  },
+  path: '/api/socket.io'
+})
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
