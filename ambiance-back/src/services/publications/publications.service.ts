@@ -12,7 +12,7 @@ export class PublicationsService {
     @InjectRepository(Participation) private readonly participationRepository: Repository<Participation>,
     @InjectRepository(Groupe) private readonly groupeRepository: Repository<Groupe>,
     @InjectRepository(User) private readonly userRepository: Repository<User>
-  ) {}
+  ) { }
 
   async findAll(): Promise<Publication[]> {
     return await this.publicationRepository.find({
@@ -26,7 +26,7 @@ export class PublicationsService {
       relations: ['publicationCategories', 'publicationCategories.categorie'], // Charger les relations
     });
   }
-  
+
 
   async create(publication: Partial<Publication>): Promise<Publication> {
     const newPublication = this.publicationRepository.create(publication);
@@ -52,11 +52,11 @@ export class PublicationsService {
   async getPublicationsByUser(utilisateurId: number): Promise<Publication[]> {
     // Étape 1 : Récupérer toutes les participations de l'utilisateur
     const participations = await this.participationRepository
-    .createQueryBuilder('participation')
-    .leftJoinAndSelect('participation.idGroupe', 'groupe')
-    .leftJoin('participation.idUtilisateur', 'user')
-    .where('user.idUtilisateur = :utilisateurId', { utilisateurId })
-    .getMany();
+      .createQueryBuilder('participation')
+      .leftJoinAndSelect('participation.idGroupe', 'groupe')
+      .leftJoin('participation.idUtilisateur', 'user')
+      .where('user.idUtilisateur = :utilisateurId', { utilisateurId })
+      .getMany();
     // Étape 2 : Récupérer les id des groupes où l'utilisateur participe
     const groupeIds = participations.map(participation => participation.idGroupe.idGroupe);
 
@@ -74,8 +74,8 @@ export class PublicationsService {
       return []; // Aucun groupe trouvé
     }
   }
-  
-  
+
+
   async findParticipationsByUser(utilisateurId: number): Promise<any[]> {
     const d = await this.participationRepository
       .createQueryBuilder('participation')
@@ -109,16 +109,18 @@ export class PublicationsService {
     });
   }
 
-async findAllWhereEcoleIdInListe(idEcole: number): Promise<Publication[]> {
-  return this.publicationRepository
-    .createQueryBuilder('publication')
-    .leftJoinAndSelect('publication.ecole', 'ecole') 
-    .where("publication.listeEcoleIds = :id", { id: `${idEcole}` })
-    .orWhere("publication.listeEcoleIds LIKE :start", { start: `${idEcole};%` })
-    .orWhere("publication.listeEcoleIds LIKE :middle", { middle: `%;${idEcole};%` })
-    .orWhere("publication.listeEcoleIds LIKE :end", { end: `%;${idEcole}` })
-    .getMany();
-}
+  async findAllWhereEcoleIdInListe(idEcole: number): Promise<Publication[]> {
+    return this.publicationRepository
+      .createQueryBuilder('publication')
+      .leftJoinAndSelect('publication.ecole', 'ecole')
+      .where("publication.listeEcoleIds = :id", { id: `${idEcole}` })
+      .orWhere("publication.listeEcoleIds LIKE :start", { start: `${idEcole};%` })
+      .orWhere("publication.listeEcoleIds LIKE :middle", { middle: `%;${idEcole};%` })
+      .orWhere("publication.listeEcoleIds LIKE :end", { end: `%;${idEcole}` })
+      .getMany();
+  }
 
-
+  async count(): Promise<number> {
+    return await this.publicationRepository.count();
+  }
 }

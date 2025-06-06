@@ -56,7 +56,9 @@ export class PublicationsService {
    * @returns Observable avec la réponse de la suppression
    */
   delete(data: { idPublication: number; utilisateurId: number }): Observable<any> {
-    return this.http.post(`${this.url}/delete`, data);
+    return this.http.post(`${this.url}/delete`, data, {
+      withCredentials: true,
+    });
   }
 
   /**
@@ -83,5 +85,13 @@ export class PublicationsService {
    */
   getAccessibleSchools(userId: number): Observable<{ id: number; nom: string }[]> {
     return this.http.post<{ id: number; nom: string }[]>(`${this.url}/accessible-ecoles`, { userId });
+  }
+
+  /**
+   * Récupère le nombre total de publications
+   * @returns Observable contenant le nombre de publications
+   */
+  count(): Observable<number> {
+    return this.http.get<number>(`${this.url}/count`);
   }
 }

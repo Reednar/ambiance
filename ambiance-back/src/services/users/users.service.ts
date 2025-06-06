@@ -82,6 +82,7 @@ export class UsersService {
           ? null
           : (updateDto.confirmationTokenExpires ??
             user.confirmationTokenExpires),
+      role: updateDto.role ?? user.role,
     });
     const updatedUser = await this.userRepository.save(user);
     return toUserDto(updatedUser);
@@ -92,16 +93,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
-    // Supprimer les relations avec les groupes
-    const groupes = await this.groupeRepository.find({
-      where: { utilisateur: { idUtilisateur: id } },
-    });
-
-    if (groupes.length > 0) {
-      throw new BadRequestException(
-        'Impossible de supprimer l’utilisateur car il est associé à des groupes.',
-      );
-    }
+    
     await this.userRepository.delete(id);
   }
 

@@ -28,4 +28,5 @@ export class UpdateUserDto {
   confirmationToken?: string | null;
   confirmationTokenExpires?: Date | null;
   motDePasse?: string;
+  role?: string;
 }

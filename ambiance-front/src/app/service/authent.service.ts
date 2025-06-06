@@ -107,7 +107,6 @@ export class AuthService {
         this.isConnected.next(false);
         this.emailConfirmed.next(false);
         sessionStorage.removeItem('id_utilisateur');
-        console.log("id : " + sessionStorage.getItem('id_utilisateur'))
         this.router.navigate(['/login']);  // Redirection vers login
       }),
       catchError(error => {
