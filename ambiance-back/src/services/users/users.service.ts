@@ -1,17 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/users.entity'; // Update this line
 import { toUserDto } from 'src/controllers/users/mappers.users';
 import { UpdateUserDto, UserDto } from 'src/dtos/user.dto';
 import * as bcrypt from 'bcrypt';
+import { Groupe } from 'src/entities/groups.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+    @InjectRepository(Groupe)
+    private readonly groupeRepository: Repository<Groupe>, // Assurez-vous d'importer l'entité Groupe
+  ) { }
 
   async findAll(): Promise<UserDto[]> {
     const users = await this.userRepository.find();
@@ -79,12 +82,18 @@ export class UsersService {
           ? null
           : (updateDto.confirmationTokenExpires ??
             user.confirmationTokenExpires),
+      role: updateDto.role ?? user.role,
     });
     const updatedUser = await this.userRepository.save(user);
     return toUserDto(updatedUser);
   }
 
   async remove(id: number): Promise<void> {
+    const user = await this.userRepository.findOneBy({ idUtilisateur: id });
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+    
     await this.userRepository.delete(id);
   }
 

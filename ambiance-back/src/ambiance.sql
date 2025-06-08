@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `Commentaires` (
   KEY `IdPublication` (`IdPublication`),
   KEY `IdUtilisateur` (`IdUtilisateur`),
   CONSTRAINT `Commentaires_ibfk_1` FOREIGN KEY (`IdPublication`) REFERENCES `Publications` (`IdPublication`),
-  CONSTRAINT `Commentaires_ibfk_2` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`)
+  CONSTRAINT `Commentaires_ibfk_2` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `Groupes` (
   UNIQUE KEY `UNIQUE_Publication_Groupe` (`IdPublication`),
   KEY `Groupes_ibfk_2` (`IdUtilisateur`),
   CONSTRAINT `Groupes_ibfk_1` FOREIGN KEY (`IdPublication`) REFERENCES `Publications` (`IdPublication`),
-  CONSTRAINT `Groupes_ibfk_2` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`)
+  CONSTRAINT `Groupes_ibfk_2` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
@@ -208,7 +208,7 @@ CREATE TABLE IF NOT EXISTS `Paiements` (
   `IdUtilisateur` int(11) NOT NULL,
   PRIMARY KEY (`IdPaiement`) USING BTREE,
   KEY `IdUtilisateur` (`IdUtilisateur`),
-  CONSTRAINT `Paiements_ibfk_1` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`)
+  CONSTRAINT `Paiements_ibfk_1` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Les données exportées n'étaient pas sélectionnées.
@@ -224,8 +224,8 @@ CREATE TABLE IF NOT EXISTS `Participation` (
   UNIQUE KEY `UNIQUE_User_Groupe` (`IdUtilisateur`,`IdGroupe`),
   KEY `IdGroupe` (`IdGroupe`),
   KEY `IdPaiement` (`IdPaiement`),
-  CONSTRAINT `Participation_ibfk_1` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`),
-  CONSTRAINT `Participation_ibfk_2` FOREIGN KEY (`IdGroupe`) REFERENCES `Groupes` (`IdGroupe`),
+  CONSTRAINT `Participation_ibfk_1` FOREIGN KEY (`IdUtilisateur`) REFERENCES `Utilisateurs` (`IdUtilisateur`) ON DELETE CASCADE,
+  CONSTRAINT `Participation_ibfk_2` FOREIGN KEY (`IdGroupe`) REFERENCES `Groupes` (`IdGroupe`) ON DELETE CASCADE,
   CONSTRAINT `Participation_ibfk_3` FOREIGN KEY (`IdPaiement`) REFERENCES `Paiements` (`IdPaiement`)
 ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

@@ -13,5 +13,6 @@ export interface User {
     pays: string;
     image: string | null;  // base64 image
     emailConfirmed: boolean;
+    groups: { idGroupe: number; nomDuGroupe: string }[];
   }
   

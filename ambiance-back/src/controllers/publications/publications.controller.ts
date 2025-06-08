@@ -60,10 +60,13 @@ export class PublicationsController {
     if (!publication) {
       throw new NotFoundException('publication not found');
     }
-    if (publication.utilisateurId !== utilisateur.idUtilisateur) {
-      throw new NotFoundException(
-        'Utilisateur non autorisé à supprimer ce publication',
-      );
+
+    if (utilisateur.role != "Administrateur") {
+      if (publication.utilisateurId !== utilisateur.idUtilisateur) {
+        throw new NotFoundException(
+          'Utilisateur non autorisé à supprimer ce publication',
+        );
+      }
     }
 
     // 1. Récupérer le groupe lié à la publication
@@ -617,5 +620,27 @@ export class PublicationsController {
       }
     }
     return Array.from(uniqueEcoles.entries()).map(([id, nom]) => ({ id, nom }));
+  }
+
+  @Get('count')
+  @ApiOperation({ summary: 'Get the total count of publications' })
+  @ApiResponse({
+    status: 200,
+    description: 'Total count of publications',
+    examples: {
+      example1: {
+        summary: 'Count example',
+        value: {
+          count: 42,
+        },
+      },
+    },
+  })
+  async getPublicationCount(@Req() req: Request): Promise<{ count: number }> {
+    this.logger.log(`[${req.method} ${req.url}] Fetching publication count`);
+
+    const count = await this.publicationsService.count();
+
+    return { count };
   }
 }

@@ -3,6 +3,7 @@ import { School } from './schools.entity';
 import { Publication } from './publications.entity';
 import { MembresBDE } from './membresBDE.entity';
 import { Article } from './articles.entity';
+import { Groupe } from './groups.entity';
 
 @Entity('Utilisateurs')
 export class User {
@@ -82,4 +83,7 @@ export class User {
 
   @OneToMany(() => Article, article => article.utilisateur)
   articles: Article[];
+
+  @OneToMany(() => Groupe, (group) => group.utilisateur)
+  groups: Groupe[];
 }

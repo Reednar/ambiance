@@ -133,4 +133,8 @@ export class PublicationsService {
       .orWhere('publication.listeEcoleIds LIKE :end', { end: `%;${idEcole}` })
       .getMany();
   }
+
+  async count(): Promise<number> {
+    return await this.publicationRepository.count();
+  }
 }

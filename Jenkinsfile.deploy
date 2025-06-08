@@ -73,7 +73,7 @@ node {
 
         stage('Deploy NestJS') {
             sh """
-                find /var/www/AM-BACK -mindepth 1 ! -path '/var/www/AM-BACK/logs' ! -path '/var/www/AM-BACK/logs/*' -exec rm -rf {} + 2>/dev/null
+                rm -rf ${BACK_DIR}/*
                 cp -r ambiance-back/dist/* ${BACK_DIR}/
                 cp ambiance-back/package*.json ${BACK_DIR}/
             """

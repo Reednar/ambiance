@@ -41,6 +41,7 @@ export class GroupsService {
 
   // POST /groups/userGroups
   getUserGroups(IdUtilisateur: number): Observable<any> {
+    console.log('getUserGroups called with IdUtilisateur:', IdUtilisateur);
     return this.http.post(`${this.url}/userGroups`, { IdUtilisateur });
   }
 

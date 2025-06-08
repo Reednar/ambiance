@@ -9,13 +9,13 @@ import { environment } from '../../environments/environment';
 })
 export class UsersService {
   private url = `${environment.baseUrl}/users`;
-  private userId = sessionStorage.getItem('id_utilisateur');
 
   constructor(private http: HttpClient) { }
 
   // Récupérer tous les utilisateurs
   getUsers(): Observable<User[]> {
-    return this.http.post<User[]>(this.url + "/findAll", this.userId);
+    const userId = sessionStorage.getItem('id_utilisateur');
+    return this.http.post<User[]>(this.url + "/findAll", {userId}, { withCredentials: true });
   }
 
   // Récupérer un utilisateur par ID
