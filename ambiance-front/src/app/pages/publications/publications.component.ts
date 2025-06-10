@@ -5,6 +5,7 @@ import { PublicationsService } from '../../service/publications.service'; // Ser
 import { CategoriesService } from '../../service/categories.service'; // Service des catégories
 import { Categorie } from '../../entity/publications'; // Modèle Catégorie
 import { ActivatedRoute } from '@angular/router'; // Pour lire les paramètres de l'URL
+import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-publications',
@@ -54,7 +55,9 @@ export class PublicationsComponent implements OnInit {
   constructor(
     private publicationsService: PublicationsService, // Injection du service de publications
     private categoriesService: CategoriesService,     // Injection du service de catégories
-    private route: ActivatedRoute                     // Pour lire les paramètres de l'URL
+    private route: ActivatedRoute,                     // Pour lire les paramètres de l'URL
+    private titleService: Title,                     // Pour gérer le titre de la page
+    private metaService: Meta                        // Pour gérer les meta-tags
   ) {}
 
   ngOnInit(): void {
@@ -78,6 +81,13 @@ export class PublicationsComponent implements OnInit {
       this.loadCategories();
       this.loadPublications();
       this.loadPublicationsFromUser();
+    });
+
+    // Définition du titre et de la meta-description pour le SEO avec mots-clés
+    this.titleService.setTitle('Soirée étudiante, Événement BDE, Afterwork étudiant, Évènement université | Ambiance');
+    this.metaService.updateTag({
+      name: 'description',
+      content: 'Découvrez tous les événements étudiants à Ambiance: soirée étudiante  2025, événement BDE , event BDE , afterwork étudiant , évènement université et bien plus. Filtrez par catégories, écoles et dates pour trouver ce qui vous intéresse.'
     });
   }
 
