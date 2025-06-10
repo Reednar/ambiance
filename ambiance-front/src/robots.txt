@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /assets/
+Disallow: /api/
+Disallow: /node_modules/
+Allow: /
+
+Sitemap: https://ambiance-ensitech.me/sitemap.xml
