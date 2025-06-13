@@ -1,0 +1,103 @@
+<header class="header-main header-dark fixed-top header-fluid header-option-2 header-scrolled navbar-scrolled-bg"
+  style="top:0px; background-color: rgba(0, 0, 0, 0.95) !important">
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid flex-nowrap">
+      <a class="navbar-brand" routerLink="/">
+        <img alt="logo" class="logo-dark sf-hidden" src="data:," />
+        <img alt="logo" class="logo-light" src="/assets/images/logowhite.png" />
+      </a>
+
+      <!-- Burger menu Angular-friendly -->
+      <button class="navbar-toggler d-lg-none" type="button" (click)="toggleNavbar()">
+        <i class="bi bi-list" style="font-size: 30px; color: #fff;"></i>
+      </button>
+
+      <!-- Menu de navigation -->
+      <div class="collapse navbar-collapse" [ngClass]="{ 'show': navbarOpen }" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item dropdown" style="margin-left: 0px !important;">
+            <a class="nav-link dropdown-toggle" id="navbarPublicationsDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              Publications
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarPublicationsDropdown">
+              <li><a class="dropdown-item" routerLink="/publications" (click)="onLinkClickNavbar()">Parcourir les
+                  publications</a></li>
+              <li><a class="dropdown-item" routerLink="/publicationsCreated" (click)="onLinkClickNavbar()">Mes
+                  publications</a></li>
+              <li><a class="dropdown-item" routerLink="/publicationsCreateForm" (click)="onLinkClickNavbar()">Créer une
+                  publication</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item"><a class="nav-link" routerLink="/messagerie" (click)="onLinkClickNavbar()">Messagerie</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/calendar" (click)="onLinkClickNavbar()">Calendrier</a>
+          </li>
+          <li class="nav-item"><a class="nav-link" routerLink="/ecoles" (click)="onLinkClickNavbar()">Écoles</a></li>
+          <!-- <li class="nav-item"><a class="nav-link" routerLink="/blogs" (click)="onLinkClickNavbar()">Blogs</a></li> -->
+          <li class="nav-item dropdown" style="margin-left: 0px !important;">
+            <a class="nav-link dropdown-toggle" id="navbarPublicationsDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              Blogs
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarBlogsDropdown">
+              <li><a class="dropdown-item" routerLink="/articles" (click)="onLinkClickNavbar()">Parcourir les
+                  articles</a></li>
+              <li><a class="dropdown-item" routerLink="/article-created" (click)="onLinkClickNavbar()">Mes articles</a>
+              </li>
+              <li><a class="dropdown-item" routerLink="/article-create" (click)="onLinkClickNavbar()">Créer un
+                  article</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link" routerLink="/moderation"
+              (click)="onLinkClickNavbar()">Administration</a></li>
+        </ul>
+      </div>
+
+
+      <div class="nav flex-nowrap align-items-center header-right">
+        <!-- Bouton pour afficher la barre -->
+        <div class="nav-item">
+          <button class="nav-link btn" (click)="showSearch = !showSearch">
+            <i class="bi bi-search navI"></i>
+          </button>
+        </div>
+
+        <!-- Barre de recherche -->
+        <div *ngIf="showSearch" class="search-bar-container"
+          style="padding-right: 5px !important; margin-left: 3px !important">
+          <input type="text" [(ngModel)]="searchTerm" (input)="onSearch()" placeholder="Rechercher..."
+            class="form-control" (click)="onInputClick($event)" />
+
+          <!-- Résultats -->
+          <div class="search-results" *ngIf="showResults && results.length > 0">
+            <div *ngFor="let result of results" class="search-result-item">
+              <a (click)="onLinkClick(result.route)">
+                <strong>{{ result.title }}</strong> - <small>{{ result.type }}</small>
+              </a>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="nav-item dropdown">
+          <li class="nav-item dropdown">
+            <a class="nav-link" routerLink="#" id="navbarPublicationsDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <i class="bi bi-person navI"></i>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarPublicationsDropdown">
+              <li *ngIf="isConnected"><a class="dropdown-item" (click)="logout($event)">Déconnexion</a></li>
+              <li *ngIf="isConnected"><a class="dropdown-item" routerLink="/profile">Voir son profil</a></li>
+              <li *ngIf="!isConnected"><a class="dropdown-item" routerLink="/login">Connexion</a></li>
+              <li *ngIf="!isConnected"><a class="dropdown-item" routerLink="/register">Inscription</a></li>
+              
+            </ul>
+          </li>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="mobile-header-01 d-lg-none sf-hidden"></div>
+</header>
