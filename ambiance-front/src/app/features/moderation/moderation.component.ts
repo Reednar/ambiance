@@ -1,17 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Publication } from '../../entity/publications';
-import { PublicationsService } from '../../service/publications.service';
 import { Subject } from 'rxjs';
 import { ColDef, ValueGetterParams } from 'ag-grid-community';
 import { MessageService } from 'primeng/api';
-import { GroupsService } from '../../service/groups.service';
-import { UsersService } from '../../service/users.service';
-import { User } from '../../entity/users';
+import { GroupsService } from '../../core/services/groups.service';
 import { Publication } from '../../core/models/publications';
 import { PublicationsService } from '../../core/services/publications.service';
 import { User } from '../../core/models/users';
 import { UsersService } from '../../core/services/users.service';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-moderation',
