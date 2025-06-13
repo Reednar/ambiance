@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
-import { AuthService } from './service/authent.service';
+import { AuthService } from './core/services/authent.service';
 import { Subscription } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import { UsersService } from './service/users.service';
+import { UsersService } from './core/services/users.service';
 
 interface Claim {
   claim: string;

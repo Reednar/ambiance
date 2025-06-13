@@ -1,26 +1,26 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
-import { PublicationsComponent } from './pages/publications/publications.component';
-import { PublicationsCreatedComponent } from './pages/publications-created/publications-created.component';
-import { CalendarComponent } from './pages/calendar/calendar.component';
-import { RegisterComponent } from './pages/user/register/register.component';
-import { LoginComponent } from './pages/user/login/login.component';
-import { DashboardComponent } from './pages/dashboards/dashboard.component';
-import { ModerationComponent } from './pages/moderation/moderation.component';
-import { PublicationsCreateFormComponent } from './pages/publications-create-form/publications-create-form.component';
-import { ProfileComponent } from './pages/user/profile/profile.component';
-import { PublicationShowComponent } from './pages/publication-show/publication-show.component';
-import { AuthGuard } from './service/auth.guard';
-import { EcoleComponent } from './pages/ecole/ecole.component';
-import { BlogComponent } from './pages/blogs/blog/blog.component';
-import { ArticleShowComponent } from './pages/blogs/article-show/article-show.component';
-import { ArticleCreateComponent } from './pages/blogs/article-create.component';
-import { ArticleCreatedComponent } from './pages/blogs/article-created/article-created.component';
-import { ArticleUpdateComponent } from './pages/blogs/article-update.component';
-import { ForgotPasswordComponent } from './pages/user/forgot-password/forgot-password.component';
-import { ResetPasswordComponent } from './pages/user/reset-password/reset-password.component';
-import { MessagerieComponent } from './pages/messagerie/messagerie.component';
+import { HomeComponent } from './features/home/home.component';
+import { PublicationsComponent } from './features/publications/publications.component';
+import { PublicationsCreatedComponent } from './features/publications-created/publications-created.component';
+import { CalendarComponent } from './features/calendar/calendar.component';
+import { RegisterComponent } from './features/user/register/register.component';
+import { LoginComponent } from './features/user/login/login.component';
+import { DashboardComponent } from './features/dashboards/dashboard.component';
+import { ModerationComponent } from './features/moderation/moderation.component';
+import { PublicationsCreateFormComponent } from './features/publications-create-form/publications-create-form.component';
+import { ProfileComponent } from './features/user/profile/profile.component';
+import { PublicationShowComponent } from './features/publication-show/publication-show.component';
+import { AuthGuard } from './core/guards/auth.guard';
+import { SchoolComponent } from './features/school/school.component';
+import { BlogComponent } from './features/blogs/blog/blog.component';
+import { ArticleShowComponent } from './features/blogs/article-show/article-show.component';
+import { ArticleCreateComponent } from './features/blogs/article-create.component';
+import { ArticleCreatedComponent } from './features/blogs/article-created/article-created.component';
+import { ArticleUpdateComponent } from './features/blogs/article-update.component';
+import { ForgotPasswordComponent } from './features/user/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './features/user/reset-password/reset-password.component';
+import { MessagerieComponent } from './features/messagerie/messagerie.component';
 // Déclaration des routes avec les bons droits
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -34,7 +34,7 @@ const routes: Routes = [
   { path: 'moderation', component: ModerationComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'publication-show/:id', component: PublicationShowComponent },
-  { path: 'ecoles', component: EcoleComponent },
+  { path: 'ecoles', component: SchoolComponent },
   { path: 'articles', component: BlogComponent },
   { path: 'article-show', component: BlogComponent },
   { path: 'article-create', component: ArticleCreateComponent, canActivate: [AuthGuard]  },

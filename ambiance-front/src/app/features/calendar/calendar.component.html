@@ -1,0 +1,77 @@
+<div class="container page-container">
+    <h1>Les événements que vous avez rejoints</h1>
+    <div class="commande-header">
+        <p><strong>{{ publicationsAVenir.length }} événements en cours</strong></p>
+    </div>
+
+    <!-- Section des événements à venir -->
+    <div *ngIf="publicationsAVenir.length > 0">
+        <div class="commande-card">
+            <div *ngFor="let pub of publicationsAVenir; let last = last" class="produit">
+                <div class="produit-ligne">
+                    <div class="livraison livraison-rapide">
+                        A lieu le {{ pub.dateEvenement | date:'dd/MM/yyyy HH:mm' }} à {{ pub.ville }}
+                        <p [ngClass]="{'rouge': !pub.paiementEffectue, 'vert': pub.paiementEffectue}"
+                            style="float: right;">
+                            Paiement: {{ pub.paiementEffectue ? 'A réglé' : 'Non réglé' }}
+                        </p>
+                    </div>
+                    <div class="produit-contenu">
+                        <img [src]="pub.image || 'assets/images/backgrounds/bde.png'" alt="{{ pub.titre }}">
+                        <div class="details">
+                            <p><strong>{{ pub.titre }}</strong> - {{ pub.description.length > 50 ?
+                                pub.description.slice(0, 80) + '...' : pub.description }}</p>
+                            <p><strong>Lieu :</strong> {{ pub.rue }}, {{ pub.ville }}</p>
+                            <p><strong>Durée :</strong> Duree</p>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="jaune">Voir le chat</button>
+                        <button class="jaune">Consulter les détails de l'événement</button>
+                        <button class="rouge" *ngIf="!pub.paiementEffectue">Payer pour l'événement</button>
+                        <button class="jaune">Poser une question sur l'événement</button>
+                    </div>
+                </div>
+                <!-- Ajouter un hr sauf pour la dernière publication -->
+                <hr *ngIf="!last" style="color:black">
+            </div>
+        </div>
+    </div>
+
+    <!-- Message si aucune publication à venir -->
+    <div *ngIf="publicationsAVenir.length === 0">
+        <p>Vous ne participez à aucun événement à venir.</p>
+    </div>
+
+    <!-- Section des événements passés -->
+    <div *ngIf="publicationsPassees.length > 0" class="commande-header">
+        <p><strong>{{ publicationsPassees.length }} événement(s) effectué(s)</strong></p>
+    </div>
+
+
+    <!-- Boucle pour chaque publication passée -->
+    <div *ngFor="let pub of publicationsPassees" class="commande-card">
+        <div class="commande-info">
+            <p><strong>Événement le :</strong> {{ pub.dateEvenement | date:'dd MMM yyyy' }}</p>
+            <p><strong>Lieu :</strong> {{ pub.ville }}</p>
+        </div>
+        <div class="produit">
+            <div class="livraison livraison-livree">
+                Événement terminé : {{ pub.dateEvenement | date:'dd MMM yyyy' }}
+            </div>
+            <p class="sous-texte">Merci d'avoir participé !</p>
+            <div class="produit-contenu">
+                <img src="assets/images/backgrounds/bde.png" alt="Conférence">
+                <div class="details">
+                    <p><strong>{{ pub.titre }}</strong>, {{ pub.description }}</p>
+                    <p><strong>Organisateur :</strong> Ensitech</p>
+                    <p><strong>Durée :</strong> 5 heures</p>
+                </div>
+            </div>
+            <div class="actions">
+                <button class="jaune">Voir les commentaires</button>
+                <button class="jaune">Écrire un commentaire sur l'événement</button>
+            </div>
+        </div>
+    </div>
+</div>
