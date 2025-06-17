@@ -2,10 +2,10 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/users.entity'; // Update this line
-import { toUserDto } from 'src/controllers/users/mappers.users';
 import { UpdateUserDto, UserDto } from 'src/dtos/user.dto';
 import * as bcrypt from 'bcrypt';
 import { Groupe } from 'src/entities/groups.entity';
+import { toUserDto } from 'src/controllers/users/mappers.users';
 
 @Injectable()
 export class UsersService {
