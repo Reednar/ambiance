@@ -21,6 +21,7 @@ import { ArticleUpdateComponent } from './features/blogs/article-update.componen
 import { ForgotPasswordComponent } from './features/user/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './features/user/reset-password/reset-password.component';
 import { MessagerieComponent } from './features/messagerie/messagerie.component';
+import { UserConditionsComponent } from './features/user-conditions/user-conditions.component';
 // Déclaration des routes avec les bons droits
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -44,10 +45,11 @@ const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'messagerie', component: MessagerieComponent,  canActivate: [AuthGuard]},//
+  { path: 'user-conditions', component: UserConditionsComponent },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' })],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}
