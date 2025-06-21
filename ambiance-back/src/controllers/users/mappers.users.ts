@@ -16,6 +16,7 @@ export function toUserDto(user: User): UserDto {
     pays,
     image,
     imageMimeType,
+    doubleAuthent
   } = user;
 
   let imageBase64: string | null = null;
@@ -37,5 +38,6 @@ export function toUserDto(user: User): UserDto {
     pays,
     image: imageBase64,
     imageMimeType,
+    doubleAuthent
   };
 }
