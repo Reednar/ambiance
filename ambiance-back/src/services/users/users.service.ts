@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/users.entity'; // Update this line
@@ -14,7 +18,7 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Groupe)
     private readonly groupeRepository: Repository<Groupe>, // Assurez-vous d'importer l'entité Groupe
-  ) { }
+  ) {}
 
   async findAll(): Promise<UserDto[]> {
     const users = await this.userRepository.find();
@@ -61,6 +65,7 @@ export class UsersService {
       user.image = Buffer.from(updateDto.image, 'base64');
       user.imageMimeType = updateDto.imageMimeType;
     }
+    console.log(updateDto.doubleAuthent);
 
     // Mise à jour des autres champs
     Object.assign(user, {
@@ -83,6 +88,11 @@ export class UsersService {
           : (updateDto.confirmationTokenExpires ??
             user.confirmationTokenExpires),
       role: updateDto.role ?? user.role,
+      doubleAuthent:
+        updateDto.doubleAuthent !== undefined
+          ? (updateDto.doubleAuthent as any) === true ||
+            (updateDto.doubleAuthent as any) === 'true'
+          : user.doubleAuthent,
     });
     const updatedUser = await this.userRepository.save(user);
     return toUserDto(updatedUser);
@@ -93,7 +103,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
-    
+
     await this.userRepository.delete(id);
   }
 
@@ -136,5 +146,9 @@ export class UsersService {
       confirmationToken: token,
       confirmationTokenExpires: expiresAt,
     });
+  }
+
+  async save(user: User): Promise<User> {
+    return this.userRepository.save(user);
   }
 }

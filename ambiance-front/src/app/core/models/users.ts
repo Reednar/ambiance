@@ -14,5 +14,6 @@ export interface User {
     image: string | null;  // base64 image
     emailConfirmed: boolean;
     groups: { idGroupe: number; nomDuGroupe: string }[];
+    doubleAuthent: boolean;
   }
   

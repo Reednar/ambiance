@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../../../core/models/users';
 import { UsersService } from '../../../core/services/users.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-profile',
@@ -22,14 +23,16 @@ export class ProfileComponent implements OnInit {
     pays: '',
     image: '',
     emailConfirmed: false,
-    groups: []
+    groups: [],
+    doubleAuthent: false,
   };
 
   previewImage: string | null = null;
   selectedFile: File | null = null;
 
   constructor(
-    private usersService: UsersService
+    private usersService: UsersService,
+    private messageService: MessageService // Service PrimeNG pour afficher des messages utilisateur
   ) { }
 
   ngOnInit(): void {
@@ -43,17 +46,30 @@ export class ProfileComponent implements OnInit {
     formData.append('nom', this.user.nom);
     formData.append('dateDeNaissance', this.user.dateDeNaissance);
     formData.append('telephone', this.user.telephone);
-
+    formData.append('doubleAuthent', this.user.doubleAuthent ? 'true' : 'false');
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
       formData.append('imageMimeType', this.selectedFile.type);
     }
-    this.usersService.updateUser(id, formData).subscribe({
-      next: (data) => console.log('Profil mis à jour', data),
-      error: (error) => console.error('Erreur de mise à jour', error),
-    });
-  }
-
+     this.usersService.updateUser(id, formData).subscribe({
+    next: (data) => {
+      console.log('Profil mis à jour', data);
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Profil mis à jour',
+        detail: 'Votre profil a bien été modifié.',
+      });
+    },
+    error: (error) => {
+      console.error('Erreur de mise à jour', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: 'La mise à jour du profil a échoué. Veuillez réessayer.',
+      });
+    },
+  });
+}
 
   isValidPhone(phone: string): boolean {
     const phoneRegex = /^(?:\+33|0)[1-9](?:[\s.-]?\d{2}){4}$/;

@@ -38,18 +38,32 @@
       </div>
 
       <!-- Password -->
-      <div class="mb-3">
+      <div class="mb-3 position-relative">
         <label for="password" class="form-label fw-semibold">Mot de passe</label>
-        <input type="password"
-               id="password"
-               class="form-control form-control-lg rounded-3"
-               formControlName="password"
-               placeholder="••••••••">
+        <input
+          [type]="passwordVisible ? 'text' : 'password'"
+          id="password"
+          class="form-control form-control-lg rounded-3"
+          formControlName="password"
+          placeholder="••••••••"
+        >
+        <button type="button"
+                (click)="togglePasswordVisibility()"
+                class="btn btn-outline-secondary btn-sm position-absolute"
+                style="top: 38px; right: 10px; padding: 0 6px; border: none; background: transparent;">
+          <i [ngClass]="passwordVisible ? 'bi bi-eye' : 'bi bi-eye-slash'"></i>
+        </button>
+
         <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" class="text-danger small mt-1">
-          <div *ngIf="registerForm.get('password')?.errors?.['required']">Le mot de passe est requis.</div>
-          <div *ngIf="registerForm.get('password')?.errors?.['minlength']">Minimum 6 caractères.</div>
+        <div *ngIf="registerForm.get('password')?.errors?.['required']">Le mot de passe est requis.</div>
+        <div *ngIf="registerForm.get('password')?.errors?.['minlength']">Minimum 12 caractères.</div>
+        <div *ngIf="registerForm.get('password')?.errors?.['pattern']">
+          Doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.
         </div>
       </div>
+
+      </div>
+
 
       <!-- Confirm Password -->
       <div class="mb-3">

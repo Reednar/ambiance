@@ -14,13 +14,45 @@
       </div>
 
       <!-- Password Field -->
-      <div class="mb-4">
+      <!-- <div class="mb-4">
         <label for="password" class="form-label fw-semibold">Mot de passe</label>
         <input type="password" id="password" class="form-control form-control-lg rounded-3"
           [ngClass]="{'is-invalid': loginFailed}" formControlName="password" placeholder="••••••••">
         <div *ngIf="loginFailed" class="invalid-feedback d-block">
           Email ou mot de passe incorrect.
         </div>
+      </div> -->
+<div class="mb-4 position-relative">
+        <label for="password" class="form-label fw-semibold">Mot de passe</label>
+        <input [type]="passwordVisible ? 'text' : 'password'" id="password"
+          class="form-control form-control-lg rounded-3" [ngClass]="{'is-invalid': loginFailed}"
+          formControlName="password" placeholder="••••••••" />
+
+        <!-- Bouton œil positionné à droite dans le champ -->
+        <button type="button" (click)="togglePasswordVisibility()"
+          class="btn btn-sm btn-outline-secondary position-absolute"
+          style="top: 38px; right: 10px; z-index: 2; border: none; background: transparent; padding: 0;">
+          <i class="pi" [ngClass]="passwordVisible ? 'bi bi-eye' : 'bi bi-eye-slash'"></i>
+        </button>
+
+        <div *ngIf="loginFailed" class="invalid-feedback d-block">
+          Email ou mot de passe incorrect.
+        </div>
+      </div>
+
+
+      <!-- Two-Factor Authentication Code Field -->
+      <div class="mb-4" *ngIf="twoFactorRequired">
+        <label for="code" class="form-label fw-semibold">Code 2FA</label>
+        <input type="text" id="code" class="form-control form-control-lg rounded-3"
+          [ngClass]="{'is-invalid': loginFailed}" formControlName="code" placeholder="Entrez le code reçu par mail" />
+        <div *ngIf="loginForm.get('code')?.invalid && (loginForm.get('code')?.touched || loginForm.get('code')?.dirty)"
+          class="invalid-feedback d-block">
+          Le code 2FA est requis.
+        </div>
+        <button type="button" class="btn btn-link p-0 mt-2" (click)="onResend2FACode()">
+          Renvoyer le code
+        </button>
       </div>
 
 

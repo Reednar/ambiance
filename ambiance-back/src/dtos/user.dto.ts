@@ -11,6 +11,7 @@ export class UserDto {
   pays: string;
   image: string | null; // base64 format
   imageMimeType: string | null;
+  doubleAuthent?: boolean;
 }
 
 export class UpdateUserDto {
@@ -29,4 +30,5 @@ export class UpdateUserDto {
   confirmationTokenExpires?: Date | null;
   motDePasse?: string;
   role?: string;
+  doubleAuthent?: boolean;
 }
