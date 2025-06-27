@@ -55,7 +55,10 @@ export class PublicationsService {
    * @param data Objet contenant l'id de la publication et l'id de l'utilisateur
    * @returns Observable avec la réponse de la suppression
    */
-  delete(data: { idPublication: number; utilisateurId: number }): Observable<any> {
+  delete(data: {
+    idPublication: number;
+    utilisateurId: number;
+  }): Observable<any> {
     return this.http.post(`${this.url}/delete`, data, {
       withCredentials: true,
     });
@@ -83,8 +86,13 @@ export class PublicationsService {
    * @param userId Identifiant de l'utilisateur
    * @returns Observable contenant un tableau d'objets écoles { id, nom }
    */
-  getAccessibleSchools(userId: number): Observable<{ id: number; nom: string }[]> {
-    return this.http.post<{ id: number; nom: string }[]>(`${this.url}/accessible-ecoles`, { userId });
+  getAccessibleSchools(
+    userId: number
+  ): Observable<{ id: number; nom: string }[]> {
+    return this.http.post<{ id: number; nom: string }[]>(
+      `${this.url}/accessible-ecoles`,
+      { userId }
+    );
   }
 
   /**
@@ -93,5 +101,14 @@ export class PublicationsService {
    */
   count(): Observable<number> {
     return this.http.get<number>(`${this.url}/count`);
+  }
+
+  /**
+   * Récupère les participants d'une publication spécifique
+   * @param publicationId Identifiant de la publication
+   * @returns Observable contenant la liste des participants
+   */
+  getParticipantsByPublicationId(publicationId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}/participants/${publicationId}`);
   }
 }
