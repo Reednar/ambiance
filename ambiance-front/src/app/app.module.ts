@@ -56,6 +56,7 @@ import { MessagerieComponent } from './features/messagerie/messagerie.component'
 // Import et enregistrement de la locale française
 import localeFr from '@angular/common/locales/fr';
 import { UserConditionsComponent } from './features/user-conditions/user-conditions.component';
+import { PublicationParticipantComponent } from './features/publication-participant/publication-participant.component';
 registerLocaleData(localeFr);
 
 @NgModule({
@@ -83,7 +84,7 @@ registerLocaleData(localeFr);
     ArticleUpdateComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent, 
-    MessagerieComponent, UserConditionsComponent
+    MessagerieComponent, UserConditionsComponent, PublicationParticipantComponent
   ],
   imports: [
     BrowserModule,

@@ -22,6 +22,7 @@ import { ForgotPasswordComponent } from './features/user/forgot-password/forgot-
 import { ResetPasswordComponent } from './features/user/reset-password/reset-password.component';
 import { MessagerieComponent } from './features/messagerie/messagerie.component';
 import { UserConditionsComponent } from './features/user-conditions/user-conditions.component';
+import { PublicationParticipantComponent } from './features/publication-participant/publication-participant.component';
 // Déclaration des routes avec les bons droits
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -35,6 +36,7 @@ const routes: Routes = [
   { path: 'moderation', component: ModerationComponent, canActivate: [AuthGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'publication-show/:id', component: PublicationShowComponent },
+  { path: 'publication-participant/:id', component: PublicationParticipantComponent, canActivate: [AuthGuard] },
   { path: 'ecoles', component: SchoolComponent },
   { path: 'articles', component: BlogComponent },
   { path: 'article-show', component: BlogComponent },
