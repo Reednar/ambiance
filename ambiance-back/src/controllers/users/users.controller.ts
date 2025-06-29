@@ -26,6 +26,7 @@ import { Request as ExpressRequest } from 'express';
 import * as crypto from 'crypto';
 import { MailService } from 'src/services/mail.service';
 import { AuthService } from 'src/services/auth/auth.service';
+import { SchoolsService } from 'src/services/schools/schools.service';
 
 import * as bcrypt from 'bcrypt';
 
@@ -40,6 +41,7 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly mailService: MailService,
     private readonly authService: AuthService,
+    private readonly schoolsService: SchoolsService,
     private readonly logger: Logger,
   ) {}
 
@@ -117,6 +119,21 @@ export class UsersController {
     const futureUser = { ...body, role: 'Utilisateur' } as User;
 
     try {
+      // Vérification du domaine d'email pour école partenaire
+      const emailDomain = this.schoolsService.extractDomainFromEmail(futureUser.mail);
+      const partnerSchool = await this.schoolsService.findByAllowedDomain(emailDomain);
+      
+      if (partnerSchool) {
+        futureUser.idEcole = partnerSchool.id;
+        this.logger.log(`User will be associated with partner school: ${partnerSchool.nom} (ID: ${partnerSchool.id})`);
+      } else {
+        this.logger.log(`No partner school found for domain: ${emailDomain}`);
+        throw new HttpException(
+          `L'inscription est réservée aux étudiants des écoles partenaires. Le domaine ${emailDomain} n'est pas autorisé.`,
+          HttpStatus.FORBIDDEN,
+        );
+      }
+
       // Hash du mot de passe
       const saltRoundsEnv = process.env.SALT_ROUNDS;
       if (!saltRoundsEnv || isNaN(Number(saltRoundsEnv))) {
@@ -174,6 +191,19 @@ export class UsersController {
         code: error?.code,
         error,
       });
+      
+      // Gestion spécifique de l'erreur de domaine non autorisé
+      if (error.status === HttpStatus.FORBIDDEN && error.message?.includes('domaine')) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.FORBIDDEN,
+            error: 'DOMAIN_NOT_ALLOWED',
+            message: error.message,
+          },
+          HttpStatus.FORBIDDEN,
+        );
+      }
+      
       if (error.code === 'ER_DUP_ENTRY' && error.message.includes('Mail')) {
         throw new HttpException('EMAIL_ALREADY_USED', HttpStatus.BAD_REQUEST);
       }

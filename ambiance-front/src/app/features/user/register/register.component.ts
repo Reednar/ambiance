@@ -127,8 +127,20 @@ export class RegisterComponent implements OnInit {
       error: (error) => {
         console.error('Erreur lors de la création de l\'utilisateur', error);
 
+        // Gestion spécifique de l'erreur de domaine non autorisé
+        if (error.error?.error === 'DOMAIN_NOT_ALLOWED') {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Domaine email non autorisé',
+            detail: 'Votre domaine email n\'est pas associé à une école partenaire. L\'inscription est réservée aux étudiants des écoles partenaires.'
+          });
+
+          // Met le champ email en erreur pour affichage visuel (rouge)
+          this.registerForm.controls['email'].setErrors({ domainNotAllowed: true });
+          this.registerForm.controls['email'].markAsTouched();
+        }
         // Gestion spécifique de l'erreur email déjà utilisé
-        if (error.error?.message === 'EMAIL_ALREADY_USED') {
+        else if (error.error?.message === 'EMAIL_ALREADY_USED') {
           this.messageService.add({
             severity: 'warn',
             summary: 'E-mail déjà utilisé',
