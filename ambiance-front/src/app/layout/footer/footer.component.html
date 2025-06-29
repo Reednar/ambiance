@@ -19,11 +19,12 @@
                 <div class="col-sm-6 col-lg-3 my-3">
                     <h6 class="text-uppercase mb-5">Politique</h6>
                     <ul class="list-unstyled dark-link footer-link-1 m-0">
-                        <li class="pb-2"><a href="#">Politique de confidentialité</a></li>
-                        <li class="pb-2"><a href="#">Conditions d'utilisation</a></li>
-                        <li class="pb-2"><a href="#">Conditions des cartes cadeaux</a></li>
-                        <li class="pb-2"><a href="#">Expédition</a></li>
-                        <li class="pb-2"><a href="#">Remboursement</a></li>
+                        <li class="pb-2"><a [routerLink]="['/user-conditions']" fragment="objet">CGU – Objet</a></li>
+                        <li class="pb-2"><a [routerLink]="['/user-conditions']" fragment="acces">CGU – Accès & création de compte</a></li>
+                        <li class="pb-2"><a [routerLink]="['/user-conditions']" fragment="regles">CGU – Règles d'utilisation</a></li>
+                        <li class="pb-2"><a [routerLink]="['/user-conditions']" fragment="donnees">Données personnelles</a></li>
+                        <li class="pb-2"><a [routerLink]="['/user-conditions']" fragment="mentions">Mentions légales</a></li>
+                        <li class="pb-2"><a [routerLink]="['/user-conditions']" fragment="contact">Contact</a></li>
                     </ul>
                 </div>
 

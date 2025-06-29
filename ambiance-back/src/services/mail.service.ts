@@ -83,4 +83,32 @@ export class MailService {
 
     return this.transporter.sendMail(mailOptions);
   }
+
+  async sendTwoFactorCodeEmail(to: string, code: string) {
+    const mailOptions = {
+      from: `"Ambiance: " <${this.configService.get<string>('MAIL_USER')}>`,
+      to,
+      subject: 'Ton code de vérification - Authentification 2 étapes',
+      html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd;">
+      <h2 style="color: #333;">Vérification en deux étapes</h2>
+      <p style="font-size: 16px; color: #555;">
+        Voici ton code de vérification pour te connecter à ton compte :
+      </p>
+      <p style="text-align: center; font-size: 32px; font-weight: bold; color: #007bff; margin: 30px 0;">
+        ${code}
+      </p>
+      <p style="font-size: 14px; color: #999;">
+        Ce code est valable pendant quelques minutes. Si tu n’as pas essayé de te connecter, ignore simplement ce message.
+      </p>
+      <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+      <p style="font-size: 12px; color: #aaa; text-align: center;">
+        © 2025 Ton App - Tous droits réservés.
+      </p>
+    </div>
+    `,
+    };
+
+    return this.transporter.sendMail(mailOptions);
+  }
 }

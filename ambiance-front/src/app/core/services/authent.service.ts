@@ -170,4 +170,59 @@ export class AuthService {
       })
     );
   }
+
+  /**
+ * Connexion avec gestion de la double authentification (2FA).
+ * @param credentials Objet contenant mail, password, et optionnellement code 2FA.
+ * @returns Observable avec succès, id utilisateur, emailConfirmed, et éventuellement twoFactorRequired.
+ */
+  login2FA(credentials: { mail: string; password: string; code?: string }): Observable<{
+    success?: boolean;
+    userId?: string;
+    emailConfirmed?: boolean;
+    twoFactorRequired?: boolean;
+    message?: string;
+  }> {
+    return this.http.post<{
+      success?: boolean;
+      userId?: string;
+      emailConfirmed?: boolean;
+      twoFactorRequired?: boolean;
+      message?: string;
+    }>(
+      `${this.apiUrl}/login-2fa`,
+      credentials,
+      { withCredentials: true }
+    ).pipe(
+      tap(response => {
+        if (response.success) {
+          sessionStorage.setItem('id_utilisateur', response.userId || '');
+          this.isConnected.next(true);
+          this.emailConfirmed.next(response.emailConfirmed === true);
+        }
+      }),
+      catchError(error => {
+        console.error('Erreur de connexion 2FA:', error);
+        return throwError(() => new Error(error.error?.message || 'Erreur de connexion 2FA'));
+      })
+    );
+  }
+
+  /**
+ * Renvoie un nouveau code 2FA par email.
+ * @param mail L'email de l'utilisateur
+ * @returns Observable avec succès
+ */
+  resend2FACode(mail: string): Observable<{ success: boolean }> {
+    return this.http.post<{ success: boolean }>(
+      `${this.apiUrl}/send-2fa-code`,
+      { mail },
+      { withCredentials: true }
+    ).pipe(
+      catchError(error => {
+        console.error('Erreur lors du renvoi du code 2FA:', error);
+        return throwError(() => new Error(error.error?.message || 'Erreur renvoi code 2FA'));
+      })
+    );
+  }
 }

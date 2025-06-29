@@ -122,10 +122,10 @@ export class GroupsService {
 
   async findUsersByGroup(
     IdGroupe: number,
-  ): Promise<{ nom: string; prenom: string; pseudo: string }[]> {
+  ): Promise<{ nom: string; prenom: string; pseudo: string; mail: string }[]> {
     return await this.userRepository
       .createQueryBuilder('user')
-      .select(['user.nom', 'user.prenom', 'user.pseudo'])
+      .select(['user.nom as nom', 'user.prenom as prenom', 'user.pseudo as pseudo', 'user.mail as mail'])
       .innerJoin(
         'Participation',
         'participation',

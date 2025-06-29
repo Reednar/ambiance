@@ -10,6 +10,7 @@ import {
 import { Request, Response } from 'express';
 import { AuthService } from 'src/services/auth/auth.service';
 import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
+import { MailService } from 'src/services/mail.service';
 import { UsersService } from 'src/services/users/users.service';
 
 // Détermine si l'environnement est en production
@@ -20,6 +21,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UsersService,
+    private readonly mailService: MailService,
   ) {}
 
   /**
@@ -197,6 +199,64 @@ export class AuthController {
       } else {
         return res.status(401).json({ authenticated: false });
       }
+    }
+  }
+
+  @Post('send-2fa-code')
+  async send2FACode(@Body() body: { mail: string }) {
+    const user = await this.userService.findOneByMail(body.mail);
+    if (!user) throw new UnauthorizedException('Utilisateur non trouvé');
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = new Date(Date.now() + 5 * 60 * 1000); // 5 min
+
+    user.codeDoubleAuthent = code;
+    user.dateCodeDoubleAuthent = expires;
+    await this.userService.save(user);
+
+    await this.mailService.sendTwoFactorCodeEmail(user.mail, code);
+
+    return { success: true };
+  }
+
+  @Post('login-2fa')
+  async loginWith2FA(
+    @Body() body: { mail: string; password: string; code: string },
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { mail, code } = body;
+    const user = await this.userService.findOneByMail(mail);
+    if (!user) throw new UnauthorizedException('Utilisateur non trouvé');
+
+    if (user.doubleAuthent == null || user.doubleAuthent == false) {
+      return this.login({ mail: body.mail, password: body.password }, res);
+    } else if (user.codeDoubleAuthent == null || code == '' || code == null) {
+      this.send2FACode({ mail: body.mail });
+      return { twoFactorRequired: true, message: 'Code 2FA envoyé par mail' };
+    } else if (user.codeDoubleAuthent != null) {
+      const now = new Date();
+      if (
+        !user.codeDoubleAuthent ||
+        user.codeDoubleAuthent !== code ||
+        !user.dateCodeDoubleAuthent ||
+        user.dateCodeDoubleAuthent.getTime() < now.getTime()
+      ) {
+        user.codeDoubleAuthent = null;
+        user.dateCodeDoubleAuthent = null;
+        await this.userService.save(user);
+        return {
+          twoFactorRequired: true,
+          message: 'Code 2FA invalide ou expiré',
+        };
+      }
+
+      // Nettoyage du code
+      user.codeDoubleAuthent = null;
+      user.dateCodeDoubleAuthent = null;
+      await this.userService.save(user);
+
+      // Appel direct à login avec les bons params
+      return this.login({ mail: body.mail, password: body.password }, res);
     }
   }
 }

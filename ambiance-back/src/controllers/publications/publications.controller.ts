@@ -23,6 +23,7 @@ import { GroupsService } from 'src/services/groups/groups.service';
 import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
 import { School } from 'src/entities/schools.entity';
 import { SchoolsService } from 'src/services/schools/schools.service';
+import { UserDto } from 'src/dtos/user.dto';
 
 @ApiTags('publications')
 @Controller('publications')
@@ -61,7 +62,7 @@ export class PublicationsController {
       throw new NotFoundException('publication not found');
     }
 
-    if (utilisateur.role != "Administrateur") {
+    if (utilisateur.role != 'Administrateur') {
       if (publication.utilisateurId !== utilisateur.idUtilisateur) {
         throw new NotFoundException(
           'Utilisateur non autorisé à supprimer ce publication',
@@ -303,6 +304,78 @@ export class PublicationsController {
       })) ?? [];
 
     return dto;
+  }
+
+  @Get('participants/:idPublication')
+  @ApiOperation({
+    summary: 'Get participants of a publication by publication ID',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of participants for the publication',
+    type: [PublicationDto],
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Publication not found',
+    examples: {
+      example1: {
+        summary: 'Not found response example',
+        value: {
+          statusCode: 404,
+          message: 'Publication not found',
+          error: 'Not Found',
+        },
+      },
+    },
+  })
+  async getParticipantsByPublicationId(
+    @Param('idPublication') idPublication: number,
+    @Req() req: Request,
+  ): Promise<UserDto[]> {
+    this.logger.log(
+      `[${req.method} ${req.url}] Fetching participants for publication ID: ${idPublication}`,
+    );
+
+    const publication = await this.publicationsService.findOne(idPublication);
+    if (!publication) {
+      throw new NotFoundException('Publication not found');
+    }
+
+    const groupe =
+      await this.groupsService.getGroupeByPublicationId(idPublication);
+    if (!groupe) {
+      this.logger.warn(
+        `[${req.method} ${req.url}] No group found for publication ID: ${idPublication}`,
+      );
+      return [];
+    }
+
+    // Return les utilisateurs du groupe
+    const participants = await this.groupsService.findUsersByGroup(
+      groupe.idGroupe,
+    );
+
+    if (!participants || participants.length === 0) {
+      this.logger.warn(
+        `[${req.method} ${req.url}] No participants found for publication ID: ${idPublication}`,
+      );
+      return [];
+    }
+
+    this.logger.log(
+      `[${req.method} ${req.url}] Found ${participants.length} participants for publication ID: ${idPublication}`,
+    );
+
+    // Retourne les participants sous forme de user DTO
+    return participants.map((user) => {
+      const userDto = new UserDto();
+      userDto.nom = user.nom;
+      userDto.prenom = user.prenom;
+      userDto.mail = user.mail;
+      userDto.pseudo = user.pseudo;
+      return userDto;
+    });
   }
 
   @UseGuards(JwtAuthGuard)

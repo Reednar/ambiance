@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 import { School } from './schools.entity';
 import { Publication } from './publications.entity';
 import { MembresBDE } from './membresBDE.entity';
@@ -39,8 +46,21 @@ export class User {
   @Column({ name: 'Pays', type: 'varchar', length: 50, nullable: false })
   pays: string;
 
-   @Column({ name: 'id_ecole', type: 'int', nullable: false })
+  @Column({ name: 'id_ecole', type: 'int', nullable: false })
   idEcole: number;
+
+  @Column({ name: 'double_authent', type: 'boolean', nullable: true })
+  doubleAuthent: boolean;
+
+  @Column({ name: 'code_double_authent', type: 'varchar', nullable: true })
+  codeDoubleAuthent: string;
+
+  @Column({
+    name: 'date_code_double_authent',
+    type: 'datetime',
+    nullable: true,
+  })
+  dateCodeDoubleAuthent: Date;
 
   @Column({
     name: 'Role',
@@ -53,21 +73,35 @@ export class User {
   @Column({ name: 'Telephone', type: 'varchar', length: 50, nullable: true })
   telephone: string;
 
-    @Column({ name: 'Image', type: 'longblob', nullable: true })
+  @Column({ name: 'Image', type: 'longblob', nullable: true })
   image: Buffer;
 
-   @Column({ name: 'ImageMimeType', type: 'varchar', length: 50, nullable: true })
+  @Column({
+    name: 'ImageMimeType',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
   imageMimeType: string;
 
-  @Column({ name: 'ConfirmationToken', type: 'varchar', length: 64, nullable: true })
+  @Column({
+    name: 'ConfirmationToken',
+    type: 'varchar',
+    length: 64,
+    nullable: true,
+  })
   confirmationToken?: string;
 
-  @Column({ name: 'ConfirmationTokenExpires', type: 'datetime', nullable: true })
+  @Column({
+    name: 'ConfirmationTokenExpires',
+    type: 'datetime',
+    nullable: true,
+  })
   confirmationTokenExpires?: Date;
 
   @Column({ name: 'EmailConfirmed', type: 'boolean', default: false })
   emailConfirmed: boolean;
-  
+
   // Relation avec les écoles (un utilisateur peut être rattaché à une école)
   @ManyToOne(() => School, (school) => school.id, { nullable: true })
   @JoinColumn({ name: 'id_ecole' })
@@ -81,7 +115,7 @@ export class User {
   @OneToMany(() => MembresBDE, (membreBDE) => membreBDE.utilisateur)
   membresBDE: MembresBDE[];
 
-  @OneToMany(() => Article, article => article.utilisateur)
+  @OneToMany(() => Article, (article) => article.utilisateur)
   articles: Article[];
 
   @OneToMany(() => Groupe, (group) => group.utilisateur)

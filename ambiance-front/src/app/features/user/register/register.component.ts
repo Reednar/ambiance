@@ -20,6 +20,10 @@ export class RegisterComponent implements OnInit {
   // Date max autorisée dans le champ date (aujourd'hui)
   maxDate = new Date().toISOString().split('T')[0];
 
+  passwordVisible = false;
+
+
+
   constructor(
     private fb: FormBuilder,           // Pour construire le formulaire réactif
     private userService: UsersService, // Service pour gérer les utilisateurs
@@ -35,7 +39,11 @@ export class RegisterComponent implements OnInit {
       {
         username: ['', [Validators.required, Validators.minLength(3)]], // nom utilisateur requis, min 3 caractères
         email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/)]], // email valide obligatoire
-        password: ['', [Validators.required, Validators.minLength(6)]], // mot de passe requis, min 6 caractères
+        password: ['', [
+          Validators.required,
+          Validators.minLength(12),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/)
+        ]],
         confirmPassword: ['', Validators.required], // confirmation du mot de passe obligatoire
         reglement: [false, Validators.requiredTrue], // accord sur le règlement obligatoire (checkbox)
         genre: ['', Validators.required], // genre obligatoire
@@ -104,37 +112,61 @@ export class RegisterComponent implements OnInit {
       };
 
       // Appel au service pour créer l'utilisateur en base
-      this.userService.createUser(user).subscribe({
-        next: () => 
-          // En cas de succès, redirige vers la page de login
-          this.router.navigate(['/login']),
-        error: (error) => {
-          console.error('Erreur lors de la création de l\'utilisateur', error);
+    this.userService.createUser(user).subscribe({
+      next: () => {
+        // Affiche message succès inscription
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Inscription réussie',
+          detail: 'Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter. Vous pouvez activer la double authentification par mail dans votre profil.'
+        });
 
-          // Gestion spécifique de l'erreur email déjà utilisé
-          if (error.error?.message === 'EMAIL_ALREADY_USED') {
-            this.messageService.add({
-              severity: 'warn',
-              summary: 'E-mail déjà utilisé',
-              detail: 'Cet e-mail est déjà associé à un compte.'
-            });
+        // Redirige vers la page de login
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        console.error('Erreur lors de la création de l\'utilisateur', error);
 
-            // Met le champ email en erreur pour affichage visuel (rouge)
-            this.registerForm.controls['email'].setErrors({ emailUsed: true });
-            this.registerForm.controls['email'].markAsTouched();
-          } else {
-            // Autres erreurs serveur générales
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Erreur serveur',
-              detail: 'Une erreur est survenue. Veuillez réessayer.'
-            });
-          }
+        // Gestion spécifique de l'erreur de domaine non autorisé
+        if (error.error?.error === 'DOMAIN_NOT_ALLOWED') {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Domaine email non autorisé',
+            detail: 'Votre domaine email n\'est pas associé à une école partenaire. L\'inscription est réservée aux étudiants des écoles partenaires.'
+          });
+
+          // Met le champ email en erreur pour affichage visuel (rouge)
+          this.registerForm.controls['email'].setErrors({ domainNotAllowed: true });
+          this.registerForm.controls['email'].markAsTouched();
         }
-      });
+        // Gestion spécifique de l'erreur email déjà utilisé
+        else if (error.error?.message === 'EMAIL_ALREADY_USED') {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'E-mail déjà utilisé',
+            detail: 'Cet e-mail est déjà associé à un compte.'
+          });
+
+          // Met le champ email en erreur pour affichage visuel (rouge)
+          this.registerForm.controls['email'].setErrors({ emailUsed: true });
+          this.registerForm.controls['email'].markAsTouched();
+        } else {
+          // Autres erreurs serveur générales
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erreur serveur',
+            detail: 'Une erreur est survenue. Veuillez réessayer.'
+          });
+        }
+      }
+    });
     } else {
       // Si formulaire invalide, on marque tous les champs comme touchés pour afficher les erreurs
       this.registerForm.markAllAsTouched();
     }
+  }
+
+  togglePasswordVisibility(): void {
+    this.passwordVisible = !this.passwordVisible;
   }
 }

@@ -11,10 +11,7 @@
                 <div class="produit-ligne">
                     <div class="livraison livraison-rapide">
                         A lieu le {{ pub.dateEvenement | date:'dd/MM/yyyy HH:mm' }} à {{ pub.ville }}
-                        <p [ngClass]="{'rouge': !pub.paiementEffectue, 'vert': pub.paiementEffectue}"
-                            style="float: right;">
-                            Paiement: {{ pub.paiementEffectue ? 'A réglé' : 'Non réglé' }}
-                        </p>
+
                     </div>
                     <div class="produit-contenu">
                         <img [src]="pub.image || 'assets/images/backgrounds/bde.png'" alt="{{ pub.titre }}">
@@ -26,10 +23,8 @@
                         </div>
                     </div>
                     <div class="actions">
-                        <button class="jaune">Voir le chat</button>
-                        <button class="jaune">Consulter les détails de l'événement</button>
-                        <button class="rouge" *ngIf="!pub.paiementEffectue">Payer pour l'événement</button>
-                        <button class="jaune">Poser une question sur l'événement</button>
+                        <button class="jaune" (click)="voirChat()">Voir le chat</button>
+                        <button class="jaune" (click)="voirDetailsEvenement(pub.idPublication)">Consulter les détails de l'événement</button>
                     </div>
                 </div>
                 <!-- Ajouter un hr sauf pour la dernière publication -->
@@ -69,8 +64,8 @@
                 </div>
             </div>
             <div class="actions">
-                <button class="jaune">Voir les commentaires</button>
-                <button class="jaune">Écrire un commentaire sur l'événement</button>
+                <button class="jaune" (click)="voirCommentaires(pub.idPublication)">Voir les commentaires</button>
+                <button class="jaune" (click)="ecrireCommentaire(pub.idPublication)">Écrire un commentaire sur l'événement</button>
             </div>
         </div>
     </div>
