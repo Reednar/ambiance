@@ -65,5 +65,33 @@ async findByUserId(userId: number): Promise<School | null> {
   return user?.ecole || null;
 }
 
+/**
+ * Trouve une école qui autorise un domaine d'email donné
+ * @param emailDomain Le domaine de l'email (ex: "etu.univ.fr")
+ * @returns Promise<School | null>
+ */
+async findByAllowedDomain(emailDomain: string): Promise<School | null> {
+  const schools = await this.schoolsRepository.find();
+  
+  for (const school of schools) {
+    if (school.allowed_domain) {
+      const allowedDomains = this.splitAllowedDomain(school.allowed_domain);
+      if (allowedDomains.includes(emailDomain)) {
+        return school;
+      }
+    }
+  }
+  
+  return null;
+}
+
+/**
+ * Extrait le domaine d'une adresse email
+ * @param email L'adresse email complète
+ * @returns string Le domaine de l'email
+ */
+extractDomainFromEmail(email: string): string {
+  return email.split('@')[1];
+}
 
 }

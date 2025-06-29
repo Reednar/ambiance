@@ -5,6 +5,7 @@ import { FullCalendarComponent } from '@fullcalendar/angular';
 import { GroupsService } from '../../core/services/groups.service';
 import { PublicationsService } from '../../core/services/publications.service';
 import { Publication } from '../../core/models/publications';
+import { Router } from '@angular/router';
 import Swiper from 'swiper';
 
 @Component({
@@ -25,7 +26,7 @@ export class CalendarComponent implements OnInit {
   publicationsPassees: Publication[] = [];
   publicationsAVenir: Publication[] = [];
 
-  constructor(private publicationsService: PublicationsService, private groupsService: GroupsService) { }
+  constructor(private publicationsService: PublicationsService, private groupsService: GroupsService, private router: Router) { }
 
   ngOnInit() {
     this.userId = Number(sessionStorage.getItem('id_utilisateur') ?? '');
@@ -101,6 +102,43 @@ export class CalendarComponent implements OnInit {
     }
   };
 
+  // Méthode pour naviguer vers les détails de l'événement
+  voirDetailsEvenement(idPublication: number): void {
+    this.router.navigate(['/publication-show', idPublication]);
+  }
+
+  // Méthode pour naviguer vers le chat
+  voirChat(): void {
+    this.router.navigate(['/messagerie']);
+  }
+
+  // Méthode pour payer l'événement (à implémenter selon vos besoins)
+  payerEvenement(idPublication: number): void {
+    // Logique de paiement à implémenter
+    console.log('Paiement pour l\'événement:', idPublication);
+    // Vous pouvez rediriger vers une page de paiement ou ouvrir un modal
+  }
+
+  // Méthode pour poser une question sur l'événement
+  poserQuestion(idPublication: number): void {
+    // Logique pour poser une question - pourrait rediriger vers un formulaire ou modal
+    console.log('Poser une question pour l\'événement:', idPublication);
+    // Exemple : this.router.navigate(['/questions'], { queryParams: { eventId: idPublication } });
+  }
+
+  // Méthode pour voir les commentaires d'un événement passé
+  voirCommentaires(idPublication: number): void {
+    // Rediriger vers la page des détails de l'événement où les commentaires sont affichés
+    this.router.navigate(['/publication-show', idPublication]);
+  }
+
+  // Méthode pour écrire un commentaire sur un événement passé
+  ecrireCommentaire(idPublication: number): void {
+    // Rediriger vers la page des détails avec focus sur le formulaire de commentaire
+    this.router.navigate(['/publication-show', idPublication], { 
+      fragment: 'commentaires' // Pour naviguer directement vers la section commentaires
+    });
+  }
 
   ngAfterViewInit(): void {
     new Swiper('.swiper', {
@@ -120,5 +158,13 @@ export class CalendarComponent implements OnInit {
       effect: 'slide',
       speed: 800
     });
+  }
+
+  navigateToEventDetails(eventId: number): void {
+    this.router.navigate(['/publication-show', eventId]);
+  }
+
+  navigateToChat(): void {
+    this.router.navigate(['/chat']);
   }
 }

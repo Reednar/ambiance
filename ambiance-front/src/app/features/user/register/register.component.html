@@ -35,6 +35,10 @@
   Cet e-mail est déjà associé à un compte.
 </div>
 
+<div *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['domainNotAllowed']" class="text-danger small mt-1">
+  Votre domaine email n'est pas associé à une école partenaire. L'inscription est réservée aux étudiants des écoles partenaires.
+</div>
+
       </div>
 
       <!-- Password -->
