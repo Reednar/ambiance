@@ -8,6 +8,7 @@ node {
     def FRONT_DIR = '/var/www/AM-FRONT'
     def BACK_DIR = '/var/www/AM-BACK'
 
+    // Use credentials for sensitive data
     withCredentials([
         string(credentialsId: 'DATABASE_HOST', variable: 'DATABASE_HOST'),
         string(credentialsId: 'DATABASE_PORT', variable: 'DATABASE_PORT'),
@@ -21,6 +22,7 @@ node {
         string(credentialsId: 'MAIL_PASS', variable: 'MAIL_PASS'),
         string(credentialsId: 'SALT_ROUNDS', variable: 'SALT_ROUNDS'),
         string(credentialsId: 'STRIPE_SECRET_KEY', variable: 'STRIPE_SECRET_KEY'),
+
     ]) {
 
         stage('Checkout') {
@@ -31,18 +33,17 @@ node {
             sh '''
                 export NVM_DIR="$HOME/.nvm"
                 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-                nvm use ${NODE_VERSION}
-                echo "Using Node.js: $(node -v)"
-                echo "Using npm: $(npm -v)"
+                echo "Using Node.js version: $(node -v)"
+                echo "Using npm version: $(npm -v)"
             '''
         }
 
         stage('Install Dependencies') {
             parallel(
-                "Frontend": {
+                "Install Frontend Dependencies": {
                     sh 'cd ambiance-front && npm install'
                 },
-                "Backend": {
+                "Install Backend Dependencies": {
                     sh 'cd ambiance-back && npm ci'
                 }
             )
@@ -50,35 +51,27 @@ node {
 
         stage('Build Projects') {
             parallel(
-                "Build Angular": {
-                    timeout(time: 20, unit: 'MINUTES') {
-                        sh '''
-                            cd ambiance-front
-                            export NODE_OPTIONS=--max_old_space_size=4096
-                            npm run build
-                        '''
+                "Build Angular Frontend": {
+                    timeout(time: 30, unit: 'MINUTES') {
+                        sh 'cd ambiance-front && node --max-old-space-size=4096 ./node_modules/@angular/cli/bin/ng build'
                     }
                 },
-                "Build NestJS": {
-                    timeout(time: 20, unit: 'MINUTES') {
-                        sh '''
-                            cd ambiance-back
-                            export NODE_OPTIONS=--max_old_space_size=4096
-                            npm run build
-                        '''
+                "Build NestJS Backend": {
+                    timeout(time: 30, unit: 'MINUTES') {
+                        sh 'cd ambiance-back && NODE_OPTIONS="--max-old-space-size=4096" npm run build'
                     }
                 }
             )
         }
 
-        stage('Deploy Frontend') {
+        stage('Deploy Angular') {
             sh """
                 rm -rf ${FRONT_DIR}/*
                 cp -r ambiance-front/dist/* ${FRONT_DIR}/
             """
         }
 
-        stage('Deploy Backend') {
+        stage('Deploy NestJS') {
             sh """
                 rm -rf ${BACK_DIR}/*
                 cp -r ambiance-back/dist/* ${BACK_DIR}/
@@ -86,7 +79,7 @@ node {
             """
         }
 
-        stage('Install Backend Production Deps') {
+        stage('Install Backend Production Dependencies') {
             sh """
                 cd ${BACK_DIR}
                 npm ci
@@ -95,7 +88,8 @@ node {
 
         stage('Inject .env') {
             sh """
-                cat > ${BACK_DIR}/.env <<EOF
+                rm -f ${BACK_DIR}/.env
+                cat <<EOF > ${BACK_DIR}/.env
 PORT=${PORT}
 DATABASE_HOST=${DATABASE_HOST}
 DATABASE_PORT=${DATABASE_PORT}
@@ -108,15 +102,16 @@ MAIL_USER=${MAIL_USER}
 MAIL_PASS=${MAIL_PASS}
 SALT_ROUNDS=${SALT_ROUNDS}
 STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+
 EOF
             """
         }
 
-        stage('Restart NestJS with PM2') {
+        stage('Restart NestJS') {
             sh """
                 cd ${BACK_DIR}
                 if pm2 describe nestjs > /dev/null; then
-                    pm2 restart nestjs --update-env
+                    pm2 restart nestjs --update-env --cwd ${BACK_DIR}
                 else
                     pm2 start main.js --name nestjs --cwd ${BACK_DIR} --interpreter \$(which node)
                 fi
