@@ -11,25 +11,27 @@ node {
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
             nvm use 18
 
-            # Install Chrome if not present
+            # Vérifier que Chrome est installé
             if ! command -v google-chrome &> /dev/null; then
-                echo "Installing Google Chrome..."
-                sudo apt-get update
-                sudo apt-get install -y wget
-                wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-                echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-                sudo apt-get update
-                sudo apt-get install -y google-chrome-stable
+                echo "Google Chrome n'est pas installé sur ce serveur"
+                echo "Veuillez l'installer manuellement avec les commandes suivantes :"
+                echo "sudo apt-get update"
+                echo "sudo apt-get install -y wget"
+                echo "wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -"
+                echo "echo \"deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main\" | sudo tee /etc/apt/sources.list.d/google-chrome.list"
+                echo "sudo apt-get update"
+                echo "sudo apt-get install -y google-chrome-stable"
+                exit 1
             fi
 
             # FRONTEND
             cd ambiance-front
             npm install
             
-            # Configuration for ChromeHeadless
-            export CHROME_BIN=/usr/bin/google-chrome
+            # Configuration pour ChromeHeadless
+            export CHROME_BIN=$(which google-chrome)
             
-            # Run tests with correct configuration
+            # Exécution des tests
             npm run test -- --watch=false --code-coverage --browsers=ChromeHeadlessNoSandbox
             cd ..
 
@@ -41,6 +43,7 @@ node {
         '''
     }
 
+    // Les autres stages restent inchangés
     stage('SonarQube Analysis') {
         withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
             withSonarQubeEnv('SonarQubeServer') {
