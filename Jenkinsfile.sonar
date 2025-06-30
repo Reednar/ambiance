@@ -1,16 +1,14 @@
 node {
     def SONARQUBE_SERVER = 'https://sonarqube.ambiance-ensitech.me'
-    def SONAR_TOKEN = credentials('sonar-token')
-    def secretWebhook = credentials('secret-webhook-sonarqube')
 
     stage('Checkout') {
         checkout scm
     }
 
     stage('Install & Test Projects') {
-        sh """
-            export NVM_DIR="\$HOME/.nvm"
-            [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh"
+        sh '''
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
             nvm use 18
 
             export CHROME_BIN=$(which chromium-browser)
@@ -26,22 +24,24 @@ node {
             npm ci
             npm run test
             cd ..
-        """
+        '''
     }
 
     stage('SonarQube Analysis') {
-        withSonarQubeEnv('SonarQubeServer') {
-            sh """
-                export NVM_DIR="\$HOME/.nvm"
-                [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh"
-                nvm use 18
+        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+            withSonarQubeEnv('SonarQubeServer') {
+                sh '''
+                    export NVM_DIR="$HOME/.nvm"
+                    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+                    nvm use 18
 
-                sonar-scanner \\
-                    -Dsonar.projectKey=ambiance \\
-                    -Dsonar.projectName=ambiance \\
-                    -Dsonar.host.url=${SONARQUBE_SERVER} \\
-                    -Dsonar.login=${SONAR_TOKEN}
-            """
+                    sonar-scanner \
+                        -Dsonar.projectKey=ambiance \
+                        -Dsonar.projectName=ambiance \
+                        -Dsonar.host.url=https://sonarqube.ambiance-ensitech.me \
+                        -Dsonar.login=$SONAR_TOKEN
+                '''
+            }
         }
     }
 
