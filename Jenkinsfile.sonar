@@ -13,6 +13,8 @@ node {
             [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh"
             nvm use 18
 
+            export CHROME_BIN=$(which chromium-browser)
+
             # FRONTEND
             cd ambiance-front
             npm install
