@@ -11,17 +11,26 @@ node {
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
             nvm use 18
 
+            # Install Chrome if not present
+            if ! command -v google-chrome &> /dev/null; then
+                echo "Installing Google Chrome..."
+                sudo apt-get update
+                sudo apt-get install -y wget
+                wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+                echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+                sudo apt-get update
+                sudo apt-get install -y google-chrome-stable
+            fi
+
             # FRONTEND
             cd ambiance-front
             npm install
             
-            # Configuration spécifique pour ChromeHeadless
+            # Configuration for ChromeHeadless
             export CHROME_BIN=/usr/bin/google-chrome
-            export DISPLAY=:99.0
-            Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
             
-            # Exécution des tests avec la bonne configuration
-            npm run test -- --watch=false --code-coverage --browsers=ChromeHeadlessCI
+            # Run tests with correct configuration
+            npm run test -- --watch=false --code-coverage --browsers=ChromeHeadlessNoSandbox
             cd ..
 
             # BACKEND

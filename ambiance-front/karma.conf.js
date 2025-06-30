@@ -30,10 +30,16 @@ module.exports = function (config) {
       ]
     },
     reporters: ['progress', 'kjhtml'],
-    browsers: ['ChromeHeadlessCI'],
-    ChromeHeadlessCI: {
-      base: 'ChromeHeadless',
-      flags: ['--no-sandbox', '--disable-gpu']
+    browsers: ['ChromeHeadlessNoSandbox'],
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: [
+          '--no-sandbox',
+          '--disable-gpu',
+          '--disable-dev-shm-usage'
+        ]
+      }
     },
     restartOnFileChange: true
   });
