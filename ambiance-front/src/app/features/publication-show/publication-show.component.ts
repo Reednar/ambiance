@@ -104,6 +104,7 @@ if (value) {
               this.paiementsService.create(sessionId).subscribe({
                 next: (data) => {
                   console.log('Justificatif de paiement enregistré :', data);
+                  console.log('Justificatif de paiement enregistré :', this.publication.idPublication);
                   this.addUserToGroup(Number(sessionStorage.getItem('id_utilisateur') ?? ''), this.publication.idPublication);
                 },
                 error: (err) => {
