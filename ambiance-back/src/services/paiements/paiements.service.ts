@@ -37,8 +37,8 @@ export class PaiementsService {
       payment_method_types: ['card'],
       line_items,
       mode: 'payment',
-      success_url: `http://localhost:4200/publication-show/${data?.idPublication}?paymentStatus=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:4200/publication-show/${data?.idPublication}?paymentStatus=cancel&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.FRONTEND_URL}/publication-show/${data?.idPublication}?paymentStatus=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL}/publication-show/${data?.idPublication}?paymentStatus=cancel&session_id={CHECKOUT_SESSION_ID}`,
     });
 
     return session.url;
