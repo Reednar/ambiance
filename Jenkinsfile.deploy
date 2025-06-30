@@ -1,14 +1,11 @@
 node {
-    // Clean the workspace before starting the pipeline
     cleanWs()
 
-    // Define environment variables
     def NODE_VERSION = '22.11.0'
     def NPM_VERSION = '10.8.3'
     def FRONT_DIR = '/var/www/AM-FRONT'
     def BACK_DIR = '/var/www/AM-BACK'
 
-    // Use credentials for sensitive data
     withCredentials([
         string(credentialsId: 'DATABASE_HOST', variable: 'DATABASE_HOST'),
         string(credentialsId: 'DATABASE_PORT', variable: 'DATABASE_PORT'),
@@ -22,7 +19,6 @@ node {
         string(credentialsId: 'MAIL_PASS', variable: 'MAIL_PASS'),
         string(credentialsId: 'SALT_ROUNDS', variable: 'SALT_ROUNDS'),
         string(credentialsId: 'STRIPE_SECRET_KEY', variable: 'STRIPE_SECRET_KEY'),
-
     ]) {
 
         stage('Checkout') {
@@ -102,7 +98,6 @@ MAIL_USER=${MAIL_USER}
 MAIL_PASS=${MAIL_PASS}
 SALT_ROUNDS=${SALT_ROUNDS}
 STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
-
 EOF
             """
         }
