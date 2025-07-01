@@ -35,6 +35,7 @@ export class AuthController {
     accessToken: string,
     refreshToken: string,
     userId: string,
+    isAdmin: boolean = false,
   ) {
     res.cookie('access_token', accessToken, {
       httpOnly: true,
@@ -53,6 +54,14 @@ export class AuthController {
     });
 
     res.cookie('user_id', userId, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 jours
+      path: '/',
+    });
+
+    res.cookie('isAdmin', isAdmin, {
       httpOnly: true,
       secure: isProd,
       sameSite: 'lax',
@@ -109,6 +118,7 @@ export class AuthController {
         loginResponse.access_token,
         loginResponse.refresh_token,
         loginResponse.idUtilisateur.toString(),
+        loginResponse.isAdmin,
       );
 
       this.logger.log(
@@ -124,6 +134,7 @@ export class AuthController {
         success: true,
         userId: loginResponse.idUtilisateur,
         emailConfirmed: loginResponse.emailConfirmed,
+        isAdmin: loginResponse.isAdmin,
       };
     } catch (error) {
       this.logger.warn(
@@ -200,6 +211,7 @@ export class AuthController {
     const accessToken = req.cookies['access_token'];
     const refreshToken = req.cookies['refresh_token'];
     const userId = req.cookies['user_id'];
+    const isAdmin = req.cookies['isAdmin'] == 'true';
 
     if (!accessToken || !userId) {
       this.logger.log(
@@ -225,6 +237,7 @@ export class AuthController {
         authenticated: true,
         userId: payload.sub,
         emailConfirmed: user.emailConfirmed,
+        isAdmin: isAdmin,
       });
     } catch (e) {
       this.logger.warn(

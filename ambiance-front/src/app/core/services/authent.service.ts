@@ -19,6 +19,10 @@ export class AuthService {
   private emailConfirmed = new BehaviorSubject<boolean>(false);
   emailConfirmed$ = this.emailConfirmed.asObservable();
 
+  // Comportement observable indiquant si l'email de l'utilisateur est confirmé
+  private isAdmin = new BehaviorSubject<boolean>(false);
+  isAdmin$ = this.isAdmin.asObservable();
+
   // constructor(private http: HttpClient, private router: Router) {
   //   // Au démarrage du service, vérifie l'authentification
   //   this.isAuthenticated();
@@ -29,6 +33,7 @@ export class AuthService {
       // status ici est { authenticated: boolean; emailConfirmed: boolean }
       this.isConnected.next(status.authenticated);
       this.emailConfirmed.next(status.emailConfirmed)
+      this.isAdmin.next(status.isAdmin || false); // Assure que isAdmin est toujours un boolean
     });
   }
 
@@ -141,8 +146,8 @@ export class AuthService {
    * Met à jour les observables et le stockage local selon la réponse.
    * @returns Observable indiquant si authentifié et si email confirmé
    */
-  isAuthenticated(): Observable<{ authenticated: boolean; emailConfirmed: boolean }> {
-    return this.http.get<{ authenticated: boolean; userId: string; emailConfirmed: boolean }>(
+  isAuthenticated(): Observable<{ authenticated: boolean; emailConfirmed: boolean, isAdmin: boolean }> {
+    return this.http.get<{ authenticated: boolean; userId: string; emailConfirmed: boolean; isAdmin: boolean  }>(
       `${this.apiUrl}/is-authenticated`,
       { withCredentials: true }
     ).pipe(
@@ -158,7 +163,7 @@ export class AuthService {
           this.isConnected.next(false);
           this.emailConfirmed.next(false);
         }
-        return { authenticated: response.authenticated, emailConfirmed: response.emailConfirmed };
+        return { authenticated: response.authenticated, emailConfirmed: response.emailConfirmed, isAdmin: response.isAdmin || false };
       }),
       catchError(error => {
         // En cas d'erreur, considère que l'utilisateur n'est pas authentifié
@@ -166,7 +171,8 @@ export class AuthService {
         sessionStorage.removeItem('id_utilisateur');
         this.isConnected.next(false);
         this.emailConfirmed.next(false);
-        return of({ authenticated: false, emailConfirmed: false });
+        this.isAdmin.next(false); // Réinitialise isAdmin
+        return of({ authenticated: false, emailConfirmed: false, isAdmin: false });
       })
     );
   }
@@ -189,6 +195,7 @@ export class AuthService {
       emailConfirmed?: boolean;
       twoFactorRequired?: boolean;
       message?: string;
+      isAdmin: boolean;
     }>(
       `${this.apiUrl}/login-2fa`,
       credentials,
@@ -199,6 +206,7 @@ export class AuthService {
           sessionStorage.setItem('id_utilisateur', response.userId || '');
           this.isConnected.next(true);
           this.emailConfirmed.next(response.emailConfirmed === true);
+          this.isAdmin.next(response.isAdmin);
         }
       }),
       catchError(error => {

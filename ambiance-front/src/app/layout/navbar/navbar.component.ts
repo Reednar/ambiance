@@ -33,6 +33,7 @@ export class NavbarComponent implements AfterViewInit, OnInit, OnDestroy {
   items: MenuItem[] = [];
   isConnected = false;
   emailConfirmed = false;
+  isAdmin = false;
   private authSubscription!: Subscription;
   publications: Publication[] = [];
   ecoles: Ecole[] = [];
@@ -88,6 +89,12 @@ export class NavbarComponent implements AfterViewInit, OnInit, OnDestroy {
 
       this.authSubscription = this.authService.emailConfirmed$.subscribe((value) => {
         this.emailConfirmed = value;
+        this.cdr.detectChanges();
+      });
+
+      this.authSubscription = this.authService.isAdmin$.subscribe((value) => {
+        this.isAdmin = value;
+        console.log('isAdmin:', this.isAdmin);  // Debugging pour vérifier la valeur de isAdmin
         this.cdr.detectChanges();
       });
       // Attendre que les données soient chargées avant de les passer à `initialize()`
