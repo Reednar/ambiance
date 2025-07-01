@@ -29,9 +29,16 @@ export class ArticlesController {
    */
   @Post()
   @UseGuards(JwtAuthGuard)
-  create(@Body() data: any): Promise<Article> {
-    this.logger.log('Creating article', data);
-    return this.articleService.create(data);
+  async create(@Body() data: any): Promise<Article> {
+    try {
+      this.logger.log(`[INFO] Creating article - authorId: ${data.idAuteur}, titre: ${data.titre}`);
+      const article = await this.articleService.create(data);
+      this.logger.log(`[INFO] Article created successfully - articleId: ${article.idArticle}, authorId: ${data.idAuteur}`);
+      return article;
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to create article - authorId: ${data.idAuteur}, error: ${error.message}`);
+      throw error;
+    }
   }
 
   /**
@@ -39,8 +46,19 @@ export class ArticlesController {
    */
   @Post('findOne')
   async findOne(@Body() body: { id: number }): Promise<Article> {
-    this.logger.log(`Finding article with id: ${body.id}`);
-    return this.articleService.findOne(body.id);
+    try {
+      this.logger.log(`[INFO] Finding article - articleId: ${body.id}`);
+      const article = await this.articleService.findOne(body.id);
+      if (article) {
+        this.logger.log(`[INFO] Article found successfully - articleId: ${body.id}, title: ${article.titre}`);
+      } else {
+        this.logger.warn(`[WARN] Article not found - articleId: ${body.id}`);
+      }
+      return article;
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to find article - articleId: ${body.id}, error: ${error.message}`);
+      throw error;
+    }
   }
 
   /**
@@ -49,8 +67,14 @@ export class ArticlesController {
   @Post('delete')
   @UseGuards(JwtAuthGuard)
   async remove(@Body() body: { id: number }): Promise<void> {
-    this.logger.log(`Deleting article with id: ${body.id}`);
-    return this.articleService.remove(body.id);
+    try {
+      this.logger.log(`[INFO] Deleting article - articleId: ${body.id}`);
+      await this.articleService.remove(body.id);
+      this.logger.log(`[INFO] Article deleted successfully - articleId: ${body.id}`);
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to delete article - articleId: ${body.id}, error: ${error.message}`);
+      throw error;
+    }
   }
 
   /**
@@ -69,20 +93,26 @@ export class ArticlesController {
       idEcole: number | null;
     }[]
   > {
-    this.logger.log('Fetching all articles with authors and tags');
-    const articles = await this.articleService.findAllWithAuthorAndTags();
-    return articles.map((article) => ({
-      id: article.idArticle,
-      dateCreation: article.dateCreation,
-      utilisateur: article.utilisateur
-        ? `${article.utilisateur.prenom} ${article.utilisateur.nom}`
-        : null,
-      tags: article.tags ? article.tags.map((tag) => tag.nom) : [],
-      contenu: article.contenu,
-      image: article.image,
-      nomEcole: article?.ecole?.nom ?? null,
-      idEcole: article?.ecole?.id ?? null,
-    }));
+    try {
+      this.logger.log('[INFO] Fetching all articles with authors and tags');
+      const articles = await this.articleService.findAllWithAuthorAndTags();
+      this.logger.log(`[INFO] Articles retrieved successfully - count: ${articles.length}`);
+      return articles.map((article) => ({
+        id: article.idArticle,
+        dateCreation: article.dateCreation,
+        utilisateur: article.utilisateur
+          ? `${article.utilisateur.prenom} ${article.utilisateur.nom}`
+          : null,
+        tags: article.tags ? article.tags.map((tag) => tag.nom) : [],
+        contenu: article.contenu,
+        image: article.image,
+        nomEcole: article?.ecole?.nom ?? null,
+        idEcole: article?.ecole?.id ?? null,
+      }));
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to fetch articles with authors and tags - error: ${error.message}`);
+      throw error;
+    }
   }
 
   /**
@@ -90,12 +120,18 @@ export class ArticlesController {
    */
   @Post('tags')
   async getAllTags(): Promise<{ id: number; nom: string }[]> {
-    this.logger.log('Fetching all tags');
-    const tags = await this.tagService.findAll();
-    return tags.map((tag) => ({
-      id: tag.idTag,
-      nom: tag.nom,
-    }));
+    try {
+      this.logger.log('[INFO] Fetching all tags');
+      const tags = await this.tagService.findAll();
+      this.logger.log(`[INFO] Tags retrieved successfully - count: ${tags.length}`);
+      return tags.map((tag) => ({
+        id: tag.idTag,
+        nom: tag.nom,
+      }));
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to fetch tags - error: ${error.message}`);
+      throw error;
+    }
   }
 
   /**
@@ -106,26 +142,31 @@ export class ArticlesController {
   async addTagsToArticle(
     @Body() body: { articleId: number; tags: string[] },
   ): Promise<{ message: string; article: Article }> {
-    this.logger.log(`Adding tags to article ${body.articleId}: ${body.tags}`);
-    const { articleId, tags } = body;
+    try {
+      this.logger.log(`[INFO] Adding tags to article - articleId: ${body.articleId}, tags: ${JSON.stringify(body.tags)}`);
+      const { articleId, tags } = body;
 
-    const article = await this.articleService.findOne(articleId, ['tags']);
-    if (!article) {
-      this.logger.error(`Article not found: ${articleId}`);
-      throw new Error('Article not found');
-    }
-
-    article.tags = article.tags || [];
-    for (const tagName of tags) {
-      const tag = await this.tagService.create(tagName);
-      if (!article.tags.find((t) => t.idTag === tag.idTag)) {
-        article.tags.push(tag);
+      const article = await this.articleService.findOne(articleId, ['tags']);
+      if (!article) {
+        this.logger.warn(`[WARN] Article not found for tag addition - articleId: ${articleId}`);
+        throw new Error('Article not found');
       }
-    }
 
-    const updatedArticle = await this.articleService.save(article);
-    this.logger.log(`Tags added to article ${articleId}`);
-    return { message: "Tags ajoutés à l'article", article: updatedArticle };
+      article.tags = article.tags || [];
+      for (const tagName of tags) {
+        const tag = await this.tagService.create(tagName);
+        if (!article.tags.find((t) => t.idTag === tag.idTag)) {
+          article.tags.push(tag);
+        }
+      }
+
+      const updatedArticle = await this.articleService.save(article);
+      this.logger.log(`[INFO] Tags added successfully to article - articleId: ${articleId}, tagsCount: ${tags.length}`);
+      return { message: "Tags ajoutés à l'article", article: updatedArticle };
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to add tags to article - articleId: ${body.articleId}, error: ${error.message}`);
+      throw error;
+    }
   }
 
   /**
@@ -136,24 +177,27 @@ export class ArticlesController {
   async removeTagsFromArticle(
     @Body() body: { articleId: number; tags: string[] },
   ): Promise<{ message: string; article: Article }> {
-    this.logger.log(
-      `Removing tags from article ${body.articleId}: ${body.tags}`,
-    );
-    const { articleId, tags } = body;
+    try {
+      this.logger.log(`[INFO] Removing tags from article - articleId: ${body.articleId}, tags: ${JSON.stringify(body.tags)}`);
+      const { articleId, tags } = body;
 
-    const article = await this.articleService.findOne(articleId, ['tags']);
-    if (!article) {
-      this.logger.error(`Article not found: ${articleId}`);
-      throw new Error('Article not found');
+      const article = await this.articleService.findOne(articleId, ['tags']);
+      if (!article) {
+        this.logger.warn(`[WARN] Article not found for tag removal - articleId: ${articleId}`);
+        throw new Error('Article not found');
+      }
+
+      article.tags = (article.tags || []).filter(
+        (tag) => !tags.includes(tag.nom),
+      );
+      const updatedArticle = await this.articleService.save(article);
+
+      this.logger.log(`[INFO] Tags removed successfully from article - articleId: ${articleId}, tagsCount: ${tags.length}`);
+      return { message: "Tags retirés de l'article", article: updatedArticle };
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to remove tags from article - articleId: ${body.articleId}, error: ${error.message}`);
+      throw error;
     }
-
-    article.tags = (article.tags || []).filter(
-      (tag) => !tags.includes(tag.nom),
-    );
-    const updatedArticle = await this.articleService.save(article);
-
-    this.logger.log(`Tags removed from article ${articleId}`);
-    return { message: "Tags retirés de l'article", article: updatedArticle };
   }
 
   /**
@@ -172,34 +216,41 @@ export class ArticlesController {
       tagIds?: number[];
     },
   ): Promise<Article> {
-    this.logger.log(
-      `Creating article with title: ${body.titre} by author: ${body.idAuteur}`,
-    );
-    const utilisateur = await this.articleService.findAuteur(body.idAuteur);
-    if (!utilisateur) {
-      this.logger.error(`Auteur not found: ${body.idAuteur}`);
-      throw new Error('Auteur not found');
+    try {
+      this.logger.log(`[INFO] Creating detailed article - title: ${body.titre}, authorId: ${body.idAuteur}, schoolId: ${body.id_ecole || 'none'}`);
+      
+      const utilisateur = await this.articleService.findAuteur(body.idAuteur);
+      if (!utilisateur) {
+        this.logger.warn(`[WARN] Author not found for article creation - authorId: ${body.idAuteur}`);
+        throw new Error('Auteur not found');
+      }
+
+      if (body.image && !body.image.startsWith('http')) {
+        this.logger.warn(`[WARN] Invalid image URL provided - authorId: ${body.idAuteur}, imageUrl: ${body.image}`);
+        throw new Error('Invalid image URL');
+      }
+
+      const ecole = body.id_ecole
+        ? await this.schoolService.findOne(body.id_ecole)
+        : null;
+      const articleData: Partial<any> = {
+        titre: body.titre,
+        contenu: body.contenu,
+        utilisateur: utilisateur,
+        dateCreation: new Date(),
+        image: body.image,
+        idEcole: body.id_ecole,
+        ...(ecole ? { ecole } : {}),
+        tagIds: body.tagIds,
+      };
+
+      const article = await this.articleService.create(articleData);
+      this.logger.log(`[INFO] Detailed article created successfully - articleId: ${article.idArticle}, authorId: ${body.idAuteur}`);
+      return article;
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to create detailed article - authorId: ${body.idAuteur}, error: ${error.message}`);
+      throw error;
     }
-
-    if (body.image && !body.image.startsWith('http')) {
-      throw new Error('Invalid image URL');
-    }
-
-    const ecole = body.id_ecole
-      ? await this.schoolService.findOne(body.id_ecole)
-      : null;
-    const articleData: Partial<any> = {
-      titre: body.titre,
-      contenu: body.contenu,
-      utilisateur: utilisateur,
-      dateCreation: new Date(),
-      image: body.image,
-      idEcole: body.id_ecole,
-      ...(ecole ? { ecole } : {}),
-      tagIds: body.tagIds,
-    };
-
-    return await this.articleService.create(articleData);
   }
 
   /**
@@ -216,25 +267,31 @@ export class ArticlesController {
     nomEcole?: string;
     idEcole?: number;
   }> {
-    this.logger.log(`Finding article with author for id: ${body.id}`);
-    const article = await this.articleService.findOne(body.id, ['utilisateur']);
-    if (!article) {
-      this.logger.error(`Article not found: ${body.id}`);
-      throw new Error('Article not found');
-    }
+    try {
+      this.logger.log(`[INFO] Finding article with author - articleId: ${body.id}`);
+      const article = await this.articleService.findOne(body.id, ['utilisateur']);
+      if (!article) {
+        this.logger.warn(`[WARN] Article not found for author lookup - articleId: ${body.id}`);
+        throw new Error('Article not found');
+      }
 
-    return {
-      id: article.idArticle,
-      titre: article.titre,
-      contenu: article.contenu,
-      dateCreation: article.dateCreation,
-      utilisateur: article.utilisateur
-        ? `${article.utilisateur.prenom} ${article.utilisateur.nom}`
-        : null,
-      tags: article.tags ? article.tags.map((tag) => tag.nom) : [],
-      nomEcole: article?.ecole?.nom ?? null,
-      idEcole: article?.ecole?.id ?? null,
-    };
+      this.logger.log(`[INFO] Article with author found successfully - articleId: ${body.id}, author: ${article.utilisateur?.prenom} ${article.utilisateur?.nom}`);
+      return {
+        id: article.idArticle,
+        titre: article.titre,
+        contenu: article.contenu,
+        dateCreation: article.dateCreation,
+        utilisateur: article.utilisateur
+          ? `${article.utilisateur.prenom} ${article.utilisateur.nom}`
+          : null,
+        tags: article.tags ? article.tags.map((tag) => tag.nom) : [],
+        nomEcole: article?.ecole?.nom ?? null,
+        idEcole: article?.ecole?.id ?? null,
+      };
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to find article with author - articleId: ${body.id}, error: ${error.message}`);
+      throw error;
+    }
   }
 
   /**
@@ -253,20 +310,26 @@ export class ArticlesController {
       idEcole?: number;
     }>
   > {
-    this.logger.log(`Finding all articles for author ID: ${body.id}`);
-    const articles = await this.articleService.findByAuthorId(body.id);
+    try {
+      this.logger.log(`[INFO] Finding all articles for author - authorId: ${body.id}`);
+      const articles = await this.articleService.findByAuthorId(body.id);
 
-    return articles.map((article) => ({
-      id: article.idArticle,
-      titre: article.titre,
-      contenu: article.contenu,
-      dateCreation: article.dateCreation,
-      utilisateur: article.utilisateur
-        ? `${article.utilisateur.prenom} ${article.utilisateur.nom}`
-        : '',
-      tags: article.tags?.map((tag) => tag.nom) || [],
-      nomEcole: article.ecole?.nom ?? null,
-      idEcole: article.ecole?.id ?? null,
-    }));
+      this.logger.log(`[INFO] Articles by author retrieved successfully - authorId: ${body.id}, count: ${articles.length}`);
+      return articles.map((article) => ({
+        id: article.idArticle,
+        titre: article.titre,
+        contenu: article.contenu,
+        dateCreation: article.dateCreation,
+        utilisateur: article.utilisateur
+          ? `${article.utilisateur.prenom} ${article.utilisateur.nom}`
+          : '',
+        tags: article.tags?.map((tag) => tag.nom) || [],
+        nomEcole: article.ecole?.nom ?? null,
+        idEcole: article.ecole?.id ?? null,
+      }));
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to find articles by author - authorId: ${body.id}, error: ${error.message}`);
+      throw error;
+    }
   }
 }

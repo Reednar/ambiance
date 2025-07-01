@@ -77,24 +77,36 @@ export class UsersController {
     @Req() req: Request,
   ): Promise<UserDto[]> {
     this.logger.log(
-      `[${req.method} ${req.url}] Fetching all users`,
-      body.userId,
-    ); // Log de la requête
+      `[INFO] [${req.method} ${req.url}] Fetching all users`,
+      { userId: body.userId }
+    );
+    
     const user = await this.usersService.findOne(body.userId);
 
     if (!user || user.role !== 'Administrateur') {
+      this.logger.warn(
+        `[WARN] [${req.method} ${req.url}] Access denied - User not admin`,
+        { userId: body.userId, userRole: user?.role || 'not_found' }
+      );
       throw new HttpException(
         'Access denied: Only administrators can access this resource.',
         HttpStatus.FORBIDDEN,
       );
     }
 
+    this.logger.log(
+      `[INFO] [${req.method} ${req.url}] Users fetched successfully`,
+      { requestedBy: body.userId }
+    );
     return this.usersService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: number, @Req() req: Request): Promise<UserDto> {
-    this.logger.log(`[${req.method} ${req.url}] Fetching user with ID: ${id}`); // Log de la requête
+    this.logger.log(
+      `[INFO] [${req.method} ${req.url}] Fetching user by ID`,
+      { userId: id }
+    );
     return this.usersService.findOne(id);
   }
 
@@ -114,7 +126,10 @@ export class UsersController {
     },
     @Req() req: Request,
   ) {
-    this.logger.log(`[${req.method} ${req.url}] Creating a new user`, body);
+    this.logger.log(
+      `[INFO] [${req.method} ${req.url}] Starting user creation`,
+      { email: body.mail, prenom: body.prenom, nom: body.nom }
+    );
 
     const futureUser = { ...body, role: 'Utilisateur' } as User;
 
@@ -125,9 +140,15 @@ export class UsersController {
       
       if (partnerSchool) {
         futureUser.idEcole = partnerSchool.id;
-        this.logger.log(`User will be associated with partner school: ${partnerSchool.nom} (ID: ${partnerSchool.id})`);
+        this.logger.log(
+          `[INFO] [${req.method} ${req.url}] User associated with partner school`,
+          { schoolName: partnerSchool.nom, schoolId: partnerSchool.id, emailDomain }
+        );
       } else {
-        this.logger.log(`No partner school found for domain: ${emailDomain}`);
+        this.logger.warn(
+          `[WARN] [${req.method} ${req.url}] No partner school found for domain`,
+          { emailDomain, userEmail: futureUser.mail }
+        );
         throw new HttpException(
           `L'inscription est réservée aux étudiants des écoles partenaires. Le domaine ${emailDomain} n'est pas autorisé.`,
           HttpStatus.FORBIDDEN,
@@ -152,23 +173,30 @@ export class UsersController {
       futureUser.confirmationTokenExpires = expirationDate;
       futureUser.emailConfirmed = false;
 
-      // Log des données à insérer
-      console.log('futureUser to insert:', JSON.stringify(futureUser, null, 2));
-
       // Création en base
       const createdUser = await this.usersService.create(futureUser);
+
+      this.logger.log(
+        `[INFO] [${req.method} ${req.url}] User created in database`,
+        { userId: createdUser.idUtilisateur, email: createdUser.mail }
+      );
 
       // Envoi mail de confirmation (optionnel : tu peux aussi le faire dans un service à part)
       try {
         await this.mailService.sendConfirmationEmail(createdUser.mail, token);
+        this.logger.log(
+          `[INFO] [${req.method} ${req.url}] Confirmation email sent successfully`,
+          { userId: createdUser.idUtilisateur, email: createdUser.mail }
+        );
       } catch (mailError) {
-        // Log complet de l'erreur d'envoi de mail
-        console.error('Error sending confirmation email:', {
-          message: mailError?.message,
-          stack: mailError?.stack,
-          code: mailError?.code,
-          error: mailError,
-        });
+        this.logger.error(
+          `[ERROR] [${req.method} ${req.url}] Failed to send confirmation email`,
+          { 
+            userId: createdUser.idUtilisateur,
+            email: createdUser.mail,
+            error: mailError.message 
+          }
+        );
         // Optionnel : supprimer l'utilisateur créé si l'email échoue
         await this.usersService.remove(createdUser.idUtilisateur);
         throw new HttpException(
@@ -184,13 +212,14 @@ export class UsersController {
 
       return createdUser;
     } catch (error) {
-      // Log complet de l'erreur pour debug
-      console.error('Error during user creation:', {
-        message: error?.message,
-        stack: error?.stack,
-        code: error?.code,
-        error,
-      });
+      this.logger.error(
+        `[ERROR] [${req.method} ${req.url}] User creation failed`,
+        {
+          email: body?.mail,
+          error: error.message,
+          errorCode: error.code
+        }
+      );
       
       // Gestion spécifique de l'erreur de domaine non autorisé
       if (error.status === HttpStatus.FORBIDDEN && error.message?.includes('domaine')) {
@@ -205,6 +234,10 @@ export class UsersController {
       }
       
       if (error.code === 'ER_DUP_ENTRY' && error.message.includes('Mail')) {
+        this.logger.warn(
+          `[WARN] [${req.method} ${req.url}] Email already exists`,
+          { email: body?.mail }
+        );
         throw new HttpException('EMAIL_ALREADY_USED', HttpStatus.BAD_REQUEST);
       }
       if (error.response === 'USER_CREATED_BUT_EMAIL_FAILED') {
@@ -214,12 +247,6 @@ export class UsersController {
         );
       }
 
-      this.logger.error('Error during user creation', {
-        message: error?.message,
-        stack: error?.stack,
-        code: error?.code,
-        error,
-      });
       throw new HttpException(
         'INTERNAL_SERVER_ERROR',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -236,22 +263,37 @@ export class UsersController {
     @Req() req: RequestWithCookies,
     @UploadedFile() image: Express.Multer.File,
   ): Promise<UserDto> {
-    this.logger.log(`[${req.method} ${req.url}] Updating user with ID: ${id}`);
+    this.logger.log(
+      `[INFO] [${req.method} ${req.url}] Starting user update`,
+      { userId: id }
+    );
 
     const connectedUserId = id || req.cookies['user_id']; // selon ta config
 
     if (!connectedUserId) {
+      this.logger.warn(
+        `[WARN] [${req.method} ${req.url}] User not authenticated`,
+        { requestedUserId: id }
+      );
       throw new ForbiddenException('Utilisateur non authentifié');
     }
 
     // Vérification que l'utilisateur connecté ne modifie QUE SON propre profil
     if (connectedUserId !== id) {
+      this.logger.warn(
+        `[WARN] [${req.method} ${req.url}] User trying to modify another profile`,
+        { connectedUserId, requestedUserId: id }
+      );
       throw new ForbiddenException(
         'Vous ne pouvez modifier que votre propre compte',
       );
     }
 
     if (image) {
+      this.logger.log(
+        `[INFO] [${req.method} ${req.url}] Image uploaded for user`,
+        { userId: id, imageSize: image.size, imageMimeType: image.mimetype }
+      );
       // Convertis directement le buffer en base64 string, en précisant le mimetype envoyé dans updateUserDto
       updateUserDto.image = image.buffer.toString('base64');
       updateUserDto.imageMimeType =
@@ -263,7 +305,10 @@ export class UsersController {
 
   @Delete(':id')
   remove(@Param('id') id: number, @Req() req: Request): Promise<void> {
-    this.logger.log(`[${req.method} ${req.url}] Removing user with ID: ${id}`);
+    this.logger.log(
+      `[INFO] [${req.method} ${req.url}] Removing user`,
+      { userId: id }
+    );
     return this.usersService.remove(id);
   }
 
@@ -273,6 +318,7 @@ export class UsersController {
     const { token } = body;
 
     if (!token) {
+      this.logger.warn('[WARN] [POST /users/validate] Token missing in validation request');
       throw new HttpException('Token manquant', HttpStatus.BAD_REQUEST);
     }
 
@@ -280,10 +326,18 @@ export class UsersController {
     const user = await this.usersService.findByConfirmationToken(token);
 
     if (!user) {
+      this.logger.warn(
+        '[WARN] [POST /users/validate] Invalid or expired token',
+        { token: token.substring(0, 8) + '...' }
+      );
       throw new HttpException('Token invalide ou expiré', HttpStatus.NOT_FOUND);
     }
 
     if (user.emailConfirmed) {
+      this.logger.warn(
+        '[WARN] [POST /users/validate] User already validated',
+        { userId: user.idUtilisateur }
+      );
       throw new HttpException(
         'Utilisateur déjà validé',
         HttpStatus.BAD_REQUEST,
@@ -292,6 +346,10 @@ export class UsersController {
 
     // Vérification expiration du token
     if (user.confirmationTokenExpires < new Date()) {
+      this.logger.warn(
+        '[WARN] [POST /users/validate] Token expired',
+        { userId: user.idUtilisateur, expiredAt: user.confirmationTokenExpires }
+      );
       throw new HttpException('Token expiré', HttpStatus.BAD_REQUEST);
     }
 
@@ -304,14 +362,28 @@ export class UsersController {
 
     await this.usersService.update(user.idUtilisateur, updateUserDto);
 
+    this.logger.log(
+      '[INFO] [POST /users/validate] User validated successfully',
+      { userId: user.idUtilisateur, email: user.mail }
+    );
+
     return { message: 'Utilisateur validé avec succès' };
   }
 
   @Post('resend-confirmation-email')
   async resendConfirmationEmail(@Body('id') id: number) {
+    this.logger.log(
+      '[INFO] [POST /users/resend-confirmation-email] Resending confirmation email',
+      { userId: id }
+    );
+
     const user = await this.usersService.findEntityById(id);
 
     if (!user || user.emailConfirmed) {
+      this.logger.warn(
+        '[WARN] [POST /users/resend-confirmation-email] Invalid user or already confirmed',
+        { userId: id, userExists: !!user, emailConfirmed: user?.emailConfirmed }
+      );
       throw new BadRequestException('Utilisateur invalide ou déjà confirmé.');
     }
 
@@ -329,13 +401,27 @@ export class UsersController {
     // Envoi de l'email
     await this.mailService.sendConfirmationEmail(user.mail, token);
 
+    this.logger.log(
+      '[INFO] [POST /users/resend-confirmation-email] Confirmation email resent successfully',
+      { userId: id, email: user.mail }
+    );
+
     return { message: 'Mail de confirmation renvoyé' };
   }
 
   @Post('forgot-password')
   async forgotPassword(@Body('mail') mail: string) {
+    this.logger.log(
+      '[INFO] [POST /users/forgot-password] Password reset requested',
+      { email: mail }
+    );
+    
     const user = await this.usersService.findOneByMail(mail);
     if (!user) {
+      this.logger.warn(
+        '[WARN] [POST /users/forgot-password] User not found for password reset',
+        { email: mail }
+      );
       throw new BadRequestException('Utilisateur non trouvé');
     }
 
@@ -344,6 +430,11 @@ export class UsersController {
     );
     await this.mailService.sendResetPasswordEmail(user.mail, token);
 
+    this.logger.log(
+      '[INFO] [POST /users/forgot-password] Reset email sent successfully',
+      { userId: user.idUtilisateur, email: mail }
+    );
+
     return { message: 'Email de réinitialisation envoyé' };
   }
 
@@ -351,10 +442,16 @@ export class UsersController {
   async resetPassword(@Body() body: { token: string; newPassword: string }) {
     const { token, newPassword } = body;
 
+    this.logger.log('[INFO] [POST /users/reset-password] Password reset attempt');
+
     let payload;
     try {
       payload = this.authService.verifyResetPasswordToken(token);
     } catch {
+      this.logger.warn(
+        '[WARN] [POST /users/reset-password] Invalid or expired reset token',
+        { token: token?.substring(0, 8) + '...' }
+      );
       throw new BadRequestException('Token invalide ou expiré');
     }
 
@@ -363,6 +460,11 @@ export class UsersController {
     const hash = await bcrypt.hash(newPassword, salt);
 
     await this.usersService.update(userId, { motDePasse: newPassword });
+
+    this.logger.log(
+      '[INFO] [POST /users/reset-password] Password reset successful',
+      { userId }
+    );
 
     return { message: 'Mot de passe réinitialisé avec succès' };
   }

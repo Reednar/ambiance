@@ -6,46 +6,65 @@ import {
   Body,
   Put,
   Delete,
+  Logger,
+  Req,
 } from '@nestjs/common';
 import { CategoriesService } from '../../services/categories/categories.service';
 
-@Controller('categories') // Définit la route de base pour ce contrôleur : /categories
+@Controller('categories')
 export class CategoriesController {
+  private readonly logger = new Logger(CategoriesController.name);
+
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
-  // Récupère toutes les catégories
-  findAll() {
+  findAll(@Req() req?: Request) {
+    this.logger.log('[INFO] [GET /categories] Fetching all categories');
     return this.categoriesService.findAll();
   }
 
   @Get(':id')
-  // Récupère une catégorie spécifique par son ID
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id); // +id convertit l'ID string en number
+  findOne(@Param('id') id: string, @Req() req?: Request) {
+    this.logger.log(
+      '[INFO] [GET /categories/:id] Fetching category by ID',
+      { categoryId: +id }
+    );
+    return this.categoriesService.findOne(+id);
   }
 
   @Get('/dto/:id')
-  // Récupère une catégorie sous forme de DTO (Data Transfer Object) par ID
-  findOneDto(@Param('id') id: string) {
-    return this.categoriesService.findOneDto(+id); // Version "allégée" ou structurée différemment
+  findOneDto(@Param('id') id: string, @Req() req?: Request) {
+    this.logger.log(
+      '[INFO] [GET /categories/dto/:id] Fetching category DTO by ID',
+      { categoryId: +id }
+    );
+    return this.categoriesService.findOneDto(+id);
   }
 
   @Post()
-  // Crée une nouvelle catégorie avec un nom
-  create(@Body() data: { nom: string }) {
+  create(@Body() data: { nom: string }, @Req() req?: Request) {
+    this.logger.log(
+      '[INFO] [POST /categories] Creating new category',
+      { categoryName: data.nom }
+    );
     return this.categoriesService.create(data);
   }
 
   @Put(':id')
-  // Met à jour une catégorie existante par ID avec un nouveau nom
-  update(@Param('id') id: string, @Body() data: { nom: string }) {
+  update(@Param('id') id: string, @Body() data: { nom: string }, @Req() req?: Request) {
+    this.logger.log(
+      '[INFO] [PUT /categories/:id] Updating category',
+      { categoryId: +id, newName: data.nom }
+    );
     return this.categoriesService.update(+id, data);
   }
 
   @Delete(':id')
-  // Supprime une catégorie par son ID
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string, @Req() req?: Request) {
+    this.logger.log(
+      '[INFO] [DELETE /categories/:id] Removing category',
+      { categoryId: +id }
+    );
     return this.categoriesService.remove(+id);
   }
 }
