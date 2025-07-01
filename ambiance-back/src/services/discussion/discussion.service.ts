@@ -82,4 +82,11 @@ export class DiscussionService {
     });
     return { publicationId: discussion?.idGroupe?.publication?.idPublication ?? null };
   }
+
+  async findByGroupId(groupId: number): Promise<Discussion | null> {
+    return this.discussionRepository.findOne({
+      where: { idGroupe: { idGroupe: groupId } },
+      relations: ['idGroupe'],
+    });
+  }
 }
