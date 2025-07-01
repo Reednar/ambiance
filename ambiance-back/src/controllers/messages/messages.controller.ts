@@ -9,31 +9,43 @@ export class MessageController {
 
   @Post()
   create(@Body() data: any, @Req() req: Request) {
-    this.logger.log(`[${req.method} ${req.url}] Creating a new message`, data);
+    this.logger.log(
+      `[INFO] [${req.method} ${req.url}] Creating a new message`,
+      { messageData: data }
+    );
     return this.messageService.create(data);
   }
 
   @Get()
   findAll(@Req() req: Request) {
-    this.logger.log(`[${req.method} ${req.url}] Fetching all messages`);
+    this.logger.log(`[INFO] [${req.method} ${req.url}] Fetching all messages`);
     return this.messageService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req: Request) {
-    this.logger.log(`[${req.method} ${req.url}] Fetching message with ID: ${id}`); 
+    this.logger.log(
+      `[INFO] [${req.method} ${req.url}] Fetching message by ID`,
+      { messageId: +id }
+    );
     return this.messageService.findOne(+id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() data: any, @Req() req: Request) {
-    this.logger.log(`[${req.method} ${req.url}] Updating message with ID: ${id}`, data); 
+    this.logger.log(
+      `[INFO] [${req.method} ${req.url}] Updating message`,
+      { messageId: +id, updateData: data }
+    );
     return this.messageService.update(+id, data);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string, @Req() req: Request) {
-    this.logger.log(`[${req.method} ${req.url}] Removing message with ID: ${id}`);
+    this.logger.log(
+      `[INFO] [${req.method} ${req.url}] Removing message`,
+      { messageId: +id }
+    );
     return this.messageService.remove(+id);
   }
 }

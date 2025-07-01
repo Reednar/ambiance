@@ -34,17 +34,25 @@ export class GroupsController {
   @ApiOperation({ summary: 'Return all groups if the requester is an admin' })
   async getGroupes(@Body() body: { userId: number }, @Req() req: Request) {
     this.logger.log(
-      `[${req.method} ${req.url}] Fetching all groups`,
-      body.userId,
+      `[INFO] [${req.method} ${req.url}] Fetching all groups`,
+      { userId: body.userId }
     );
 
     const utilisateur = await this.UsersService.findOne(body.userId);
     if (!utilisateur || utilisateur.role !== 'Administrateur') {
+      this.logger.warn(
+        `[WARN] [${req.method} ${req.url}] Access denied - User not admin`,
+        { userId: body.userId, userRole: utilisateur?.role || 'not_found' }
+      );
       throw new NotFoundException(
         'Accès refusé : Seuls les administrateurs peuvent accéder à cette ressource.',
       );
     }
 
+    this.logger.log(
+      `[INFO] [${req.method} ${req.url}] Groups fetched successfully`,
+      { requestedBy: body.userId }
+    );
     return await this.GroupsService.findAll();
   }
 
@@ -61,12 +69,23 @@ export class GroupsController {
     body: { nomDuGroupe: string; utilisateurId: number; idPublication: number },
     @Req() req: Request,
   ) {
-    this.logger.log(`[${req.method} ${req.url}] Creating a new group`, body);
+    this.logger.log(
+      `[INFO] [${req.method} ${req.url}] Creating a new group`,
+      { 
+        groupName: body.nomDuGroupe,
+        userId: body.utilisateurId,
+        publicationId: body.idPublication
+      }
+    );
 
     const utilisateur = await this.UsersService.findEntityById(
       body.utilisateurId,
     );
     if (!utilisateur) {
+      this.logger.error(
+        `[ERROR] [${req.method} ${req.url}] User not found for group creation`,
+        { userId: body.utilisateurId }
+      );
       throw new NotFoundException('Utilisateur non trouvé');
     }
 

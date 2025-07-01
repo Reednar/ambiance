@@ -40,6 +40,7 @@ export class PublicationsController {
   @Get('test') //endpoint (endpoit ALWAYS before controller endpoint)
   @UseGuards(JwtAuthGuard) //protected request
   getProtectedData() {
+    this.logger.log('[INFO] Test endpoint accessed successfully');
     return { message: 'Accès autorisé à la route protégée.' };
   }
 
@@ -49,52 +50,58 @@ export class PublicationsController {
     @Body() Body: { idPublication: number; utilisateurId: number },
     @Req() req: Request,
   ) {
-    this.logger.log(`[${req.method} ${req.url}] Deleting publication`, Body);
+    try {
+      this.logger.log(`[INFO] Deleting publication - publicationId: ${Body.idPublication}, userId: ${Body.utilisateurId}`);
 
-    const utilisateur = await this.usersService.findOne(Body.utilisateurId);
-    if (!utilisateur) {
-      throw new NotFoundException('Utilisateur non trouvé');
-    }
-    const publication = await this.publicationsService.findOne(
-      Body.idPublication,
-    );
-    if (!publication) {
-      throw new NotFoundException('publication not found');
-    }
-
-    if (utilisateur.role != 'Administrateur') {
-      if (publication.utilisateurId !== utilisateur.idUtilisateur) {
-        throw new NotFoundException(
-          'Utilisateur non autorisé à supprimer ce publication',
-        );
+      const utilisateur = await this.usersService.findOne(Body.utilisateurId);
+      if (!utilisateur) {
+        this.logger.warn(`[WARN] User not found for publication deletion - userId: ${Body.utilisateurId}`);
+        throw new NotFoundException('Utilisateur non trouvé');
       }
-    }
+      
+      const publication = await this.publicationsService.findOne(Body.idPublication);
+      if (!publication) {
+        this.logger.warn(`[WARN] Publication not found for deletion - publicationId: ${Body.idPublication}`);
+        throw new NotFoundException('publication not found');
+      }
 
-    // 1. Récupérer le groupe lié à la publication
-    const groupe = await this.groupsService.getGroupeByPublicationId(
-      publication.idPublication,
-    );
-
-    if (groupe) {
-      // 2. Supprimer toutes les participations liées à ce groupe
-      if (groupe.participations && groupe.participations.length > 0) {
-        for (const participation of groupe.participations) {
-          await this.groupsService.removeUserFromGroup(
-            groupe.idGroupe,
-            participation.idUtilisateur.idUtilisateur,
-          );
+      if (utilisateur.role != 'Administrateur') {
+        if (publication.utilisateurId !== utilisateur.idUtilisateur) {
+          this.logger.warn(`[WARN] User not authorized to delete publication - userId: ${Body.utilisateurId}, publicationId: ${Body.idPublication}`);
+          throw new NotFoundException('Utilisateur non autorisé à supprimer ce publication');
         }
       }
-      // 3. Supprimer le groupe
-      await this.groupsService.remove(groupe.idGroupe);
+
+      // 1. Récupérer le groupe lié à la publication
+      const groupe = await this.groupsService.getGroupeByPublicationId(publication.idPublication);
+
+      if (groupe) {
+        // 2. Supprimer toutes les participations liées à ce groupe
+        if (groupe.participations && groupe.participations.length > 0) {
+          this.logger.log(`[INFO] Removing ${groupe.participations.length} participations from group - groupId: ${groupe.idGroupe}`);
+          for (const participation of groupe.participations) {
+            await this.groupsService.removeUserFromGroup(
+              groupe.idGroupe,
+              participation.idUtilisateur.idUtilisateur,
+            );
+          }
+        }
+        // 3. Supprimer le groupe
+        await this.groupsService.remove(groupe.idGroupe);
+        this.logger.log(`[INFO] Group removed successfully - groupId: ${groupe.idGroupe}`);
+      }
+
+      // 4. Supprimer la publication
+      await this.publicationsService.remove(publication.idPublication);
+      this.logger.log(`[INFO] Publication deleted successfully - publicationId: ${Body.idPublication}, userId: ${Body.utilisateurId}`);
+
+      return {
+        message: 'Publication, groupe et participations supprimés avec succès',
+      };
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to delete publication - publicationId: ${Body.idPublication}, userId: ${Body.utilisateurId}, error: ${error.message}`);
+      throw error;
     }
-
-    // 4. Supprimer la publication
-    await this.publicationsService.remove(publication.idPublication);
-
-    return {
-      message: 'Publication, groupe et participations supprimés avec succès',
-    };
   }
 
   @Post('update')
@@ -146,33 +153,38 @@ export class PublicationsController {
     },
     @Req() req: Request,
   ) {
-    this.logger.log(
-      `[${req.method} ${req.url}] Updating publication`,
-      Body.idPublication,
-    );
-    const utilisateur = await this.usersService.findOne(Body.utilisateurId);
-    if (!utilisateur) {
-      throw new NotFoundException('Utilisateur non trouvé');
+    try {
+      this.logger.log(`[INFO] Updating publication - publicationId: ${Body.idPublication}, userId: ${Body.utilisateurId}`);
+      
+      const utilisateur = await this.usersService.findOne(Body.utilisateurId);
+      if (!utilisateur) {
+        this.logger.warn(`[WARN] User not found for publication update - userId: ${Body.utilisateurId}`);
+        throw new NotFoundException('Utilisateur non trouvé');
+      }
+      
+      const publication = await this.publicationsService.findOne(Body.idPublication);
+      if (!publication) {
+        this.logger.warn(`[WARN] Publication not found for update - publicationId: ${Body.idPublication}`);
+        throw new NotFoundException('publication not found');
+      }
+      
+      if (publication.utilisateurId !== utilisateur.idUtilisateur) {
+        this.logger.warn(`[WARN] User not authorized to update publication - userId: ${Body.utilisateurId}, publicationId: ${Body.idPublication}`);
+        throw new NotFoundException('Utilisateur non autorisé à mettre à jour ce publication');
+      }
+      
+      const updatedPublication = {
+        ...publication,
+        ...Body,
+      };
+      
+      const result = await this.publicationsService.update(publication.idPublication, updatedPublication);
+      this.logger.log(`[INFO] Publication updated successfully - publicationId: ${Body.idPublication}, userId: ${Body.utilisateurId}`);
+      return result;
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to update publication - publicationId: ${Body.idPublication}, userId: ${Body.utilisateurId}, error: ${error.message}`);
+      throw error;
     }
-    const publication = await this.publicationsService.findOne(
-      Body.idPublication,
-    );
-    if (!publication) {
-      throw new NotFoundException('publication not found');
-    }
-    if (publication.utilisateurId !== utilisateur.idUtilisateur) {
-      throw new NotFoundException(
-        'Utilisateur non autorisé à mettre à jour ce publication',
-      );
-    }
-    const updatedPublication = {
-      ...publication,
-      ...Body,
-    };
-    return await this.publicationsService.update(
-      publication.idPublication,
-      updatedPublication,
-    );
   }
 
   @Get()
@@ -183,57 +195,63 @@ export class PublicationsController {
     type: PublicationDto,
   })
   async getPublications(@Req() req: Request): Promise<PublicationDto[]> {
-    this.logger.log(`[${req.method} ${req.url}] Fetching all publications`);
+    try {
+      this.logger.log('[INFO] Fetching all publications');
 
-    const publications = await this.publicationsService.findAll();
+      const publications = await this.publicationsService.findAll();
+      this.logger.log(`[INFO] Publications retrieved successfully - count: ${publications.length}`);
 
-    return Promise.all(
-      publications.map(async (pub) => {
-        const dto = new PublicationDto();
+      return Promise.all(
+        publications.map(async (pub) => {
+          const dto = new PublicationDto();
 
-        dto.idPublication = pub.idPublication;
-        dto.codePostal = pub.codePostal;
-        dto.rue = pub.rue;
-        dto.ville = pub.ville;
-        dto.titre = pub.titre;
-        dto.dateEvenement = pub.dateEvenement;
-        dto.description = pub.description;
-        dto.prix = pub.prix;
-        dto.lien = pub.lien;
-        dto.dateCreation = pub.dateCreation;
-        dto.participantMax = pub.participantMax;
-        dto.participantMin = pub.participantMin;
-        dto.typePost = pub.typePost;
-        dto.placeHandicape = pub.placeHandicape;
-        dto.rampe = pub.rampe;
-        dto.ascenseur = pub.ascenseur;
-        dto.idUtilisateur = pub.utilisateurId;
-        dto.idEcole = pub.idEcole;
-        dto.nomEcole = pub.ecole?.nom ?? null;
-        dto.listeEcoleIds = pub.listeEcoleIds;
-        if (pub.image && pub.imageMimeType) {
-          const base64 = pub.image.toString('base64');
-          dto.image = `data:${pub.imageMimeType};base64,${base64}`;
-        } else {
-          dto.image = null;
-        }
+          dto.idPublication = pub.idPublication;
+          dto.codePostal = pub.codePostal;
+          dto.rue = pub.rue;
+          dto.ville = pub.ville;
+          dto.titre = pub.titre;
+          dto.dateEvenement = pub.dateEvenement;
+          dto.description = pub.description;
+          dto.prix = pub.prix;
+          dto.lien = pub.lien;
+          dto.dateCreation = pub.dateCreation;
+          dto.participantMax = pub.participantMax;
+          dto.participantMin = pub.participantMin;
+          dto.typePost = pub.typePost;
+          dto.placeHandicape = pub.placeHandicape;
+          dto.rampe = pub.rampe;
+          dto.ascenseur = pub.ascenseur;
+          dto.idUtilisateur = pub.utilisateurId;
+          dto.idEcole = pub.idEcole;
+          dto.nomEcole = pub.ecole?.nom ?? null;
+          dto.listeEcoleIds = pub.listeEcoleIds;
+          if (pub.image && pub.imageMimeType) {
+            const base64 = pub.image.toString('base64');
+            dto.image = `data:${pub.imageMimeType};base64,${base64}`;
+          } else {
+            dto.image = null;
+          }
 
-        dto.imageMimeType = pub.imageMimeType ?? null;
+          dto.imageMimeType = pub.imageMimeType ?? null;
 
-        dto.categories =
-          pub.publicationCategories?.map((pc) => ({
-            id: pc.categorie?.idCategorie ?? null,
-            nom: pc.categorie?.nom ?? null,
-          })) ?? [];
+          dto.categories =
+            pub.publicationCategories?.map((pc) => ({
+              id: pc.categorie?.idCategorie ?? null,
+              nom: pc.categorie?.nom ?? null,
+            })) ?? [];
 
-        // Attente de la récupération du groupe pour obtenir le nombre de participants
-        const groupe = await this.groupsService.getGroupeByPublicationId(
-          pub.idPublication,
-        );
-        dto.nombreParticipants = groupe?.participations?.length ?? 0;
-        return dto;
-      }),
-    );
+          // Attente de la récupération du groupe pour obtenir le nombre de participants
+          const groupe = await this.groupsService.getGroupeByPublicationId(
+            pub.idPublication,
+          );
+          dto.nombreParticipants = groupe?.participations?.length ?? 0;
+          return dto;
+        }),
+      );
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to fetch publications - error: ${error.message}`);
+      throw error;
+    }
   }
 
   @Get(':id')
@@ -258,52 +276,57 @@ export class PublicationsController {
     },
   })
   async getPublicationById(@Param('id') id: number, @Req() req?: Request) {
-    this.logger.log(
-      `[${req.method} ${req.url}] Fetching publication with ID: ${id}`,
-    );
-    const method = req?.method ?? 'UNKNOWN_METHOD';
-    const url = req?.url ?? 'UNKNOWN_URL';
-    const pub = await this.publicationsService.findOne(id);
+    try {
+      this.logger.log(`[INFO] Fetching publication by ID - publicationId: ${id}`);
+      
+      const pub = await this.publicationsService.findOne(id);
 
-    if (!pub) {
-      throw new NotFoundException('publication not found');
+      if (!pub) {
+        this.logger.warn(`[WARN] Publication not found - publicationId: ${id}`);
+        throw new NotFoundException('publication not found');
+      }
+
+      this.logger.log(`[INFO] Publication found successfully - publicationId: ${id}, title: ${pub.titre}`);
+
+      const dto = new PublicationDto();
+      dto.idPublication = pub.idPublication;
+      dto.codePostal = pub.codePostal;
+      dto.rue = pub.rue;
+      dto.ville = pub.ville;
+      dto.titre = pub.titre;
+      dto.dateEvenement = pub.dateEvenement;
+      dto.description = pub.description;
+      dto.prix = pub.prix;
+      dto.lien = pub.lien;
+      dto.dateCreation = pub.dateCreation;
+      dto.participantMax = pub.participantMax;
+      dto.participantMin = pub.participantMin;
+      dto.typePost = pub.typePost;
+      dto.placeHandicape = pub.placeHandicape;
+      dto.rampe = pub.rampe;
+      dto.ascenseur = pub.ascenseur;
+      dto.idUtilisateur = pub.utilisateurId;
+      dto.idEcole = pub.idEcole;
+      dto.listeEcoleIds = pub.listeEcoleIds;
+      dto.nomEcole = pub.ecole ? pub.ecole.nom : null;
+      if (pub.image && pub.imageMimeType) {
+        const base64 = pub.image.toString('base64');
+        dto.image = `data:${pub.imageMimeType};base64,${base64}`;
+      } else {
+        dto.image = null;
+      }
+      dto.imageMimeType = pub.imageMimeType ?? null;
+      dto.categories =
+        pub.publicationCategories?.map((pc) => ({
+          id: pc.categorie?.idCategorie ?? null,
+          nom: pc.categorie?.nom ?? null,
+        })) ?? [];
+
+      return dto;
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to fetch publication by ID - publicationId: ${id}, error: ${error.message}`);
+      throw error;
     }
-
-    const dto = new PublicationDto();
-    dto.idPublication = pub.idPublication;
-    dto.codePostal = pub.codePostal;
-    dto.rue = pub.rue;
-    dto.ville = pub.ville;
-    dto.titre = pub.titre;
-    dto.dateEvenement = pub.dateEvenement;
-    dto.description = pub.description;
-    dto.prix = pub.prix;
-    dto.lien = pub.lien;
-    dto.dateCreation = pub.dateCreation;
-    dto.participantMax = pub.participantMax;
-    dto.participantMin = pub.participantMin;
-    dto.typePost = pub.typePost;
-    dto.placeHandicape = pub.placeHandicape;
-    dto.rampe = pub.rampe;
-    dto.ascenseur = pub.ascenseur;
-    dto.idUtilisateur = pub.utilisateurId;
-    dto.idEcole = pub.idEcole;
-    dto.listeEcoleIds = pub.listeEcoleIds;
-    dto.nomEcole = pub.ecole ? pub.ecole.nom : null;
-    if (pub.image && pub.imageMimeType) {
-      const base64 = pub.image.toString('base64');
-      dto.image = `data:${pub.imageMimeType};base64,${base64}`;
-    } else {
-      dto.image = null;
-    }
-    dto.imageMimeType = pub.imageMimeType ?? null;
-    dto.categories =
-      pub.publicationCategories?.map((pc) => ({
-        id: pc.categorie?.idCategorie ?? null,
-        nom: pc.categorie?.nom ?? null,
-      })) ?? [];
-
-    return dto;
   }
 
   @Get('participants/:idPublication')
@@ -333,49 +356,44 @@ export class PublicationsController {
     @Param('idPublication') idPublication: number,
     @Req() req: Request,
   ): Promise<UserDto[]> {
-    this.logger.log(
-      `[${req.method} ${req.url}] Fetching participants for publication ID: ${idPublication}`,
-    );
+    try {
+      this.logger.log(`[INFO] Fetching participants for publication - publicationId: ${idPublication}`);
 
-    const publication = await this.publicationsService.findOne(idPublication);
-    if (!publication) {
-      throw new NotFoundException('Publication not found');
+      const publication = await this.publicationsService.findOne(idPublication);
+      if (!publication) {
+        this.logger.warn(`[WARN] Publication not found for participants lookup - publicationId: ${idPublication}`);
+        throw new NotFoundException('Publication not found');
+      }
+
+      const groupe = await this.groupsService.getGroupeByPublicationId(idPublication);
+      if (!groupe) {
+        this.logger.warn(`[WARN] No group found for publication - publicationId: ${idPublication}`);
+        return [];
+      }
+
+      // Return les utilisateurs du groupe
+      const participants = await this.groupsService.findUsersByGroup(groupe.idGroupe);
+
+      if (!participants || participants.length === 0) {
+        this.logger.warn(`[WARN] No participants found for publication - publicationId: ${idPublication}`);
+        return [];
+      }
+
+      this.logger.log(`[INFO] Participants found successfully - publicationId: ${idPublication}, count: ${participants.length}`);
+
+      // Retourne les participants sous forme de user DTO
+      return participants.map((user) => {
+        const userDto = new UserDto();
+        userDto.nom = user.nom;
+        userDto.prenom = user.prenom;
+        userDto.mail = user.mail;
+        userDto.pseudo = user.pseudo;
+        return userDto;
+      });
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to fetch participants for publication - publicationId: ${idPublication}, error: ${error.message}`);
+      throw error;
     }
-
-    const groupe =
-      await this.groupsService.getGroupeByPublicationId(idPublication);
-    if (!groupe) {
-      this.logger.warn(
-        `[${req.method} ${req.url}] No group found for publication ID: ${idPublication}`,
-      );
-      return [];
-    }
-
-    // Return les utilisateurs du groupe
-    const participants = await this.groupsService.findUsersByGroup(
-      groupe.idGroupe,
-    );
-
-    if (!participants || participants.length === 0) {
-      this.logger.warn(
-        `[${req.method} ${req.url}] No participants found for publication ID: ${idPublication}`,
-      );
-      return [];
-    }
-
-    this.logger.log(
-      `[${req.method} ${req.url}] Found ${participants.length} participants for publication ID: ${idPublication}`,
-    );
-
-    // Retourne les participants sous forme de user DTO
-    return participants.map((user) => {
-      const userDto = new UserDto();
-      userDto.nom = user.nom;
-      userDto.prenom = user.prenom;
-      userDto.mail = user.mail;
-      userDto.pseudo = user.pseudo;
-      return userDto;
-    });
   }
 
   @UseGuards(JwtAuthGuard)
@@ -432,66 +450,70 @@ export class PublicationsController {
     @UploadedFile() image: Express.Multer.File,
     @Req() req: Request,
   ) {
-    this.logger.log(
-      `[${req.method} ${req.url}] Creating a new publication with body: ${JSON.stringify(body)}`,
-    );
+    try {
+      this.logger.log(`[INFO] Creating new publication - userId: ${body.utilisateurId}, title: ${body.titre}`);
 
-    const utilisateur = await this.usersService.findEntityById(
-      body.utilisateurId,
-    );
+      const utilisateur = await this.usersService.findEntityById(body.utilisateurId);
+      const ecole = await this.schoolsService.findByUserId(body.utilisateurId);
+      
+      if (!utilisateur) {
+        this.logger.warn(`[WARN] User not found for publication creation - userId: ${body.utilisateurId}`);
+        throw new NotFoundException('Utilisateur non trouvé');
+      }
 
-    const ecole = await this.schoolsService.findByUserId(body.utilisateurId);
-    if (!utilisateur) {
-      throw new NotFoundException('Utilisateur non trouvé');
+      if (typeof body.categories === 'string') {
+        body.categories = JSON.parse(body.categories);
+      }
+
+      const publicationData = {
+        ...body,
+        idEcole: utilisateur.idEcole,
+        nomEcole: ecole.nom,
+        utilisateur,
+        placeHandicape: body.placeHandicape === 'true' || body.placeHandicape === true,
+        rampe: body.rampe === 'true' || body.rampe === true,
+        ascenseur: body.ascenseur === 'true' || body.ascenseur === true,
+        image: image?.buffer ?? null,
+        imageMimeType: image?.mimetype ?? null,
+      };
+
+      // 1. Création de la publication
+      const publication = await this.publicationsService.create(publicationData);
+      this.logger.log(`[INFO] Publication created successfully - publicationId: ${publication.idPublication}, userId: ${body.utilisateurId}`);
+
+      // 2. Création du groupe lié à la publication (avec organisateur)
+      const groupe = await this.groupsService.create({
+        nomDuGroupe: publication.titre,
+        publication: publication,
+        utilisateur: utilisateur,
+      });
+      this.logger.log(`[INFO] Group created for publication - groupId: ${groupe.idGroupe}, publicationId: ${publication.idPublication}`);
+
+      // 3. Ajout du créateur comme participant (plus besoin de organisateur)
+      /*await this.groupsService.addParticipation({
+        idGroupe: groupe,
+        idUtilisateur: utilisateur,
+        idPaiement: null,
+      });*/
+
+      // 4. Ajout des catégories à la publication
+      for (const idCategorie of body.categories as number[]) {
+        await this.publicationCategoriesService.addCategoryToPublication(
+          publication.idPublication,
+          idCategorie,
+        );
+      }
+      this.logger.log(`[INFO] Categories added to publication - publicationId: ${publication.idPublication}, categoriesCount: ${(body.categories as number[]).length}`);
+
+      return {
+        message: 'Publication et groupe créés avec succès',
+        publication,
+        groupe,
+      };
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to create publication - userId: ${body.utilisateurId}, title: ${body.titre}, error: ${error.message}`);
+      throw error;
     }
-
-    if (typeof body.categories === 'string') {
-      body.categories = JSON.parse(body.categories);
-    }
-
-    const publicationData = {
-      ...body,
-      idEcole: utilisateur.idEcole,
-      nomEcole: ecole.nom,
-      utilisateur,
-      placeHandicape:
-        body.placeHandicape === 'true' || body.placeHandicape === true,
-      rampe: body.rampe === 'true' || body.rampe === true,
-      ascenseur: body.ascenseur === 'true' || body.ascenseur === true,
-      image: image?.buffer ?? null,
-      imageMimeType: image?.mimetype ?? null,
-    };
-
-    // 1. Création de la publication
-    const publication = await this.publicationsService.create(publicationData);
-
-    // 2. Création du groupe lié à la publication (avec organisateur)
-    const groupe = await this.groupsService.create({
-      nomDuGroupe: publication.titre,
-      publication: publication,
-      utilisateur: utilisateur,
-    });
-
-    // 3. Ajout du créateur comme participant (plus besoin de organisateur)
-    /*await this.groupsService.addParticipation({
-      idGroupe: groupe,
-      idUtilisateur: utilisateur,
-      idPaiement: null,
-    });*/
-
-    // 4. Ajout des catégories à la publication
-    for (const idCategorie of body.categories as number[]) {
-      await this.publicationCategoriesService.addCategoryToPublication(
-        publication.idPublication,
-        idCategorie,
-      );
-    }
-
-    return {
-      message: 'Publication et groupe créés avec succès',
-      publication,
-      groupe,
-    };
   }
 
   @Post('userPublications')
@@ -531,16 +553,22 @@ export class PublicationsController {
     @Body() body: { utilisateurId: number },
     @Req() req: Request,
   ) {
-    this.logger.log(
-      `[${req.method} ${req.url}] Fetching publications for user`,
-      body.utilisateurId,
-    );
-    const utilisateur = await this.usersService.findOne(body.utilisateurId);
-    if (!utilisateur) {
-      throw new NotFoundException('Utilisateur non trouvé');
-    }
+    try {
+      this.logger.log(`[INFO] Fetching publications for user - userId: ${body.utilisateurId}`);
+      
+      const utilisateur = await this.usersService.findOne(body.utilisateurId);
+      if (!utilisateur) {
+        this.logger.warn(`[WARN] User not found for publications lookup - userId: ${body.utilisateurId}`);
+        throw new NotFoundException('Utilisateur non trouvé');
+      }
 
-    return await this.publicationsService.findByUser(body.utilisateurId);
+      const publications = await this.publicationsService.findByUser(body.utilisateurId);
+      this.logger.log(`[INFO] User publications retrieved successfully - userId: ${body.utilisateurId}, count: ${publications.length}`);
+      return publications;
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to fetch user publications - userId: ${body.utilisateurId}, error: ${error.message}`);
+      throw error;
+    }
   }
 
   @Get('user/:utilisateurId')
@@ -553,60 +581,68 @@ export class PublicationsController {
   async getPublicationsByUser(
     @Param('utilisateurId') utilisateurId: number,
   ): Promise<PublicationDto[]> {
-    const publications =
-      await this.publicationsService.getPublicationsByUser(utilisateurId);
-    return Promise.all(
-      publications.map(async (pub) => {
-        const dto = new PublicationDto();
+    try {
+      this.logger.log(`[INFO] Fetching publications by user - userId: ${utilisateurId}`);
+      
+      const publications = await this.publicationsService.getPublicationsByUser(utilisateurId);
+      this.logger.log(`[INFO] Publications by user retrieved successfully - userId: ${utilisateurId}, count: ${publications.length}`);
+      
+      return Promise.all(
+        publications.map(async (pub) => {
+          const dto = new PublicationDto();
 
-        dto.idPublication = pub.idPublication;
-        dto.codePostal = pub.codePostal;
-        dto.rue = pub.rue;
-        dto.ville = pub.ville;
-        dto.titre = pub.titre;
-        dto.dateEvenement = pub.dateEvenement;
-        dto.description = pub.description;
-        dto.prix = pub.prix;
-        dto.lien = pub.lien;
-        dto.dateCreation = pub.dateCreation;
-        dto.participantMax = pub.participantMax;
-        dto.participantMin = pub.participantMin;
-        dto.typePost = pub.typePost;
-        dto.placeHandicape = pub.placeHandicape;
-        dto.rampe = pub.rampe;
-        dto.ascenseur = pub.ascenseur;
-        dto.idUtilisateur = pub.utilisateurId;
+          dto.idPublication = pub.idPublication;
+          dto.codePostal = pub.codePostal;
+          dto.rue = pub.rue;
+          dto.ville = pub.ville;
+          dto.titre = pub.titre;
+          dto.dateEvenement = pub.dateEvenement;
+          dto.description = pub.description;
+          dto.prix = pub.prix;
+          dto.lien = pub.lien;
+          dto.dateCreation = pub.dateCreation;
+          dto.participantMax = pub.participantMax;
+          dto.participantMin = pub.participantMin;
+          dto.typePost = pub.typePost;
+          dto.placeHandicape = pub.placeHandicape;
+          dto.rampe = pub.rampe;
+          dto.ascenseur = pub.ascenseur;
+          dto.idUtilisateur = pub.utilisateurId;
 
-        if (pub.image && pub.imageMimeType) {
-          const base64 = pub.image.toString('base64'); // Utilisation du Buffer sans data
-          dto.image = `data:${pub.imageMimeType};base64,${base64}`;
-        } else {
-          dto.image = null;
-        }
-        dto.imageMimeType = pub.imageMimeType ?? null;
-        dto.categories =
-          pub.publicationCategories?.map((pc) => ({
-            id: pc.categorie?.idCategorie ?? null,
-            nom: pc.categorie?.nom ?? null,
-          })) ?? [];
-        // Attente de la récupération du groupe pour obtenir le nombre de participants
-        const groupe = await this.groupsService.getGroupeByPublicationId(
-          pub.idPublication,
-        );
-        dto.nombreParticipants = groupe?.participations?.length ?? 0;
+          if (pub.image && pub.imageMimeType) {
+            const base64 = pub.image.toString('base64'); // Utilisation du Buffer sans data
+            dto.image = `data:${pub.imageMimeType};base64,${base64}`;
+          } else {
+            dto.image = null;
+          }
+          dto.imageMimeType = pub.imageMimeType ?? null;
+          dto.categories =
+            pub.publicationCategories?.map((pc) => ({
+              id: pc.categorie?.idCategorie ?? null,
+              nom: pc.categorie?.nom ?? null,
+            })) ?? [];
+          // Attente de la récupération du groupe pour obtenir le nombre de participants
+          const groupe = await this.groupsService.getGroupeByPublicationId(
+            pub.idPublication,
+          );
+          dto.nombreParticipants = groupe?.participations?.length ?? 0;
 
-        dto.idGroupe = groupe?.idGroupe ?? null;
+          dto.idGroupe = groupe?.idGroupe ?? null;
 
-        const participation = groupe?.participations?.find(
-          (p) =>
-            p.idUtilisateur && p.idUtilisateur.idUtilisateur == utilisateurId,
-        );
-        dto.idParticipation = participation?.idParticipation ?? null;
-        dto.paiementEffectue = participation?.paiementEffectue ?? false;
+          const participation = groupe?.participations?.find(
+            (p) =>
+              p.idUtilisateur && p.idUtilisateur.idUtilisateur == utilisateurId,
+          );
+          dto.idParticipation = participation?.idParticipation ?? null;
+          dto.paiementEffectue = participation?.paiementEffectue ?? false;
 
-        return dto;
-      }),
-    );
+          return dto;
+        }),
+      );
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to fetch publications by user - userId: ${utilisateurId}, error: ${error.message}`);
+      throw error;
+    }
   }
 
   @Post('userParticipations')
@@ -646,25 +682,28 @@ export class PublicationsController {
     @Body() body: { utilisateurId: number },
     @Req() req: Request,
   ) {
-    this.logger.log(
-      `[${req.method} ${req.url}] Fetching participations for user`,
-      body.utilisateurId,
-    );
-    // Vérifier si l'utilisateur existe
-    const utilisateur = await this.usersService.findOne(body.utilisateurId);
-    if (!utilisateur) {
-      throw new NotFoundException('Utilisateur non trouvé');
+    try {
+      this.logger.log(`[INFO] Fetching participations for user - userId: ${body.utilisateurId}`);
+      
+      // Vérifier si l'utilisateur existe
+      const utilisateur = await this.usersService.findOne(body.utilisateurId);
+      if (!utilisateur) {
+        this.logger.warn(`[WARN] User not found for participations lookup - userId: ${body.utilisateurId}`);
+        throw new NotFoundException('Utilisateur non trouvé');
+      }
+
+      // Récupérer les participations de l'utilisateur
+      const participations = await this.publicationsService.findParticipationsByUser(body.utilisateurId);
+      this.logger.log(`[INFO] User participations retrieved successfully - userId: ${body.utilisateurId}, count: ${participations.length}`);
+      
+      // Extraire les publications des participations
+      //const publications = participations.map((participation) => participation.idGroupe.publication);
+
+      return participations;
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to fetch user participations - userId: ${body.utilisateurId}, error: ${error.message}`);
+      throw error;
     }
-
-    // Récupérer les participations de l'utilisateur
-    const participations =
-      await this.publicationsService.findParticipationsByUser(
-        body.utilisateurId,
-      );
-    // Extraire les publications des participations
-    //const publications = participations.map((participation) => participation.idGroupe.publication);
-
-    return participations;
   }
 
   @Post('/accessible-ecoles')
@@ -676,23 +715,33 @@ export class PublicationsController {
     @Body('userId') userId: number,
     @Req() req: Request,
   ): Promise<{ id: number; nom: string }[]> {
-    this.logger.log(
-      `[${req.method} ${req.url}] Get schools accessible to user ${userId}`,
-    );
-    const user = await this.usersService.findEntityById(userId);
-    const idEcoleUser = user?.idEcole;
-    if (!idEcoleUser) {
-      return [];
-    }
-    const publications =
-      await this.publicationsService.findAllWhereEcoleIdInListe(idEcoleUser);
-    const uniqueEcoles = new Map<number, string>();
-    for (const pub of publications) {
-      if (pub.ecole) {
-        uniqueEcoles.set(pub.idEcole, pub.ecole.nom);
+    try {
+      this.logger.log(`[INFO] Getting accessible schools for user - userId: ${userId}`);
+      
+      const user = await this.usersService.findEntityById(userId);
+      const idEcoleUser = user?.idEcole;
+      
+      if (!idEcoleUser) {
+        this.logger.warn(`[WARN] User has no school assigned - userId: ${userId}`);
+        return [];
       }
+      
+      const publications = await this.publicationsService.findAllWhereEcoleIdInListe(idEcoleUser);
+      const uniqueEcoles = new Map<number, string>();
+      
+      for (const pub of publications) {
+        if (pub.ecole) {
+          uniqueEcoles.set(pub.idEcole, pub.ecole.nom);
+        }
+      }
+      
+      const result = Array.from(uniqueEcoles.entries()).map(([id, nom]) => ({ id, nom }));
+      this.logger.log(`[INFO] Accessible schools retrieved successfully - userId: ${userId}, schoolsCount: ${result.length}`);
+      return result;
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to get accessible schools - userId: ${userId}, error: ${error.message}`);
+      throw error;
     }
-    return Array.from(uniqueEcoles.entries()).map(([id, nom]) => ({ id, nom }));
   }
 
   @Get('count')
@@ -710,10 +759,16 @@ export class PublicationsController {
     },
   })
   async getPublicationCount(@Req() req: Request): Promise<{ count: number }> {
-    this.logger.log(`[${req.method} ${req.url}] Fetching publication count`);
+    try {
+      this.logger.log('[INFO] Fetching publication count');
 
-    const count = await this.publicationsService.count();
+      const count = await this.publicationsService.count();
+      this.logger.log(`[INFO] Publication count retrieved successfully - count: ${count}`);
 
-    return { count };
+      return { count };
+    } catch (error) {
+      this.logger.error(`[ERROR] Failed to fetch publication count - error: ${error.message}`);
+      throw error;
+    }
   }
 }
