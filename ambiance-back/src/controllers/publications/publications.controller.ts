@@ -24,6 +24,7 @@ import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
 import { School } from 'src/entities/schools.entity';
 import { SchoolsService } from 'src/services/schools/schools.service';
 import { UserDto } from 'src/dtos/user.dto';
+import { DiscussionService } from 'src/services/discussion/discussion.service';
 
 @ApiTags('publications')
 @Controller('publications')
@@ -35,6 +36,7 @@ export class PublicationsController {
     private groupsService: GroupsService,
     private readonly logger: Logger,
     private readonly schoolsService: SchoolsService,
+    private readonly discussionService: DiscussionService,
   ) {}
 
   @Get('test') //endpoint (endpoit ALWAYS before controller endpoint)
@@ -76,7 +78,14 @@ export class PublicationsController {
       const groupe = await this.groupsService.getGroupeByPublicationId(publication.idPublication);
 
       if (groupe) {
-        // 2. Supprimer toutes les participations liées à ce groupe
+        // 2. Supprimer la discussion liée au groupe s'il en existe une
+        const discussion = await this.discussionService.findByGroupId(groupe.idGroupe);
+        if (discussion) {
+          await this.discussionService.remove(discussion.idDiscussion);
+          this.logger.log(`[INFO] Discussion removed successfully - discussionId: ${discussion.idDiscussion}, groupId: ${groupe.idGroupe}`);
+        }
+
+        // 3. Supprimer toutes les participations liées à ce groupe
         if (groupe.participations && groupe.participations.length > 0) {
           this.logger.log(`[INFO] Removing ${groupe.participations.length} participations from group - groupId: ${groupe.idGroupe}`);
           for (const participation of groupe.participations) {
@@ -86,17 +95,17 @@ export class PublicationsController {
             );
           }
         }
-        // 3. Supprimer le groupe
+        // 4. Supprimer le groupe
         await this.groupsService.remove(groupe.idGroupe);
         this.logger.log(`[INFO] Group removed successfully - groupId: ${groupe.idGroupe}`);
       }
 
-      // 4. Supprimer la publication
+      // 5. Supprimer la publication
       await this.publicationsService.remove(publication.idPublication);
       this.logger.log(`[INFO] Publication deleted successfully - publicationId: ${Body.idPublication}, userId: ${Body.utilisateurId}`);
 
       return {
-        message: 'Publication, groupe et participations supprimés avec succès',
+        message: 'Publication, groupe, discussion et participations supprimés avec succès',
       };
     } catch (error) {
       this.logger.error(`[ERROR] Failed to delete publication - publicationId: ${Body.idPublication}, userId: ${Body.utilisateurId}, error: ${error.message}`);
@@ -489,14 +498,21 @@ export class PublicationsController {
       });
       this.logger.log(`[INFO] Group created for publication - groupId: ${groupe.idGroupe}, publicationId: ${publication.idPublication}`);
 
-      // 3. Ajout du créateur comme participant (plus besoin de organisateur)
+      // 3. Création de la discussion liée au groupe
+      const discussion = await this.discussionService.create({
+        typeDiscussion: 1, // Type par défaut pour les discussions de publication
+        idGroupe: groupe.idGroupe,
+      });
+      this.logger.log(`[INFO] Discussion created for group - discussionId: ${discussion.idDiscussion}, groupId: ${groupe.idGroupe}`);
+
+      // 4. Ajout du créateur comme participant (plus besoin de organisateur)
       /*await this.groupsService.addParticipation({
         idGroupe: groupe,
         idUtilisateur: utilisateur,
         idPaiement: null,
       });*/
 
-      // 4. Ajout des catégories à la publication
+      // 5. Ajout des catégories à la publication
       for (const idCategorie of body.categories as number[]) {
         await this.publicationCategoriesService.addCategoryToPublication(
           publication.idPublication,
@@ -506,9 +522,10 @@ export class PublicationsController {
       this.logger.log(`[INFO] Categories added to publication - publicationId: ${publication.idPublication}, categoriesCount: ${(body.categories as number[]).length}`);
 
       return {
-        message: 'Publication et groupe créés avec succès',
+        message: 'Publication, groupe et discussion créés avec succès',
         publication,
         groupe,
+        discussion,
       };
     } catch (error) {
       this.logger.error(`[ERROR] Failed to create publication - userId: ${body.utilisateurId}, title: ${body.titre}, error: ${error.message}`);

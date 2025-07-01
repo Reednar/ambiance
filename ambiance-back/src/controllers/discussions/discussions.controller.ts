@@ -64,5 +64,12 @@ export class DiscussionController {
     return this.discussionService.getPublicationIdByDiscussionId(body.discussionId);
   }
 
+  @Get('publication-id/:discussionId')
+  @ApiOperation({ summary: 'Get publication id by discussion id via GET' })
+  async getPublicationIdByDiscussionIdGet(@Param('discussionId') discussionId: string, @Req() req: Request) {
+    this.logger.log(`[${req.method} ${req.url}] Fetching publicationId for discussionId: ${discussionId}`);
+    return this.discussionService.getPublicationIdByDiscussionId(+discussionId);
+  }
+
   
 }

@@ -44,6 +44,6 @@ export class MessagerieService {
   }
 
   getPublicationIdByDiscussionId(discussionId: number) {
-    return this.http.get<{ publicationId: number }>(`${this.apiUrl}/discussions/publication-id/${discussionId}`, { withCredentials: true });
+    return this.http.get<{ publicationId: number }>(`${this.apiUrl}/discussions/publication-id/${discussionId}`);
   }
 }

@@ -68,14 +68,18 @@ export class MessagerieComponent implements OnInit, OnDestroy {
   goToPublication(idDiscussion: number) {
     this.messagerieService.getPublicationIdByDiscussionId(idDiscussion).subscribe({
       next: (res) => {
+        console.log('Response from backend:', res);
         const publicationId = res?.publicationId;
         if (publicationId) {
+          // Utiliser router navigation au lieu de window.location.href
           window.location.href = `/publication-show/${publicationId}`;
         } else {
+          console.warn('No publication linked to this discussion');
           alert("Aucune publication liée à cette discussion.");
         }
       },
-      error: () => {
+      error: (error) => {
+        console.error('Error fetching publication:', error);
         alert("Erreur lors de la récupération de la publication.");
       }
     });

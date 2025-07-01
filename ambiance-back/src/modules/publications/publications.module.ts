@@ -13,6 +13,7 @@ import { Participation } from 'src/entities/participation.entity';
 import { AuthModule } from '../auth/auth.module';  // <-- importer AuthModule
 import { SchoolsService } from 'src/services/schools/schools.service';
 import { SchoolsModule } from '../schools/schools.module';
+import { DiscussionModule } from '../discussions/discussions.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { SchoolsModule } from '../schools/schools.module';
     forwardRef(() => GroupsModule),
     AuthModule,
     SchoolsModule, // <-- ajouter ici
+    DiscussionModule,
   ],
   providers: [PublicationsService, UsersService, Logger],
   controllers: [PublicationsController],
