@@ -36,7 +36,7 @@ export class AuthService {
     const payload = { mail: user.mail, sub: Visitor.idUtilisateur };
     const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
-
+    const isAdmin = Visitor.role == 'Administrateur';
     // Stocker le refresh token
     this.refreshTokens.add(refreshToken);
 
@@ -45,6 +45,7 @@ export class AuthService {
       refresh_token: refreshToken,
       idUtilisateur: Visitor.idUtilisateur,
       emailConfirmed: Visitor.emailConfirmed,
+      isAdmin: isAdmin,
     };
   }
 
