@@ -1,8 +1,7 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { PrimeNGConfig } from 'primeng/api';
+import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { AuthService } from './core/services/authent.service';
 import { Subscription } from 'rxjs';
-import { MessageService } from 'primeng/api';
 import { UsersService } from './core/services/users.service';
 
 interface Claim {
@@ -27,7 +26,7 @@ export class AppComponent {
   private authSubscription!: Subscription;
   userId: string = "";
 
-  constructor(private primengConfig: PrimeNGConfig, private authService: AuthService, public messageService: MessageService, private userService: UsersService, private cdr: ChangeDetectorRef,
+  constructor(private readonly primengConfig: PrimeNGConfig, private readonly authService: AuthService, public readonly messageService: MessageService, private readonly userService: UsersService, private readonly cdr: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {

@@ -1,19 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from '../../services/users/users.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../../entities/users.entity'; // Update this line
+import { ExecutionContext } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/services/auth/jwt-auth.guard';
 
 describe('UsersController', () => {
   let controller: UsersController;
-  let service: UsersService;
 
   const mockUsersService = {
+    // tes méthodes mockées ici
     findAll: jest.fn(),
     findOne: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
+  };
+
+  const mockJwtAuthGuard = {
+    canActivate: (context: ExecutionContext) => true, // bypass le guard
   };
 
   beforeEach(async () => {
@@ -21,12 +22,13 @@ describe('UsersController', () => {
       controllers: [UsersController],
       providers: [
         { provide: UsersService, useValue: mockUsersService },
-        { provide: getRepositoryToken(User), useValue: {} },
       ],
-    }).compile();
+    })
+      .overrideProvider(JwtAuthGuard)
+      .useValue(mockJwtAuthGuard)
+      .compile();
 
     controller = module.get<UsersController>(UsersController);
-    service = module.get<UsersService>(UsersService);
   });
 
   it('should be defined', () => {

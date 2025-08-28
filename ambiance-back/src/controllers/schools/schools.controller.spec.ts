@@ -48,24 +48,20 @@ describe('SchoolsController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('createSchool', () => {
+  describe('createSchoolProtected', () => {
     it('should create a new school', async () => {
       const schoolData = {
         nom: 'Test School',
-        ville: 'Paris',
-        rue: '123 Rue',
-        codePostal: '75000',
         site_web: 'https://example.com',
         telephone: '0123456789',
         description: 'A test school',
-        contact_email: 'test@example.com',
-        type_ecole: 'publique',
-      } as School;
+        contact_email: ''
+      }
 
       const createdSchool = { id: 1, ...schoolData } as School;
       jest.spyOn(schoolsService, 'create').mockResolvedValue(createdSchool);
 
-      const result = await controller.createSchool(schoolData, { method: 'POST', url: '/schools/create' } as any);
+      const result = await controller.createSchoolProtected(schoolData, { method: 'POST', url: '/schools/create' } as any);
       expect(result).toEqual(createdSchool);
       expect(schoolsService.create).toHaveBeenCalledWith(schoolData);
     });
@@ -73,19 +69,20 @@ describe('SchoolsController', () => {
 
   describe('findSchool', () => {
     it('should return a school by ID', async () => {
-      const school = {
+      const school: School = {
         id: 1,
         nom: 'Test School',
         site_web: 'https://example.com',
         telephone: '0123456789',
         description: 'A test school',
-        contact_email: 'test@example.com',
-        type_ecole: 'publique',
-        rue: '123 Rue',
-        ville: 'Paris',
-        codePostal: '75000',
+        contact_email: '',
         createur: {} as User,
-      } as School;
+        rue: '123 Test Street',
+        ville: 'Test City',
+        code_postal: '12345',
+        date_creation: new Date(),
+        membresBDE: [],
+      }
 
       jest.spyOn(schoolsService, 'findOne').mockResolvedValue(school);
 

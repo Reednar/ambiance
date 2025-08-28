@@ -1,24 +1,71 @@
 node {
-    // Déclaration des variables d'environnement
     def SONARQUBE_SERVER = 'https://sonarqube.ambiance-ensitech.me'
-    def SONAR_TOKEN = credentials('sonar-token')
-
-    // Récupération du secret pour le webhook
-    def secretWebhook = credentials('secret-webhook-sonarqube')
 
     stage('Checkout') {
         checkout scm
     }
 
+    stage('Install & Test Projects') {
+        sh '''
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+            nvm use 18
+
+            # Vérifier que Chrome est accessible
+            export CHROME_BIN=/usr/bin/google-chrome
+            if [ ! -f "$CHROME_BIN" ]; then
+                echo "ERREUR: Chrome n'est pas installé ou accessible à $CHROME_BIN"
+                echo "Veuillez contacter l'administrateur système pour installer Chrome:"
+                echo "sudo apt-get install -y google-chrome-stable"
+                exit 1
+            fi
+
+            # Donner les permissions nécessaires à l'utilisateur Jenkins
+            if [ ! -x "$CHROME_BIN" ]; then
+                echo "Avertissement: Chrome n'est pas exécutable pour l'utilisateur Jenkins"
+                echo "Tentative de résolution..."
+                sudo chmod +x "$CHROME_BIN" || true
+            fi
+
+            # FRONTEND
+            cd ambiance-front
+            npm install
+            
+            # Configuration spécifique pour ChromeHeadless
+            export CHROME_BIN=/usr/bin/google-chrome
+            
+            # Exécution des tests
+            echo "Chemin de Chrome: $CHROME_BIN"
+            echo "Version de Chrome:"
+            $CHROME_BIN --version || echo "Impossible d'exécuter Chrome"
+            
+            npm run test -- --watch=false --code-coverage --browsers=ChromeHeadlessNoSandbox
+            cd ..
+
+            # BACKEND
+            cd ambiance-back
+            npm ci
+            npm run test
+            cd ..
+        '''
+    }
+
+    // Les autres stages restent inchangés
     stage('SonarQube Analysis') {
-        withSonarQubeEnv('SonarQubeServer') {
-            sh """
-                sonar-scanner \\
-                -Dsonar.projectKey=ambiance \\
-                -Dsonar.projectName=ambiance \\
-                -Dsonar.host.url=${SONARQUBE_SERVER} \\
-                -Dsonar.branch.name=
-            """
+        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+            withSonarQubeEnv('SonarQubeServer') {
+                sh '''
+                    export NVM_DIR="$HOME/.nvm"
+                    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+                    nvm use 18
+
+                    sonar-scanner \
+                        -Dsonar.projectKey=ambiance \
+                        -Dsonar.projectName=ambiance \
+                        -Dsonar.host.url=https://sonarqube.ambiance-ensitech.me \
+                        -Dsonar.login=$SONAR_TOKEN
+                '''
+            }
         }
     }
 
